@@ -660,9 +660,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 	nextPlayer = 0;
   }
   
-  //uses switch to select card and perform actions for remaining possible cards
-  //(i.e. cards that are not 'Smithy', 'Adventurer', 'Cutpurse', 'Ambassador',
-  // or 'Minion' handled in the previous if block)
+  //uses switch to select card and perform actions 
   switch( card ) 
 	{
 	case adventurer:

@@ -1,27 +1,29 @@
-/* -----------------------------------------------------------------------
+/* ---------------------------------------------------------------------------
  * Benjamin Fridkis - CS362 
  * Assignment 3
  *
  *               unittest1.c
  *
+ *	     Test for "buyCard" function.
+ *
  * Include the following lines in your makefile:
  *
- * testBuyCard: unittest1.c _unittest1helper.o dominion.o rngs.o
- *      gcc -o testBuyCard -g  unittest1.c _unittest1helper.o 
-*		dominion.o rngs.o $(CFLAGS)
- * -----------------------------------------------------------------------
+ * unittest1: unittest1.c _unittest1helper.o dominion.o cardEffects.o rngs.o
+ * 		gcc -o unittest1 unittest1.c -g dominion.o cardEffects.o 
+ * 		_unittest1helper.o rngs.o $(CFLAGS)
+ * ---------------------------------------------------------------------------
  */
 
 #include "_unittest1helper.h"
 
-//See this in unittest1helper.c also!
+//Set this in unittest1helper.c also!
 #define MAX_FAILS 400
 
 int main (int argc, char** argv) {
 	struct gameState G;
 
 	//Structure array to note each failure
-	failedTest failures[501];
+	failedTest failures[MAX_FAILS];
 	int failedTestCount = 0;
 
 	//Kingdom card types for test game

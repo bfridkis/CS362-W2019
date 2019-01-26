@@ -1,0 +1,5 @@
+#!/bin/bash
+
+line=$(gcov dominion.c --function-summaries | grep -n buyCard | cut -f1 -d:)
+((line++))
+gcov dominion.c --function-summaries | head -n$(echo $line) | tail -n2 >> unittestresults.out

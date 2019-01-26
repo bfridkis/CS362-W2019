@@ -3,11 +3,14 @@ CFLAGS= -Wall -Wfatal-errors -fpic -coverage -lm -std=c99
 rngs.o: rngs.h rngs.c
 	gcc -c rngs.c -g  $(CFLAGS)
 	
-cardEffects.o: cardEffects.h cardEffects.c
+cardEffects.o: cardEffects.h cardEffects.c dominion.h
 	gcc -c cardEffects.c -g  $(CFLAGS)	
 
 dominion.o: dominion.h dominion.c rngs.o cardEffects.o
 	gcc -c dominion.c -g  $(CFLAGS)
+	
+_unittest1helper.o: _unittest1helper.c _unittest1helper.h dominion.o
+	gcc -c _unittest1helper.c -g  $(CFLAGS)
 	
 playdom: dominion.o playdom.c
 	gcc -o playdom playdom.c -g dominion.o cardEffects.o rngs.o $(CFLAGS)
@@ -21,8 +24,18 @@ badTestDrawCard: badTestDrawCard.c dominion.o cardEffects.o rngs.o
 testBuyCard: testDrawCard.c dominion.o cardEffects.o rngs.o
 	gcc -o testDrawCard -g  testDrawCard.c dominion.o cardEffects.o rngs.o $(CFLAGS)
 
+unittest1: unittest1.c _unittest1helper.o dominion.o cardEffects.o rngs.o
+	gcc -o unittest1 unittest1.c -g dominion.o cardEffects.o _unittest1helper.o rngs.o $(CFLAGS)
+	
 testAll: dominion.o testSuite.c 
 	gcc -o testSuite testSuite.c -g  dominion.o cardEffects.o rngs.o $(CFLAGS)
+	
+unittestresults: unittest1
+	echo "Result for running unittest1 (buyCard function test):" > unittestresults.out
+	echo "unittest1.c:" >> unittestresults.out
+	./unittest1 >> unittestresults.out
+	@chmod +x unittest1makehelper1
+	@./unittest1makehelper1
 
 interface.o: interface.h interface.c
 	gcc -c interface.c -g  $(CFLAGS)
@@ -40,3 +53,8 @@ all: playdom player
 
 clean:
 	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe
+	
+# References
+# https://stackoverflow.com/questions/3824500/compiling-c-on-remote-linux-machine-clock-skew-detected-warning
+# https://stackoverflow.com/questions/10520623/how-to-split-one-string-into-multiple-variables-in-bash-shell
+# https://stackoverflow.com/questions/4678967/makefile-command-substitution-problem/4679166#4679166

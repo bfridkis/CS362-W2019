@@ -28,13 +28,8 @@ typedef struct failedTest failedTest;
 struct unittest2helper2struct {
 	int rv;
 	int expectedRV;
-	struct gameState* G;
 	int expectedPile;
 	int expectedIdx;
-	int cardValue; 
-	int* k;
-	failedTest failures;
-	int* failCt;
 };
 
 typedef struct unittest2helper2struct unittest2helper2struct;

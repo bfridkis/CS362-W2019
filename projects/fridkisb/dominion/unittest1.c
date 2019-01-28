@@ -16,6 +16,8 @@
 
 #include "_unittest1helper.h"
 
+//This max is only for documenting failure specifics.
+//i.e. Failures in excess of this number are still counted, but not documented.
 //Set this in unittest1helper.c also!
 #define MAX_FAILS 400
 

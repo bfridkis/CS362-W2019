@@ -49,7 +49,7 @@ int main (int argc, char** argv) {
 		printf("\n**All tests for sufficient coins and sufficient buys passed!**\n");
 	}
 	
-	printf("\n\nFAILED TESTS AFTER T1: %d\n", failedTestCount);
+	printf("\n\nTOTAL FAILED TESTS AFTER T1: %d\n", failedTestCount);
 	
 	
 	//Re-initializes game for test case 2
@@ -66,7 +66,7 @@ int main (int argc, char** argv) {
 		printf("\n**All tests for insufficient coins and sufficient buys passed!**\n");
 	}
 	
-	printf("\n\nFAILED TESTS AFTER T2: %d\n", failedTestCount);
+	printf("\n\nTOTAL FAILED TESTS AFTER T2: %d\n", failedTestCount);
 	
 	//Re-initializes game for test case 3
 	initializeGame(2, k, 5000, &G);
@@ -82,7 +82,7 @@ int main (int argc, char** argv) {
 		printf("\n**All tests for sufficient coins and insufficient buys passed!**\n");
 	}
 	
-	printf("\n\nFAILED TESTS AFTER T3: %d\n", failedTestCount);
+	printf("\n\nTOTAL FAILED TESTS AFTER T3: %d\n", failedTestCount);
 	
 	//Print summary of all failed tests (max 500)
 	if(failedTestCount == 0){

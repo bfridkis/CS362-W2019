@@ -17,8 +17,9 @@
  
  #include "_unittest1helper.h"
  
-#define BUYCARDCALL1 37
-#define BUYCARDCALL2 157
+#define BUYCARDCALL1 58
+#define BUYCARDCALL2 211
+#define NUM_PLAYERS 2
 
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
@@ -29,16 +30,23 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 	failedTest failures[], int* failedTestCount){
 	 
 	//Test value variables	   
-	int i, j, returnValue, failCtT1 = 0, failCtT2 = 0, failCtT3 = 0;
+	int i, j, m, n, returnValue, failCtT1 = 0, failCtT2 = 0, failCtT3 = 0;
 	
 	//These next two lines are just in case initializeGame 
 	//(in unittest1.c) is not functioning properly
 	G->whoseTurn = 0; 
 	G->numBuys = 1;
 	
+	//Set entire discard, deck, and hand piles for player 0 and 1 
+	//to -1, so it can be checked for erroneous changes
+	memset(G->discard[0], -1, sizeof(int) * MAX_DECK);
+	memset(G->discard[1], -1, sizeof(int) * MAX_DECK);
+	memset(G->deck[0], -1, sizeof(int) * MAX_DECK);
+	memset(G->deck[1], -1, sizeof(int) * MAX_DECK);
+	memset(G->hand[0], -1, sizeof(int) * MAX_HAND);
+	memset(G->hand[1], -1, sizeof(int) * MAX_HAND);
+	
 	for(i = 0; i < 10; i++){
-		
-		G->discardCount[0] = 0;
 		
 		if(testCase == 1){
 			//Test case 1 tests all buyCard functionality under normal 
@@ -74,24 +82,24 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 				}
 				
 				//Check to make sure purchased card is placed onto discard pile
-				if(G->discard[0][j-1] != k[i]){
+				if(G->discard[0][j - 1 + (i * 10)] != k[i]){
 					if(++(*failedTestCount) <= MAX_FAILS){
 						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
 						sprintf(failures[(*failedTestCount)-1].description,
-						"Purchased card not in expected discount pile location,\n"
+						"Purchased card not in expected discard pile location,\n"
 						"when buying kingdom card at idx: %d", i);
 					}
 					failCtT1++;
 				}
 				
 				//Check to make sure discardCount is updated as expected
-				if(G->discardCount[0] != j){
+				if(G->discardCount[0] != j + (i * 10)){
 					if(++(*failedTestCount) <= MAX_FAILS){
 						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"Discard (card) count not updated as expected.\n"
 						"Expected: %d ; Observed %d when buying kingdom card at idx: %d", 
-						j, G->discardCount[0], i);
+						j + (i * 10), G->discardCount[0], i);
 					}
 					failCtT1++;
 				}
@@ -186,10 +194,6 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 		}
 		
 		else{
-			
-			//Set entire discard pile for player 0 to -1, so it
-			//can be checked for erroneous changes
-			memset(G->discard[0], -1, sizeof(int) * MAX_DECK);
 			
 			//Test case 2 tests buy attempts with insufficient coins
 			//(for each kingdom card).
@@ -312,39 +316,284 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 					testCase == 2 ? failCtT2++ : failCtT3++;
 				}
 			}
-			
-			//Check to make sure the supplyCount is not changed for each kingdom card
-			for(j = 0; j < 10; j++){
-				if((j == 0 && G->supplyCount[7] != 10) ||
-				   (j == 1 && G->supplyCount[20] != 10) ||
-				   (j == 2 && G->supplyCount[22] != 10) ||
-				   (j == 3 && G->supplyCount[14] != 10) ||
-				   (j == 4 && G->supplyCount[17] != 10) ||
-				   (j == 5 && G->supplyCount[11] != 10) ||
-				   (j == 6 && G->supplyCount[21] != 10) ||
-				   (j == 7 && G->supplyCount[25] != 10) ||
-				   (j == 8 && G->supplyCount[19] != 10) ||
-				   (j == 9 && G->supplyCount[13] != 10)){
-						if(++(*failedTestCount) <= MAX_FAILS){
-							failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
-							sprintf(failures[(*failedTestCount)-1].description,
-							"Supply pile count erroneously changed.\n"
-							"Pile %d Expected : 10 ; Observed %d when buying kingdom card at idx: %d",
-							j, G->supplyCount[k[j]], i);
-						}
-						testCase == 2 ? failCtT2++ : failCtT3++;
-						break;
-				}
+		}	
+	}
+	
+	if(testCase == 1){
+		//Check to make sure the supplyCount is changed only as expected
+		//for each supply card
+		for(j = 0; j < 27; j++){
+			if((j == 0 && G->supplyCount[adventurer] != 0) ||
+			   (j == 1 && G->supplyCount[ambassador] != 0) ||
+			   (j == 2 && G->supplyCount[embargo] != 0) ||
+			   (j == 3 && G->supplyCount[village] != 0) ||
+			   (j == 4 && G->supplyCount[minion] != 0) ||
+			   (j == 5 && G->supplyCount[mine] != 0) ||
+			   (j == 6 && G->supplyCount[cutpurse] != 0) ||
+			   (j == 7 && G->supplyCount[sea_hag] != 0) ||
+			   (j == 8 && G->supplyCount[tribute] != 0) ||
+			   (j == 9 && G->supplyCount[smithy] != 0) ||
+			   (j == 10 && G->supplyCount[curse] != 10) ||
+			   (j == 11 && G->supplyCount[copper] != 60 - 
+					(7 * NUM_PLAYERS)) ||
+			   (j == 12 && G->supplyCount[silver] != 40) ||
+			   (j == 13 && G->supplyCount[gold] != 30) ||
+			   (j == 14 && G->supplyCount[estate] != 8) ||
+			   (j == 15 && G->supplyCount[duchy] != 8) ||
+			   (j == 16 && G->supplyCount[province] != 8) ||
+			   (j == 17 && G->supplyCount[council_room] != -1) ||
+			   (j == 18 && G->supplyCount[feast] != -1) ||
+			   (j == 19 && G->supplyCount[gardens] != -1) ||
+			   (j == 20 && G->supplyCount[remodel] != -1) ||
+			   (j == 21 && G->supplyCount[baron] != -1) ||
+			   (j == 22 && G->supplyCount[great_hall] != -1) ||
+			   (j == 23 && G->supplyCount[steward] != -1) ||
+			   (j == 24 && G->supplyCount[outpost] != -1) ||
+			   (j == 25 && G->supplyCount[salvager] != -1) ||
+			   (j == 26 && G->supplyCount[treasure_map] != -1)){
+					if(++(*failedTestCount) <= MAX_FAILS){
+						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+						sprintf(failures[(*failedTestCount)-1].description,
+						"Supply pile count erroneously changed.\n"
+						"Check supply pile at idx: %d", j);
+					}
+					failCtT1++;
+					break;
 			}
 		}
-	}
-	if(testCase == 1){
+		
+		//Final checks of player 0's discard, hand, and deck states...
+
+		//Check to make sure the discard pile state 
+		//(for player 0) is as expected
+		for(m = 0, n = 0; m < MAX_DECK; m++){
+			if((m <= 99 && G->discard[0][m] != k[n]) ||
+			   (m > 99 && G->discard[0][m] != -1)){
+				if(++(*failedTestCount) <= MAX_FAILS){
+					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+					sprintf(failures[(*failedTestCount)-1].description,
+					"Discard pile state for player 0 incorrect.\n"
+					"Check discard pile idx %d", m);
+				}
+				failCtT1++;
+				break;
+			}
+			if(m > 8 && (m + 1) % 10 == 0){
+				n++;
+			}
+		}
+		
+		//Check to make sure the deck pile state 
+		//(for player 0) is as expected
+		for(m = 0; m < MAX_DECK; m++){
+			if(G->deck[0][m] != -1){
+				if(++(*failedTestCount) <= MAX_FAILS){
+					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+					sprintf(failures[(*failedTestCount)-1].description,
+					"Deck state for player 0 incorrect.\n"
+					"Check deck idx %d", m);
+				}
+				failCtT1++;
+				break;
+			}
+		}
+		//Check to make sure the hand pile state 
+		//(for player 0) is as expected
+		for(m = 0; m < MAX_HAND; m++){
+			if(G->hand[0][m] != -1){
+				if(++(*failedTestCount) <= MAX_FAILS){
+					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+					sprintf(failures[(*failedTestCount)-1].description,
+					"Hand state for player 0 incorrect.\n"
+					"Check hand idx %d", m);
+				}
+				failCtT1++;
+				break;
+			}
+		}
+		
+		//Make sure other player's (player 1's) discard, deck, and hand
+		//states have not changed
+		
+		//Check player 1's discard...
+		for(m = 0; m < MAX_DECK; m++){
+			if(G->discard[1][i] != -1){
+				if(++(*failedTestCount) <= MAX_FAILS){
+					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+					sprintf(failures[(*failedTestCount)-1].description,
+					"Discard pile state for player 1 incorrect.\n"
+					"Check discard pile idx %d", m);
+				}
+				failCtT1++;
+				break;
+			}
+		}
+		
+		//Check player 1's deck...
+		for(m = 0; m < MAX_DECK; m++){
+			if(G->deck[1][m] != -1){
+				if(++(*failedTestCount) <= MAX_FAILS){
+					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+					sprintf(failures[(*failedTestCount)-1].description,
+					"Deck state for player 1 incorrect.\n"
+					"Check deck idx %d", m);
+				}
+				failCtT1++;
+				break;
+			}
+		}
+		
+		//Check player 1's hand...
+		for(m = 0; m < MAX_HAND; m++){
+			if(G->hand[1][m] != -1){
+				if(++(*failedTestCount) <= MAX_FAILS){
+					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+					sprintf(failures[(*failedTestCount)-1].description,
+					"Hand state for player 1 incorrect.\n"
+					"Check hand idx %d", m);
+				}
+				failCtT1++;
+				break;
+			}
+		}
 		return failCtT1;
 	}
-	else if(testCase == 2){
-		return failCtT2;
-	}
 	else{
-		return failCtT3;
+		//Check to make sure the supplyCount is not changed for each supply card
+		for(j = 0; j < 27; j++){
+			if((j == 0 && G->supplyCount[adventurer] != 10) ||
+			   (j == 1 && G->supplyCount[ambassador] != 10) ||
+			   (j == 2 && G->supplyCount[embargo] != 10) ||
+			   (j == 3 && G->supplyCount[village] != 10) ||
+			   (j == 4 && G->supplyCount[minion] != 10) ||
+			   (j == 5 && G->supplyCount[mine] != 10) ||
+			   (j == 6 && G->supplyCount[cutpurse] != 10) ||
+			   (j == 7 && G->supplyCount[sea_hag] != 10) ||
+			   (j == 8 && G->supplyCount[tribute] != 10) ||
+			   (j == 9 && G->supplyCount[smithy] != 10) ||
+			   (j == 10 && G->supplyCount[curse] != 10) ||
+			   (j == 11 && G->supplyCount[copper] != 60 - 
+					(7 * NUM_PLAYERS)) ||
+			   (j == 12 && G->supplyCount[silver] != 40) ||
+			   (j == 13 && G->supplyCount[gold] != 30) ||
+			   (j == 14 && G->supplyCount[estate] != 8) ||
+			   (j == 15 && G->supplyCount[duchy] != 8) ||
+			   (j == 16 && G->supplyCount[province] != 8) ||
+			   (j == 17 && G->supplyCount[council_room] != -1) ||
+			   (j == 18 && G->supplyCount[feast] != -1) ||
+			   (j == 19 && G->supplyCount[gardens] != -1) ||
+			   (j == 20 && G->supplyCount[remodel] != -1) ||
+			   (j == 21 && G->supplyCount[baron] != -1) ||
+			   (j == 22 && G->supplyCount[great_hall] != -1) ||
+			   (j == 23 && G->supplyCount[steward] != -1) ||
+			   (j == 24 && G->supplyCount[outpost] != -1) ||
+			   (j == 25 && G->supplyCount[salvager] != -1) ||
+			   (j == 26 && G->supplyCount[treasure_map] != -1)){
+					if(++(*failedTestCount) <= MAX_FAILS){
+						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+						sprintf(failures[(*failedTestCount)-1].description,
+						"Supply pile count erroneously changed.\n"
+						"Check supply pile at idx: %d", j);
+					}
+					testCase == 2 ? failCtT2++ : failCtT3++;
+					break;
+			}
+		}
+		
+		//Final checks of player 0's discard, hand, and deck states...
+		
+		//Check to make sure the discard pile state 
+		//(for player 0) is as expected
+		for(m = 0; m < MAX_DECK; m++){
+			if(G->discard[0][m] != -1){
+				if(++(*failedTestCount) <= MAX_FAILS){
+					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+					sprintf(failures[(*failedTestCount)-1].description,
+					"Discard pile state for player 0 incorrect.\n"
+					"Check discard pile idx %d", m);
+				}
+				testCase == 2 ? failCtT2++ : failCtT3++;
+				break;
+			}
+		}
+		//Check to make sure the deck pile state 
+		//(for player 0) is as expected
+		for(m = 0; m < MAX_DECK; m++){
+			if(G->deck[0][m] != -1){
+				if(++(*failedTestCount) <= MAX_FAILS){
+					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+					sprintf(failures[(*failedTestCount)-1].description,
+					"Deck state for player 0 incorrect.\n"
+					"Check deck idx %d", m);
+				}
+				testCase == 2 ? failCtT2++ : failCtT3++;
+				break;
+			}
+		}
+		//Check to make sure the hand pile state 
+		//(for player 0) is as expected
+		for(m = 0; m < MAX_HAND; m++){
+			if(G->hand[0][m] != -1){
+				if(++(*failedTestCount) <= MAX_FAILS){
+					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+					sprintf(failures[(*failedTestCount)-1].description,
+					"Hand state for player 0 incorrect.\n"
+					"Check hand idx %d", m);
+				}
+				testCase == 2 ? failCtT2++ : failCtT3++;
+				break;
+			}
+		}
+		
+		//Make sure other player's (player 1's) discard, deck, and hand
+		//states have not changed
+		
+		//Check player 1's discard...
+		for(m = 0; m < MAX_DECK; m++){
+			if(G->discard[1][m] != -1){
+				if(++(*failedTestCount) <= MAX_FAILS){
+					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+					sprintf(failures[(*failedTestCount)-1].description,
+					"Discard pile state for player 1 incorrect.\n"
+					"Check discard pile idx %d", m);
+				}
+				testCase == 2 ? failCtT2++ : failCtT3++;
+				break;
+			}
+		}
+		
+		//Check player 1's deck...
+		for(m = 0; m < MAX_DECK; m++){
+			if(G->deck[1][m] != -1){
+				if(++(*failedTestCount) <= MAX_FAILS){
+					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+					sprintf(failures[(*failedTestCount)-1].description,
+					"Deck state for player 1 incorrect.\n"
+					"Check deck idx %d", m);
+				}
+				testCase == 2 ? failCtT2++ : failCtT3++;
+				break;
+			}
+		}
+		
+		//Check player 1's hand...
+		for(m = 0; m < MAX_HAND; m++){
+			if(G->hand[1][m] != -1){
+				if(++(*failedTestCount) <= MAX_FAILS){
+					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+					sprintf(failures[(*failedTestCount)-1].description,
+					"Hand state for player 1 incorrect.\n"
+					"Check hand idx %d", m);
+				}
+				testCase == 2 ? failCtT2++ : failCtT3++;
+				break;
+			}
+		}
+		if(testCase == 2){
+			return failCtT2;
+		}
+		else{
+			return failCtT3;
+		}
 	}
  }

@@ -19,7 +19,7 @@
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
 //Set this in unittest1helper.c also!
-#define MAX_FAILS 400
+#define MAX_FAILS 500
 
 int main (int argc, char** argv) {
 	struct gameState G;
@@ -91,7 +91,7 @@ int main (int argc, char** argv) {
 				   "*****************************\n\n");
 	}
 	else{
-		if(failedTestCount < 501){
+		if(failedTestCount < MAX_FAILS + 1){
 			printf("\n\n\t%d tests failed, as follows:\n\n", failedTestCount);
 		}
 		else{

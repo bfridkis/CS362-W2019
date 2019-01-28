@@ -34,9 +34,9 @@ struct unittest2helper2struct {
 
 typedef struct unittest2helper2struct unittest2helper2struct;
 
-int _unittest2helper(int testCase, int k[], struct gameState* G,
-	failedTest failures[], int* failedTestCount);
+int _unittest2helper(int k[], struct gameState* G, failedTest failures[]);
 	
-void _unittest2helper2(unittest2helper2struct ut2h2s);
+void _unittest2helper2(unittest2helper2struct ut2h2s, failedTest failures[],
+	int* failCt, struct gameState* G, int k[]);
 
 #endif

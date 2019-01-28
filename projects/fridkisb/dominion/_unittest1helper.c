@@ -17,14 +17,12 @@
  
  #include "_unittest1helper.h"
  
-#define BUYCARDCALL1 58
-#define BUYCARDCALL2 211
 #define NUM_PLAYERS 2
 
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
 //Set this in unittest1.c also!
-#define MAX_FAILS 400
+#define MAX_FAILS 500
  
 int _unittest1helper(int testCase, int k[], struct gameState* G,
 	failedTest failures[], int* failedTestCount){
@@ -60,7 +58,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 				//Check to make sure G->whoseTurn has not been changed
 				if(G->whoseTurn != 0){
 				  if(++(*failedTestCount) <= MAX_FAILS){
-					  failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+					  failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					  sprintf(failures[(*failedTestCount)-1].description,
 						"whoseTurn unexpectedly changed.\n"
 						"Expected: 0 ; Observed %d when buying kingdom card at idx: %d", 
@@ -72,7 +70,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 				//Check to make sure return value is as expected (0)
 				if(returnValue != 0){
 					if(++(*failedTestCount) <= MAX_FAILS){
-					  failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+					  failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					  sprintf(failures[(*failedTestCount)-1].description,
 						"Return value not as expected.\n"
 						"Expected: 0 ; Observed %d when buying kingdom card at idx: %d",
@@ -84,7 +82,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 				//Check to make sure purchased card is placed onto discard pile
 				if(G->discard[0][j - 1 + (i * 10)] != k[i]){
 					if(++(*failedTestCount) <= MAX_FAILS){
-						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+						failures[(*failedTestCount)-1].lineNumber = __LINE__;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"Purchased card not in expected discard pile location,\n"
 						"when buying kingdom card at idx: %d", i);
@@ -95,7 +93,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 				//Check to make sure discardCount is updated as expected
 				if(G->discardCount[0] != j + (i * 10)){
 					if(++(*failedTestCount) <= MAX_FAILS){
-						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+						failures[(*failedTestCount)-1].lineNumber = __LINE__;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"Discard (card) count not updated as expected.\n"
 						"Expected: %d ; Observed %d when buying kingdom card at idx: %d", 
@@ -110,7 +108,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 				//For cards costing 6 coins (adventurer)...
 				if(i == 0 && G->coins != 0){
 					if(++(*failedTestCount) <= MAX_FAILS){
-						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+						failures[(*failedTestCount)-1].lineNumber = __LINE__;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"Coin value not updated as expected.\n"
 						"Expected: 0; Observed %d when buying kingdom card at idx: %d", 
@@ -122,7 +120,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 				//For cards costing 5 coins (minion, mine, & tribute)...
 				else if((i == 4 || i == 5 || i == 8) && G->coins != 1){
 					if(++(*failedTestCount) <= MAX_FAILS){
-						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+						failures[(*failedTestCount)-1].lineNumber = __LINE__;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"Coin value not updated as expected.\n"
 						"Expected: 1; Observed %d when buying kingdom card at idx: %d", 
@@ -134,7 +132,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 				//For cards costing 4 coins (cutpurse, sea hag, & smithy)...
 				else if((i == 6 || i == 7 || i == 9) && G->coins != 2){
 					if(++(*failedTestCount) <= MAX_FAILS){
-						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+						failures[(*failedTestCount)-1].lineNumber = __LINE__;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"Coin value not updated as expected.\n"
 						"Expected: 2; Observed %d when buying kingdom card at idx: %d", 
@@ -146,7 +144,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 				//For cards costing 3 coins (ambassador & village)...
 				else if((i == 1 || i == 3) && G->coins != 3){
 					if(++(*failedTestCount) <= MAX_FAILS){
-						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+						failures[(*failedTestCount)-1].lineNumber = __LINE__;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"Coin value not updated as expected.\n"
 						"Expected: 3; Observed %d when buying kingdom card at idx: %d",
@@ -158,7 +156,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 				//For cards costing 2 coins (embargo)...
 				else if(i == 2 && G->coins != 4){
 					if(++(*failedTestCount) <= MAX_FAILS){
-						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+						failures[(*failedTestCount)-1].lineNumber = __LINE__;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"Coin value not updated as expected.\n"
 						"Expected: 4; Observed %d when buying kingdom card at idx: %d", 
@@ -170,7 +168,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 				//Check to make sure numBuys is updated correctly
 				if(G->numBuys != 0){
 					if(++(*failedTestCount) <= MAX_FAILS){
-						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+						failures[(*failedTestCount)-1].lineNumber = __LINE__;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"numBuys not updated as expected.\n"
 						"Expected: 0; Observed %d when buying kingdom card at idx: %d", 
@@ -182,7 +180,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 				//Check to make sure the supplyCount is updated correctly
 				if(G->supplyCount[k[i]] != 10 - j){
 					if(++(*failedTestCount) <= MAX_FAILS){
-						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+						failures[(*failedTestCount)-1].lineNumber = __LINE__;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"Supply pile count not updated as expected.\n"
 						"Expected: %d; Observed %d when buying kingdom card at idx: %d",
@@ -213,7 +211,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 			//Check to make sure G->whoseTurn has not been changed
 			if(G->whoseTurn != 0){
 				if(++(*failedTestCount) <= MAX_FAILS){
-					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+					failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					sprintf(failures[(*failedTestCount)-1].description,
 					"whoseTurn unexpectedly changed.\n"
 					"Expected: 0 ; Observed %d when buying kingdom card at idx: %d", 
@@ -225,7 +223,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 			//Check to make sure return value is as expected (-1)
 			if(returnValue != -1){
 				if(++(*failedTestCount) <= MAX_FAILS){
-					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+					failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					sprintf(failures[(*failedTestCount)-1].description,
 					"Return value not as expected.\n"
 					"Expected: 0 ; Observed %d when buying kingdom card at idx: %d", 
@@ -238,7 +236,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 			for(j = 0; j < MAX_DECK; j++){
 				if(G->discard[0][j] != -1){
 					if(++(*failedTestCount) <= MAX_FAILS){
-						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+						failures[(*failedTestCount)-1].lineNumber = __LINE__;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"Card erroneously added to discard pile at position %d,\n"
 						"\tdespite insufficient coins when buying kingdom card at idx: %d",
@@ -252,7 +250,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 			//Check to make sure discardCount is not changed
 			if(G->discardCount[0] != 0){
 				if(++(*failedTestCount) <= MAX_FAILS){
-					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+					failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					sprintf(failures[(*failedTestCount)-1].description,
 					"Discard count erroneously changed.\n"
 					"Should remain 0 when coins are insufficient for purchase.\n"
@@ -266,7 +264,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 				//Check to make sure coin count is not changed
 				if(G->coins != 0){
 					if(++(*failedTestCount) <= MAX_FAILS){
-						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+						failures[(*failedTestCount)-1].lineNumber = __LINE__;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"Coin value erroneously changed.\n"
 						"Should remain 0 when coins are insufficient for purchase.\n"
@@ -279,7 +277,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 				//Check to make sure numBuys is not changed
 				if(G->numBuys != 1){
 					if(++(*failedTestCount) <= MAX_FAILS){
-						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+						failures[(*failedTestCount)-1].lineNumber = __LINE__;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"numBuys erroneously changed.\n"
 						"Should remain 0 when coins are insufficient for purchase.\n"
@@ -293,7 +291,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 				//Check to make sure coin count is not changed
 				if(G->coins != 6){
 					if(++(*failedTestCount) <= MAX_FAILS){
-						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+						failures[(*failedTestCount)-1].lineNumber = __LINE__;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"Coin value erroneously changed.\n"
 						"Should remain 6 when numBuys = 0.\n"
@@ -306,7 +304,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 				//Check to make sure numBuys is not changed
 				if(G->numBuys != 0){
 					if(++(*failedTestCount) <= MAX_FAILS){
-						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+						failures[(*failedTestCount)-1].lineNumber = __LINE__;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"numBuys erroneously changed.\n"
 						"Should remain 0 when numBuys = 0.\n"
@@ -352,7 +350,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 			   (j == 25 && G->supplyCount[salvager] != -1) ||
 			   (j == 26 && G->supplyCount[treasure_map] != -1)){
 					if(++(*failedTestCount) <= MAX_FAILS){
-						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+						failures[(*failedTestCount)-1].lineNumber = __LINE__;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"Supply pile count erroneously changed.\n"
 						"Check supply pile at idx: %d", j);
@@ -370,7 +368,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 			if((m <= 99 && G->discard[0][m] != k[n]) ||
 			   (m > 99 && G->discard[0][m] != -1)){
 				if(++(*failedTestCount) <= MAX_FAILS){
-					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+					failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					sprintf(failures[(*failedTestCount)-1].description,
 					"Discard pile state for player 0 incorrect.\n"
 					"Check discard pile idx %d", m);
@@ -388,7 +386,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 		for(m = 0; m < MAX_DECK; m++){
 			if(G->deck[0][m] != -1){
 				if(++(*failedTestCount) <= MAX_FAILS){
-					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+					failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					sprintf(failures[(*failedTestCount)-1].description,
 					"Deck state for player 0 incorrect.\n"
 					"Check deck idx %d", m);
@@ -402,7 +400,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 		for(m = 0; m < MAX_HAND; m++){
 			if(G->hand[0][m] != -1){
 				if(++(*failedTestCount) <= MAX_FAILS){
-					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+					failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					sprintf(failures[(*failedTestCount)-1].description,
 					"Hand state for player 0 incorrect.\n"
 					"Check hand idx %d", m);
@@ -419,7 +417,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 		for(m = 0; m < MAX_DECK; m++){
 			if(G->discard[1][i] != -1){
 				if(++(*failedTestCount) <= MAX_FAILS){
-					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+					failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					sprintf(failures[(*failedTestCount)-1].description,
 					"Discard pile state for player 1 incorrect.\n"
 					"Check discard pile idx %d", m);
@@ -433,7 +431,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 		for(m = 0; m < MAX_DECK; m++){
 			if(G->deck[1][m] != -1){
 				if(++(*failedTestCount) <= MAX_FAILS){
-					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+					failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					sprintf(failures[(*failedTestCount)-1].description,
 					"Deck state for player 1 incorrect.\n"
 					"Check deck idx %d", m);
@@ -447,7 +445,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 		for(m = 0; m < MAX_HAND; m++){
 			if(G->hand[1][m] != -1){
 				if(++(*failedTestCount) <= MAX_FAILS){
-					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL1;
+					failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					sprintf(failures[(*failedTestCount)-1].description,
 					"Hand state for player 1 incorrect.\n"
 					"Check hand idx %d", m);
@@ -490,7 +488,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 			   (j == 25 && G->supplyCount[salvager] != -1) ||
 			   (j == 26 && G->supplyCount[treasure_map] != -1)){
 					if(++(*failedTestCount) <= MAX_FAILS){
-						failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+						failures[(*failedTestCount)-1].lineNumber = __LINE__;
 						sprintf(failures[(*failedTestCount)-1].description,
 						"Supply pile count erroneously changed.\n"
 						"Check supply pile at idx: %d", j);
@@ -507,7 +505,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 		for(m = 0; m < MAX_DECK; m++){
 			if(G->discard[0][m] != -1){
 				if(++(*failedTestCount) <= MAX_FAILS){
-					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+					failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					sprintf(failures[(*failedTestCount)-1].description,
 					"Discard pile state for player 0 incorrect.\n"
 					"Check discard pile idx %d", m);
@@ -521,7 +519,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 		for(m = 0; m < MAX_DECK; m++){
 			if(G->deck[0][m] != -1){
 				if(++(*failedTestCount) <= MAX_FAILS){
-					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+					failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					sprintf(failures[(*failedTestCount)-1].description,
 					"Deck state for player 0 incorrect.\n"
 					"Check deck idx %d", m);
@@ -535,7 +533,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 		for(m = 0; m < MAX_HAND; m++){
 			if(G->hand[0][m] != -1){
 				if(++(*failedTestCount) <= MAX_FAILS){
-					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+					failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					sprintf(failures[(*failedTestCount)-1].description,
 					"Hand state for player 0 incorrect.\n"
 					"Check hand idx %d", m);
@@ -552,7 +550,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 		for(m = 0; m < MAX_DECK; m++){
 			if(G->discard[1][m] != -1){
 				if(++(*failedTestCount) <= MAX_FAILS){
-					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+					failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					sprintf(failures[(*failedTestCount)-1].description,
 					"Discard pile state for player 1 incorrect.\n"
 					"Check discard pile idx %d", m);
@@ -566,7 +564,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 		for(m = 0; m < MAX_DECK; m++){
 			if(G->deck[1][m] != -1){
 				if(++(*failedTestCount) <= MAX_FAILS){
-					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+					failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					sprintf(failures[(*failedTestCount)-1].description,
 					"Deck state for player 1 incorrect.\n"
 					"Check deck idx %d", m);
@@ -580,7 +578,7 @@ int _unittest1helper(int testCase, int k[], struct gameState* G,
 		for(m = 0; m < MAX_HAND; m++){
 			if(G->hand[1][m] != -1){
 				if(++(*failedTestCount) <= MAX_FAILS){
-					failures[(*failedTestCount)-1].lineNumber = BUYCARDCALL2;
+					failures[(*failedTestCount)-1].lineNumber = __LINE__;
 					sprintf(failures[(*failedTestCount)-1].description,
 					"Hand state for player 1 incorrect.\n"
 					"Check hand idx %d", m);

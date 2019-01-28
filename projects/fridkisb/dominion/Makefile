@@ -12,6 +12,9 @@ dominion.o: dominion.h dominion.c rngs.o cardEffects.o
 _unittest1helper.o: _unittest1helper.c _unittest1helper.h dominion.o
 	gcc -c _unittest1helper.c -g  $(CFLAGS)
 	
+_unittest2helper.o: _unittest2helper.c _unittest2helper.h dominion.o
+	gcc -c _unittest2helper.c -g  $(CFLAGS)
+	
 playdom: dominion.o playdom.c
 	gcc -o playdom playdom.c -g dominion.o cardEffects.o rngs.o $(CFLAGS)
 #To run playdom you need to entere: ./playdom <any integer number> like ./playdom 10*/
@@ -27,15 +30,15 @@ testBuyCard: testDrawCard.c dominion.o cardEffects.o rngs.o
 unittest1: unittest1.c _unittest1helper.o dominion.o cardEffects.o rngs.o
 	gcc -o unittest1 unittest1.c -g dominion.o cardEffects.o _unittest1helper.o rngs.o $(CFLAGS)
 	
+unittest2: unittest2.c _unittest2helper.o dominion.o cardEffects.o rngs.o
+	gcc -o unittest2 unittest2.c -g dominion.o cardEffects.o _unittest2helper.o rngs.o $(CFLAGS)	
+	
 testAll: dominion.o testSuite.c 
 	gcc -o testSuite testSuite.c -g  dominion.o cardEffects.o rngs.o $(CFLAGS)
 	
-unittestresults: unittest1
-	echo "Result for running unittest1 (buyCard function test):" > unittestresults.out
-	echo "unittest1.c:" >> unittestresults.out
-	./unittest1 >> unittestresults.out
-	@chmod +x unittest1makehelper1
-	@./unittest1makehelper1
+unittestresults: unittest1 unittest2
+	@chmod +x unittestmakehelper
+	@./unittestmakehelper
 
 interface.o: interface.h interface.c
 	gcc -c interface.c -g  $(CFLAGS)

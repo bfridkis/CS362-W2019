@@ -135,7 +135,7 @@ int main (int argc, char** argv) {
 			"\tranges have low incidence. (In other words, a relatively low incidence for the\n"
 			"\tlow variance ranges may not necessarily indicate an issue with shuffle.)\n\n"
 			"\t(Max number of tests in this breakdown is NUM_SHUFFLES + 1, as the MAX_DECK\n"
-			"\tdeck size shuffle test is included but the empty deck shuffle test is not\n\n");
+			"\t deck size shuffle test is included but the empty deck shuffle test is not.)\n\n");
 
 	return 0;
 }

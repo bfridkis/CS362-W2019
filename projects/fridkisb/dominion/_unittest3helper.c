@@ -29,9 +29,11 @@
 int _unittest3helper(int k[], struct gameState* G, failedTest failures[], 
 	int* failCt, unittest3stats* ut3s, int isEmptyDeckTest, int isMaxDeckTest){
 	 
-	//Ensure deck and deckCount are cleared for player 0
+	//Ensure deck and deckCount are cleared for players 0 and 1
 	memset(G->deck[0], -1, sizeof(int) * MAX_DECK);
 	G->deckCount[0] = 0;
+	memset(G->deck[1], -1, sizeof(int) * MAX_DECK);
+	G->deckCount[1] = 0;
 	
 	//Test value variables	   
 	int i, j, rv, minNumExchanges = 0, deckSize;
@@ -187,6 +189,22 @@ int _unittest3helper(int k[], struct gameState* G, failedTest failures[],
 	else{
 		ut3s->_51PlusPercentDev++;
 	}
+	
+	//Make sure player 1's deckCount and deck cards are unchanged
+	if(G->deckCount[1] != 0 && ++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Player one's deckCount changed after shuffle");
+	}
+	for(i = 0; i < MAX_DECK; i++){
+		if(G->deck[1][i] != -1 && ++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Player one's deck changed after shuffle");
+			break;
+		}
+	}
+	
 	return 0;
 }
 	

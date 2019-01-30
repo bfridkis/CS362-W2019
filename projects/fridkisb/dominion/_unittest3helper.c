@@ -51,34 +51,18 @@ int _unittest3helper(int k[], struct gameState* G, failedTest failures[],
 		deckSize = MAX_DECK;
 	}
 	
-	if(deckSize < 17){
-		for(i = 0, j = 0; i < deckSize; i++){
-			if(j < 7){
-				G->deck[0][i] = j++;
-			}
-			else{
-				G->deck[0][i] = k[j++ - 7];
-			}
-			if(j == 17){
-				j = 0;
-			}
+	for(i = 0, j = 0; i < deckSize; i++){
+		if(j < 7){
+			G->deck[0][i] = j++;
 		}
-		G->deckCount[0] = deckSize;
-	}
-	else{
-		for(i = 0, j = 0; i < deckSize + (deckSize % 17); i++){
-			if(j < 7){
-				G->deck[0][i] = j++;
-			}
-			else{
-				G->deck[0][i] = k[j++ - 7];
-			}
-			if(j == 17){
-				j = 0;
-			}
+		else{
+			G->deck[0][i] = k[j++ - 7];
 		}
-		G->deckCount[0] = deckSize + deckSize % 17;
+		if(j == 17){
+			j = 0;
+		}
 	}
+	G->deckCount[0] = deckSize;
 	
 	//Store deck state info prior to shuffle (for comparison after)
 	int cardCountByTypeBeforeShuffle[27] = {0}, cardCountByTypeAfterShuffle[27] = {0};

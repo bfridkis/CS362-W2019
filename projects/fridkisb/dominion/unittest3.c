@@ -35,8 +35,8 @@ int main (int argc, char** argv) {
 	
 	printf("Starting unittest3 - Testing 'shuffle' function\n");
 	
-	printf("\nExecuting %d shuffles using random deck sizes in range 2 - %d,\n"
-		   "\teach with a random set of kingdom cards...\n", NUM_SHUFFLES, MAX_DECK);
+	printf("\nExecuting %d shuffles using random deck sizes in range 2 - %d (MAX_DECK - 1),\n"
+		   "\teach with a random set of kingdom cards...\n", NUM_SHUFFLES, MAX_DECK - 1);
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
 	//This random number be used as the game's seed.
@@ -133,7 +133,9 @@ int main (int argc, char** argv) {
 			"\tthe emphasis on 'minimum' above). This is an important consideration to take\n"
 			"\tinto account when evaluating these statistics, especially when the low variance\n"
 			"\tranges have low incidence. (In other words, a relatively low incidence for the\n"
-			"\tlow variance ranges may not necessarily indicate an issue with shuffle.)\n\n");
+			"\tlow variance ranges may not necessarily indicate an issue with shuffle.)\n\n"
+			"\t(Max number of tests in this breakdown is NUM_SHUFFLES + 1, as the MAX_DECK\n"
+			"\tdeck size shuffle test is included but the empty deck shuffle test is not\n\n");
 
 	return 0;
 }

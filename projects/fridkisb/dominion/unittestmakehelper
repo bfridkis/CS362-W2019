@@ -15,6 +15,8 @@ gcov dominion.c --function-summaries | head -n$(echo $line) | tail -n2 >> unitte
 
 echo -e "\n\n" >> unittestresults.out
 
+
+
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> unittestresults.out
 echo "++                                                                  ++" >> unittestresults.out
 echo "++                           UNIT TEST 2                            ++" >> unittestresults.out
@@ -25,5 +27,22 @@ echo "Result for running unittest2 (gainCard function test):" >> unittestresults
 echo "unittest2.c:" >> unittestresults.out
 ./unittest2 >> unittestresults.out
 line=$(gcov dominion.c --function-summaries | grep -n gainCard | cut -f1 -d:)
+((line++))
+gcov dominion.c --function-summaries | head -n$(echo $line) | tail -n2 >> unittestresults.out
+
+echo -e "\n\n" >> unittestresults.out
+
+
+
+echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> unittestresults.out
+echo "++                                                                  ++" >> unittestresults.out
+echo "++                           UNIT TEST 3                            ++" >> unittestresults.out
+echo "++                                                                  ++" >> unittestresults.out
+echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> unittestresults.out
+
+echo "Result for running unittest3 (shuffle function test):" >> unittestresults.out
+echo "unittest3.c:" >> unittestresults.out
+./unittest3 >> unittestresults.out
+line=$(gcov dominion.c --function-summaries | grep -n shuffle | cut -f1 -d:)
 ((line++))
 gcov dominion.c --function-summaries | head -n$(echo $line) | tail -n2 >> unittestresults.out

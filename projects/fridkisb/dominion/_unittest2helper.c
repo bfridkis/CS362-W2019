@@ -13,7 +13,6 @@
  * _unittest2helper.o: _unittest2helper.c _unittest2helper.h dominion.o
  *		gcc -c _unittest2helper.c -g  $(CFLAGS)
  *
- * Note 1: All test 
  * ---------------------------------------------------------------------------
  */
  

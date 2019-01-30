@@ -33,10 +33,13 @@ unittest1: unittest1.c _unittest1helper.o dominion.o cardEffects.o rngs.o
 unittest2: unittest2.c _unittest2helper.o dominion.o cardEffects.o rngs.o
 	gcc -o unittest2 unittest2.c -g dominion.o cardEffects.o _unittest2helper.o rngs.o $(CFLAGS)	
 	
+unittest3: unittest3.c _unittest3helper.o dominion.o cardEffects.o rngs.o
+	gcc -o unittest3 unittest3.c -g dominion.o cardEffects.o _unittest3helper.o rngs.o $(CFLAGS)
+	
 testAll: dominion.o testSuite.c 
 	gcc -o testSuite testSuite.c -g  dominion.o cardEffects.o rngs.o $(CFLAGS)
 	
-unittestresults: unittest1 unittest2
+unittestresults: unittest1 unittest2 unittest3
 	@chmod +x unittestmakehelper
 	@./unittestmakehelper
 
@@ -55,7 +58,7 @@ player: player.c interface.o
 all: playdom player 
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe unittest1 unittest2
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe unittest1 unittest2 unittest3
 	
 # References
 # https://stackoverflow.com/questions/3824500/compiling-c-on-remote-linux-machine-clock-skew-detected-warning

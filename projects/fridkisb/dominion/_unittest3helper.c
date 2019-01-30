@@ -4,16 +4,15 @@
  *
  *               _unittest3helper.c
  *
- *		   Helper function for unittest2.c
+ *		   Helper function for unittest3.c
  *
- *			(Tests "suffle" function)
+ *	 (Tests "shuffle" function - See dominion.c line 202)
  *
  * Include the following lines in your makefile:
  *
  * _unittest3helper.o: _unittest3helper.c _unittest3helper.h dominion.o
  *		gcc -c _unittest3helper.c -g  $(CFLAGS)
  *
- * Note 1: All test 
  * ---------------------------------------------------------------------------
  */
  
@@ -39,7 +38,7 @@ int _unittest3helper(int k[], struct gameState* G, failedTest failures[],
 	int i, j, rv, minNumExchanges = 0, deckSize;
 	
 	if(!isEmptyDeckTest && !isMaxDeckTest){
-		//Determine a random deck size in range 2 to (MAX_DECK - 1), 
+		//Determine a random deck size in range 2 to MAX_DECK, 
 		//and load player 0's deck with an equal number of each card,
 		//plus an extra starting at curse for each remainder.
 		//(e.g. a 20 card deck will have 1 of each card plus 1 extra

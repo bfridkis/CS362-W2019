@@ -15,9 +15,16 @@ _unittest1helper.o: _unittest1helper.c _unittest1helper.h dominion.o
 _unittest2helper.o: _unittest2helper.c _unittest2helper.h dominion.o
 	gcc -c _unittest2helper.c -g  $(CFLAGS)
 	
+_unittest3helper.o: _unittest3helper.c _unittest3helper.h dominion.o
+	gcc -c _unittest3helper.c -g  $(CFLAGS)
+
+_unittest4helper.o: _unittest4helper.c _unittest4helper.h dominion.o
+	gcc -c _unittest4helper.c -g  $(CFLAGS)
+	
 playdom: dominion.o playdom.c
 	gcc -o playdom playdom.c -g dominion.o cardEffects.o rngs.o $(CFLAGS)
-#To run playdom you need to entere: ./playdom <any integer number> like ./playdom 10*/
+#To run playdom you need to enter: ./playdom <any integer number> like ./playdom 10*/
+
 testDrawCard: testDrawCard.c dominion.o cardEffects.o rngs.o
 	gcc  -o testDrawCard -g  testDrawCard.c dominion.o cardEffects.o rngs.o $(CFLAGS)
 
@@ -36,10 +43,13 @@ unittest2: unittest2.c _unittest2helper.o dominion.o cardEffects.o rngs.o
 unittest3: unittest3.c _unittest3helper.o dominion.o cardEffects.o rngs.o
 	gcc -o unittest3 unittest3.c -g dominion.o cardEffects.o _unittest3helper.o rngs.o $(CFLAGS)
 	
+unittest4: unittest4.c _unittest4helper.o dominion.o cardEffects.o rngs.o
+	gcc -o unittest4 unittest4.c -g dominion.o cardEffects.o _unittest4helper.o rngs.o $(CFLAGS)
+	
 testAll: dominion.o testSuite.c 
 	gcc -o testSuite testSuite.c -g  dominion.o cardEffects.o rngs.o $(CFLAGS)
 	
-unittestresults: unittest1 unittest2 unittest3
+unittestresults: unittest1 unittest2 unittest3 unittest4
 	@chmod +x unittestmakehelper
 	@./unittestmakehelper
 
@@ -58,7 +68,7 @@ player: player.c interface.o
 all: playdom player 
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe unittest1 unittest2 unittest3
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe unittest1 unittest2 unittest3 unittest4
 	
 # References
 # https://stackoverflow.com/questions/3824500/compiling-c-on-remote-linux-machine-clock-skew-detected-warning

@@ -2,11 +2,11 @@
  * Benjamin Fridkis - CS362 
  * Assignment 3
  *
- *               _unittest2helper.c
+ *                      _unittest2helper.c
  *
- *		   Helper function for unittest2.c
+ *		        Helper function for unittest2.c
  *
- *			(Tests "gainCard" function)
+ *	     (Tests "gainCard" function - See dominion.c line 1100)
  *
  * Include the following lines in your makefile:
  *

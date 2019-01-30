@@ -2,9 +2,9 @@
  * Benjamin Fridkis - CS362 
  * Assignment 3
  *
- *               unittest1.c
+ *                         unittest1.c
  *
- *	     Test for "buyCard" function.
+ *	     Test for "buyCard" function - See dominion.c line 273
  *
  * Include the following lines in your makefile:
  *

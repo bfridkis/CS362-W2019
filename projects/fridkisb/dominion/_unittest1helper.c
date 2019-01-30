@@ -2,16 +2,17 @@
  * Benjamin Fridkis - CS362 
  * Assignment 3
  *
- *       _unittest1helper.c
+ *                     _unittest1helper.c
  *
- *     Helper function for unittest1.c
+ *               Helper function for unittest1.c
  *
- *		(Tests "buyCard" function)
+ *		(Tests "buyCard" function - See dominion.c line 273)
  *
  *	Include the following lines in your make file:
  * 
  * _unittest1helper.o: _unittest1helper.c _unittest1helper.h dominion.o
  *	gcc -c _unittest1helper.c -g  $(CFLAGS)
+ *
  * ---------------------------------------------------------------------
  */
  

@@ -2,9 +2,9 @@
  * Benjamin Fridkis - CS362 
  * Assignment 3
  *
- *               unittest3.c
+ *                         unittest3.c
  *
- *	     Test for "buyCard" function.
+ *	     Test for "shuffle" function - See dominion.c line 202
  *
  * Include the following lines in your makefile:
  *
@@ -35,11 +35,12 @@ int main (int argc, char** argv) {
 	
 	printf("Starting unittest3 - Testing 'shuffle' function\n");
 	
-	printf("\nExecuting %d shuffles using random deck sizes in range 2 - %d (MAX_DECK - 1),\n"
-		   "\teach with a random set of kingdom cards...\n", NUM_SHUFFLES, MAX_DECK - 1);
+	printf("\nExecuting %d shuffles using random deck sizes in range 2 - %d (MAX_DECK),\n"
+		   "\teach with a random set of kingdom cards...\n", NUM_SHUFFLES, MAX_DECK);
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
-	//This random number be used as the game's seed.
+	//This random number will be used as the game's seed.
+	//(Use a different stream than is used by the 'initializeGame' function.)
 	SelectStream(2);
 	PutSeed(-1);
 		   

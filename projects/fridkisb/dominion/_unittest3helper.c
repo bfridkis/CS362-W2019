@@ -38,11 +38,7 @@ int _unittest3helper(int k[], struct gameState* G, failedTest failures[],
 	int i, j, rv, minNumExchanges = 0, deckSize;
 	
 	if(!isEmptyDeckTest && !isMaxDeckTest){
-		//Determine a random deck size in range 2 to MAX_DECK, 
-		//and load player 0's deck with an equal number of each card,
-		//plus an extra starting at curse for each remainder.
-		//(e.g. a 20 card deck will have 1 of each card plus 1 extra
-		//curse, estate, and duchy.)
+		//Determine a random deck size in range 2 to MAX_DECK 
 		deckSize = 2 + (Random() * (MAX_DECK - 2));
 	}
 	else if(isEmptyDeckTest){
@@ -52,6 +48,10 @@ int _unittest3helper(int k[], struct gameState* G, failedTest failures[],
 		deckSize = MAX_DECK;
 	}
 	
+	//Load player 0's deck with an equal number of each card,
+	//plus an extra starting at curse for each remainder after 
+	//final multiple of 17. (e.g. a 20 card deck will have 1 
+	//of each card plus 1 extra curse, estate, and duchy.)
 	for(i = 0, j = 0; i < deckSize; i++){
 		if(j < 7){
 			G->deck[0][i] = j++;
@@ -66,7 +66,7 @@ int _unittest3helper(int k[], struct gameState* G, failedTest failures[],
 	G->deckCount[0] = deckSize;
 	
 	//Store deck state info prior to shuffle (for comparison after)
-	int cardCountByTypeBeforeShuffle[27] = {0}, cardCountByTypeAfterShuffle[27] = {0};
+	int cardCountByTypeBeforeShuffle[27] = {0};
 	int deckCountBeforeShuffle = G->deckCount[0];
 	int deckBeforeShuffle[MAX_DECK];
 	for(i = 0; i < G->deckCount[0]; i++){
@@ -125,6 +125,7 @@ int _unittest3helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	
 	//Count card types after shuffle
+	int cardCountByTypeAfterShuffle[27] = {0};
 	for(i = 0; i < G->deckCount[0]; i++){
 		if(G->deck[0][i] < 27){
 			cardCountByTypeAfterShuffle[G->deck[0][i]]++;

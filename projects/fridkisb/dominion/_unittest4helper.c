@@ -13,7 +13,6 @@
  * _unittest4helper.o: _unittest4helper.c _unittest4helper.h dominion.o
  *		gcc -c _unittest4helper.c -g  $(CFLAGS)
  *
- * Note 1: All test 
  * ---------------------------------------------------------------------------
  */
  

@@ -21,22 +21,67 @@
 //Set this in cardtest1helper.c also!
 #define MAX_FAILS 500
 
+#define NUM_PLAYERS 2
+
+#define SMITHY_CALLS 100
+
 int main (int argc, char** argv) {
 	struct gameState G;
 
 	//Structure array to note each failure
-	failedTest failures[501];
-
-	//Kingdom card types for test game
-	int k[10] = {treasure_map, gardens, great_hall, cutpurse, adventurer, smithy,
-		   baron, outpost, embargo, remodel};
-	   
-	printf("Starting cardtest1 - Testing 'gainCard' function\n");
-
-	//Initializes game for two players, with seed value of 5000.
-	initializeGame(2, k, 5000, &G);
+	failedTest failures[MAX_FAILS];
+	int failCt = 0;
 	
-	int failCt = _cardtest1helper(k, &G, failures);
+	printf("Starting unittest4 - Testing 'updateCoins' function\n");
+	
+	printf("\nExecuting %d Smithy plays using hands with random assortment of \n"
+		   "\t supply cards, with at least 3 in hand...\n", SMITHY_CALLS);
+
+	//Use stream 2 to generate random number based on system time. (See rngs.c)
+	//This random number will be used as the game's seed.
+	//(Use a different stream than is used by the 'initializeGame' function.)
+	SelectStream(2);
+	PutSeed(-1);
+		   
+	int i, j, k[10];
+	for(i = 0; i < SMITHY_CALLS; i++){
+		
+		//Generate set of 10 random Kingdom cards
+		for(j = 0; j < 10; j++){		
+			k[j] = Random() * 19 + 7;
+		}
+		
+		//Initializes game for two players
+		initializeGame(2, k, Random() * INT_MAX, &G);
+		
+		//Run updateCoin test on random kingdom card set.
+		//(see _unittest4helper for more details)
+		_cardtest1helper(k, &G, failures, &failCt, 0, 0);
+	}
+	
+	printf("\nAttempting no treasure cards test...\n");
+	
+	//Attempting shuffle on empty deck
+	initializeGame(NUM_PLAYERS, k, 5000, &G);
+	if(_unittest4helper(k, &G, failures, &failCt, 1, 0) != 0){
+		printf("\nNo treasure card test failed\n");
+	}
+	
+	printf("\nAttempting no bonus test...\n");
+	
+	//Attempting shuffle on max deck
+	initializeGame(NUM_PLAYERS, k, Random() * INT_MAX, &G);
+	if(_unittest4helper(k, &G, failures, &failCt, 0, 1) != 0){
+		printf("\nNo bonus test failed\n");
+	}
+	
+	printf("\nAttempting no treasure cards and bonus test...\n");
+	
+	//Attempting no treasure cards and no bonus test
+	initializeGame(NUM_PLAYERS, k, Random() * INT_MAX, &G);
+	if(_unittest4helper(k, &G, failures, &failCt, 1, 1) != 0){
+		printf("\nNo treasure cards and no bonus test failed\n");
+	}
 	
 	//Print summary of all failed tests (max 500)
 	if(!failCt){
@@ -52,14 +97,13 @@ int main (int argc, char** argv) {
 			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n",
 						failCt, MAX_FAILS);
 		}
-		printf("(Note: See _cardtest1helper.c when referencing line #)\n\n");
+		printf("(Note: See _unittest4helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
 			printf("%d - LINE %d: %s\n\n", 
 				i + 1, failures[i].lineNumber, failures[i].description);
 		}
-		printf("\n\n");
 	}
-	
+
 	return 0;
 }

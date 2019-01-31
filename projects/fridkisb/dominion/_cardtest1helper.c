@@ -97,7 +97,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 	
 	int cardCountByTypeAfterSmithy[27] = {0};
 	
-	//********* Left off here... *************
+	//********* Left off here... Still need header filed... *************
 	
 	//Check for proper return value
 	if(rv != 0 && !isEmptyDeckTest && ++(*failCt) <= MAX_FAILS){

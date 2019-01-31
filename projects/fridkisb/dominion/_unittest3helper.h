@@ -8,8 +8,8 @@
  * -------------------------------------
  */
 
-#ifndef _UNITEST2HELPER_H
-#define _UNITEST2HELPER_H
+#ifndef _UNITTEST3HELPER_H
+#define _UNITTEST3HELPER_H
 
 #include "dominion.h"
 #include "dominion_helpers.h"

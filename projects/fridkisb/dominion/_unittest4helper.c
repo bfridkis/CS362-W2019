@@ -6,7 +6,7 @@
  *
  *		   Helper function for unittest4.c
  *
- *	 (Tests "shuffle" function - See dominion.c line 202)
+ *	 (Tests "updateCoins" function - See dominion.c line 1137)
  *
  * Include the following lines in your makefile:
  *

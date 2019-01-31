@@ -2,30 +2,30 @@
  * Benjamin Fridkis - CS362 
  * Assignment 3
  *
- *                      _unittest1helper.c
+ *                      _cardtest1helper.c
  *
- *		        Helper function for unittest1.c
+ *		        Helper function for cardtest1.c
  *
- *	     (Tests "gainCard" function - See dominion.c line 1100)
+ *	     (Tests "smithy" card effect - See cardEffects.c line 29)
  *
  * Include the following lines in your makefile:
  *
- * _unittest1helper.o: _unittest1helper.c _unittest1helper.h dominion.o
- *		gcc -c _unittest1helper.c -g  $(CFLAGS)
+ * _cardtest1helper.o: _cardtest1helper.c _cardtest1helper.h dominion.o
+ *		gcc -c _cardtest1helper.c -g  $(CFLAGS)
  *
  * ---------------------------------------------------------------------------
  */
  
-#include "_unittest1helper.h"
+#include "_cardtest1helper.h"
  
 #define NUM_PLAYERS 2
 
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
-//Set this in unittest1.c also!
+//Set this in cardtest1.c also!
 #define MAX_FAILS 500
  
-int _unittest1helper(int k[], struct gameState* G, failedTest failures[]){
+int _cardtest1helper(int k[], struct gameState* G, failedTest failures[]){
 	 
 	//Test value variables	   
 	int i, j, failCt = 0, rv;
@@ -45,7 +45,7 @@ int _unittest1helper(int k[], struct gameState* G, failedTest failures[]){
 	G->handCount[1] = 0;
 	
 	//Declare testing struct
-	unittest1helper2struct ut2h2s;
+	cardtest1helper2struct ut2h2s;
 	ut2h2s.expectedRV = 0;
 	
 	//Test gain each supply card (curse, estate, duchy, province, copper
@@ -64,7 +64,7 @@ int _unittest1helper(int k[], struct gameState* G, failedTest failures[]){
 			else{
 				ut2h2s.rv = gainCard(k[j-7], G, i, 0);
 			}
-			_unittest1helper2(ut2h2s, failures, &failCt, G, k);
+			_cardtest1helper2(ut2h2s, failures, &failCt, G, k);
 		}
 	}
 	
@@ -366,7 +366,7 @@ int _unittest1helper(int k[], struct gameState* G, failedTest failures[]){
 }
 	
 	
-void _unittest1helper2(unittest1helper2struct ut2h2s, failedTest failures[],
+void _cardtest1helper2(cardtest1helper2struct ut2h2s, failedTest failures[],
 	int* failCt, struct gameState* G, int k[]){
 		
 	//Test variable declaration

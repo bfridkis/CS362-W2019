@@ -2,23 +2,23 @@
  * Benjamin Fridkis - CS362 
  * Assignment 3
  *
- *                         unittest1.c
+ *                         cardtest1.c
  *
- *	     Test for "gainCard" function - See dominion.c line 1100
+ *	     Test for "smithy" card effect - See cardEffects.c line 29
  *
  * Include the following lines in your makefile:
  *
- * unittest1: unittest1.c _unittest1helper.o dominion.o cardEffects.o rngs.o
- * 		gcc -o unittest1 unittest1.c -g dominion.o cardEffects.o 
- * 		_unittest1helper.o rngs.o $(CFLAGS)
+ * cardtest1: cardtest1.c _cardtest1helper.o dominion.o cardEffects.o rngs.o
+ * 		gcc -o cardtest1 cardtest1.c -g dominion.o cardEffects.o 
+ * 		_cardtest1helper.o rngs.o $(CFLAGS)
  * ---------------------------------------------------------------------------
  */
 
-#include "_unittest1helper.h"
+#include "_cardtest1helper.h"
 
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
-//Set this in unittest1helper.c also!
+//Set this in cardtest1helper.c also!
 #define MAX_FAILS 500
 
 int main (int argc, char** argv) {
@@ -31,12 +31,12 @@ int main (int argc, char** argv) {
 	int k[10] = {treasure_map, gardens, great_hall, cutpurse, adventurer, smithy,
 		   baron, outpost, embargo, remodel};
 	   
-	printf("Starting unittest1 - Testing 'gainCard' function\n");
+	printf("Starting cardtest1 - Testing 'gainCard' function\n");
 
 	//Initializes game for two players, with seed value of 5000.
 	initializeGame(2, k, 5000, &G);
 	
-	int failCt = _unittest1helper(k, &G, failures);
+	int failCt = _cardtest1helper(k, &G, failures);
 	
 	//Print summary of all failed tests (max 500)
 	if(!failCt){
@@ -52,7 +52,7 @@ int main (int argc, char** argv) {
 			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n",
 						failCt, MAX_FAILS);
 		}
-		printf("(Note: See _unittest1helper.c when referencing line #)\n\n");
+		printf("(Note: See _cardtest1helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
 			printf("%d - LINE %d: %s\n\n", 

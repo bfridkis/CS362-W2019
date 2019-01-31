@@ -8,8 +8,8 @@
  * -------------------------------------
  */
 
-#ifndef _UNITEST2HELPER_H
-#define _UNITEST2HELPER_H
+#ifndef _UNITTEST2HELPER_H
+#define _UNITTEST2HELPER_H
 
 #include "dominion.h"
 #include "dominion_helpers.h"
@@ -25,18 +25,7 @@ struct failedTest {
 
 typedef struct failedTest failedTest;
 
-struct unittest2helper2struct {
-	int rv;
-	int expectedRV;
-	int expectedPile;
-	int expectedIdx;
-};
-
-typedef struct unittest2helper2struct unittest2helper2struct;
-
-int _unittest2helper(int k[], struct gameState* G, failedTest failures[]);
-	
-void _unittest2helper2(unittest2helper2struct ut2h2s, failedTest failures[],
-	int* failCt, struct gameState* G, int k[]);
+int _unittest2helper(int testCase, int k[], struct gameState* G,
+	failedTest failures[], int* failedTestCount);
 
 #endif

@@ -78,7 +78,7 @@ all: playdom player
 clean:
 	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno \
 	*.so *.out testDrawCard testDrawCard.exe unittest1 unittest2 unittest3 unittest4 \
-	cardtest5
+	cardtest1
 	
 # References
 # https://stackoverflow.com/questions/3824500/compiling-c-on-remote-linux-machine-clock-skew-detected-warning

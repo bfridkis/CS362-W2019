@@ -21,7 +21,7 @@
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
 //Set this in cardtest1.c also!
-#define MAX_FAILS 500
+#define MAX_FAILS 10
  
 int _cardtest1helper(int k[], struct gameState* G, failedTest failures[], 
 	int* failCt, int deckCardCountSpecifier){
@@ -201,7 +201,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 				"Hand contents not updated properly after Smithy play\n"
 				"  Incorrect card at idx %d ; Expected %d : Observed %d\n", i,
 				i != handPos && j < 7 ? i : k[j-7],
-				G->hand[i][0]);
+				G->hand[0][i]);
 				break;
 		}
 		if(j == 16){
@@ -218,27 +218,28 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 	//from deck to hand should be hand's 3rd to last card,
 	//second drawn from deck to hand should be hand's 2nd 
 	//to last, and third drawn from deck to hand should be 
-	//hand's last. (Does not check boundary cases [i.e. deck
-	//sizes less than 3]).
+	//put into hand at handPos (where the Smithy that was 
+	//just played previously resided. 
+	//(Does not check boundary cases [i.e. deck sizes less than 3]).
 	for(i = 1; deckCardCountSpecifier == 3 && i <= 3; i++){
 		if(((i == 3 && G->hand[0][handPos] != 
 			deckBeforeSmithy[deckCountBeforeSmithy - 1 - (i - 1)]) ||
-			(i != 3 && G->hand[0][handCountBeforeSmithy - 1 + (i - 1)] != 
+			(i != 3 && G->hand[0][handCountBeforeSmithy + (i - 1)] != 
 			deckBeforeSmithy[deckCountBeforeSmithy - 1 - (i - 1)])) &&
 			++(*failCt) <= MAX_FAILS){
 				failures[*failCt-1].lineNumber = __LINE__;
 				sprintf(failures[*failCt-1].description,
 				"Incorrect card types gained to hand from deck,\n"
 				"\t\t\t\tor placed incorrectly in hand\n"
-				"  Expected #%d card gained from deck to be %d, and to be\n"
-				"  placed to %d idx of hand : Observed %d at idx %d\n", 
+				"\tExpected #%d card gained from deck to be %d, and to be\n"
+				"\tplaced to %d idx of hand : Observed %d at idx %d\n", 
 				i, deckBeforeSmithy[deckCountBeforeSmithy - 1 - (i - 1)],
 				i == 3 ? handPos :
-				handCountBeforeSmithy - 1 + (i - 1),
+				handCountBeforeSmithy + (i - 1),
 				i == 3 ? G->hand[0][handPos] :
 				G->hand[0][handBeforeSmithy[handCountBeforeSmithy - 1 - (i - 1)]],
 				i == 3 ? handPos :
-				handCountBeforeSmithy - 1 + (i - 1));
+				handCountBeforeSmithy + (i - 1));
 				break;
 		}
 	}

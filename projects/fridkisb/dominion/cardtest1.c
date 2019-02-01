@@ -19,7 +19,7 @@
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
 //Set this in cardtest1helper.c also!
-#define MAX_FAILS 500
+#define MAX_FAILS 10
 
 #define NUM_PLAYERS 2
 
@@ -96,7 +96,7 @@ int main (int argc, char** argv) {
 		   "\tmodification, reporting a failure if any of the following conditions are met:\n"
 		   "\t\t"       "1. Current player variable (whoseTurn) is changed\n"
 		   "\t\t"       "2. Player's hand does not gain 3 cards from the top of Player's deck\n"
-		   "\t\t\t"         "a. Player's deck count is not decremented by 3."
+		   "\t\t\t"         "a. Player's deck count is not decremented by 3.\n"
 		   "\t\t\t"         "b. Player's hand count is not incremented by 2\n"
 		   "\t\t\t\t\t"          "(A total of 3 cards are gained but the Smithy\n"
 		   "\t\t\t\t\t"          "itself is discarded so the net gain from the previous\n"
@@ -104,8 +104,8 @@ int main (int argc, char** argv) {
 		   "\t\t\t"         "c. Player's deck contents are not the same before and after the play\n"
 		   "\t\t\t\t\t"          "(Besides the 3 less cards gained therefrom)\n"
 		   "\t\t\t"         "d. Player's hand order and content are changed\n"
-		   "\t\t\t\t\t"          "(Besides the removal of the randomly placed Smithy played\n"
-		   "\t\t\t\t\t"          " and 2 additional cards gained to the end of the hand)\n"
+		   "\t\t\t\t\t"          "(Besides the removal/insertion of the Smithy played/last card drawn\n"
+		   "\t\t\t\t\t"          " and 2 additional cards gained to the end of the hand\n"
 		   "\t\t"       "3. Player 1's or 2's discard pile or count is changed\n"
 		   "\t\t"       "4. Player 2's deck, hand, deck count, and/or hand count is changed\n"
 		   "\t\t"       "5. Any supply pile count (curses, victory cards, or kingdom cards) is changed\n"
@@ -117,21 +117,31 @@ int main (int argc, char** argv) {
 		   "\t\t\t"          "e. outpostPlayed\n"
 		   "\t\t\t"          "f. outpostTurn\n"
 		   "\t\t"       "7. Played card count is not 1\n"
-		   "\t\t"       "8. Played cards does not have Smithy @ idx 1 and is unchanged otherwise\n");
+		   "\t\t"       "8. Played cards does not have Smithy @ idx 1 and is unchanged otherwise\n"
+		   "\n"
+		   "\t\t"       "* BOUNDARY tests verify all of the above except for #2a & #2b. #2c verifies    *\n"
+		   "\t\t"       "* that only the number of starting deck cards is decremented (since this value *\n"
+		   "\t\t"       "* is < 3), and #2d verifies that hand only increases by deck starting count in *\n"
+		   "\t\t"		"* likewise.                                                                    *\n");
 
 	
-	//Print summary of all failed tests (max 500)
+	
 	if(!failCt){
 		printf("\n\n*****************************\n"
 				   "******ALL TESTS PASSED!******\n"
 				   "*****************************\n\n");
 	}
+	
+	//Print summary of all failed tests (up to MAX_FAILS)
 	else{
 		if(failCt < MAX_FAILS + 1){
 			printf("\n\n\t%d tests failed, as follows:\n\n", failCt);
 		}
 		else{
-			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n",
+			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n"
+				   "\t\t-Set MAX_FAILS in cardtest1.c\n"
+				   "\t\t and _cardtest1helper.c to\n"
+				   "\t\t print more errors.\n\n",
 						failCt, MAX_FAILS);
 		}
 		printf("(Note: See _cardtest1helper.c when referencing line #)\n\n");

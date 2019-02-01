@@ -9,8 +9,11 @@ echo "++                                                                  ++" >>
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> unittestresults.out
 
 echo "Result for running cardtest1 (smithy card test):" >> unittestresults.out
-echo "cardtest1.c:" >> unittestresults.out
+echo "cardtest1.c:" >> unittestresults.out 
 ./cardtest1 >> unittestresults.out
+
+echo -e "\tCoverage Report:\n" >> unittestresults.out
+
 line=$(gcov cardEffects.c --function-summaries | grep -n smithyEffect | cut -f1 -d:)
 ((line++))
 gcov dominion.c --function-summaries | head -n$(echo $line) | tail -n2 >> unittestresults.out
@@ -19,7 +22,7 @@ echo -e "\n\tThe following functions are called by smithyEffect...\n" >> unittes
 line=$(gcov dominion.c --function-summaries | grep -n drawCard | cut -f1 -d:)
 ((line++))
 gcov dominion.c --function-summaries | head -n$(echo $line) | tail -n2 >> unittestresults.out
-
+echo >> unittestresults.out
 line=$(gcov dominion.c --function-summaries | grep -n discardCard | cut -f1 -d:)
 ((line++))
 gcov dominion.c --function-summaries | head -n$(echo $line) | tail -n2 >> unittestresults.out

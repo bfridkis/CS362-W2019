@@ -84,18 +84,22 @@ int main (int argc, char** argv) {
 	
 	printf("\n\nTOTAL FAILED TESTS AFTER T3: %d\n", failedTestCount);
 	
-	//Print summary of all failed tests (max 500)
 	if(failedTestCount == 0){
 		printf("\n\n*****************************\n"
 				   "******ALL TESTS PASSED!******\n"
 				   "*****************************\n\n");
 	}
+	
+	//Print summary of all failed tests (up to MAX_FAILS)
 	else{
 		if(failedTestCount < MAX_FAILS + 1){
 			printf("\n\n\t%d tests failed, as follows:\n\n", failedTestCount);
 		}
 		else{
-			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n",
+			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n"
+				   "\t\t-Set MAX_FAILS in unittest2.c\n"
+				   "\t\t and _unittest2helper.c to\n"
+				   "\t\t print more errors.\n\n",
 						failedTestCount, MAX_FAILS);
 		}
 		printf("(Note: See _unittest2helper.c when referencing line #)\n\n");

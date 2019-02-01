@@ -35,7 +35,7 @@ int main (int argc, char** argv) {
 	printf("Starting unittest4 - Testing 'updateCoins' function\n");
 	
 	printf("\nExecuting %d Smithy plays using hands with random assortment of \n"
-		   "\t supply cards, with at least 3 in hand...\n", SMITHY_CALLS);
+		   "\t supply cards, with at least 3 in deck...\n", SMITHY_CALLS);
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
 	//This random number will be used as the game's seed.
@@ -54,34 +54,71 @@ int main (int argc, char** argv) {
 		//Initializes game for two players
 		initializeGame(2, k, Random() * INT_MAX, &G);
 		
-		//Run updateCoin test on random kingdom card set.
-		//(see _unittest4helper for more details)
-		_cardtest1helper(k, &G, failures, &failCt, 0, 0);
+		//Play Smithy with random kingdom card set.
+		//(see _cardtest1helper for more details)
+		_cardtest1helper(k, &G, failures, &failCt, 3);
 	}
 	
-	printf("\nAttempting no treasure cards test...\n");
+	printf("\nBOUNDARY: Executing Smithy play using hand with random assortment of \n"
+		   "\t supply cards, with 1 card in deck...\n");
 	
-	//Attempting shuffle on empty deck
-	initializeGame(NUM_PLAYERS, k, 5000, &G);
-	if(_unittest4helper(k, &G, failures, &failCt, 1, 0) != 0){
-		printf("\nNo treasure card test failed\n");
+	//Test with only 1 card in the player's deck
+	//Generate set of 10 random Kingdom cards
+	for(j = 0; j < 10; j++){		
+		k[j] = Random() * 19 + 7;
 	}
+	initializeGame(2, k, Random() * INT_MAX, &G);
+	_cardtest1helper(k, &G, failures, &failCt, 1);
 	
-	printf("\nAttempting no bonus test...\n");
+	printf("\nBOUNDARY: Executing Smithy play using hand with random assortment of \n"
+		   "\t supply cards, with 2 cards in deck...\n");
 	
-	//Attempting shuffle on max deck
-	initializeGame(NUM_PLAYERS, k, Random() * INT_MAX, &G);
-	if(_unittest4helper(k, &G, failures, &failCt, 0, 1) != 0){
-		printf("\nNo bonus test failed\n");
+	//Test with only 2 cards in the player's deck
+	//Generate set of 10 random Kingdom cards
+	for(j = 0; j < 10; j++){		
+		k[j] = Random() * 19 + 7;
 	}
+	initializeGame(2, k, Random() * INT_MAX, &G);
+	_cardtest1helper(k, &G, failures, &failCt, 2);
 	
-	printf("\nAttempting no treasure cards and bonus test...\n");
+	printf("\nBOUNDARY: Executing Smithy play using hand with random assortment of \n"
+		   "\t supply cards, with 0 cards in deck...\n");
 	
-	//Attempting no treasure cards and no bonus test
-	initializeGame(NUM_PLAYERS, k, Random() * INT_MAX, &G);
-	if(_unittest4helper(k, &G, failures, &failCt, 1, 1) != 0){
-		printf("\nNo treasure cards and no bonus test failed\n");
+	//Test with 0 cards in the player's deck
+	//Generate set of 10 random Kingdom cards
+	for(j = 0; j < 10; j++){		
+		k[j] = Random() * 19 + 7;
 	}
+	initializeGame(2, k, Random() * INT_MAX, &G);
+	_cardtest1helper(k, &G, failures, &failCt, 0);
+	
+	printf("\n\tEach test (that is not marked 'BOUNDARY') verifies proper game state\n"
+		   "\tmodification, reporting a failure if any of the following conditions are met:\n"
+		   "\t\t"       "1. Current player variable (whoseTurn) is changed\n"
+		   "\t\t"       "2. Player's hand does not gain 3 cards from the top of Player's deck\n"
+		   "\t\t\t"         "a. Player's deck count is not decremented by 3."
+		   "\t\t\t"         "b. Player's hand count is not incremented by 2\n"
+		   "\t\t\t\t\t"          "(A total of 3 cards are gained but the Smithy\n"
+		   "\t\t\t\t\t"          "itself is discarded so the net gain from the previous\n"
+		   "\t\t\t\t\t"          "is 2.)\n"
+		   "\t\t\t"         "c. Player's deck contents are not the same before and after the play\n"
+		   "\t\t\t\t\t"          "(Besides the 3 less cards gained therefrom)\n"
+		   "\t\t\t"         "d. Player's hand order and content are changed\n"
+		   "\t\t\t\t\t"          "(Besides the removal of the randomly placed Smithy played\n"
+		   "\t\t\t\t\t"          " and 2 additional cards gained to the end of the hand)\n"
+		   "\t\t"       "3. Player 1's or 2's discard pile or count is changed\n"
+		   "\t\t"       "4. Player 2's deck, hand, deck count, and/or hand count is changed\n"
+		   "\t\t"       "5. Any supply pile count (curses, victory cards, or kingdom cards) is changed\n"
+		   "\t\t"       "6. Any of the following game states are changed:\n"
+		   "\t\t\t"          "a. coins\n"
+		   "\t\t\t"          "b. numActions\n"
+		   "\t\t\t"          "c. numBuys\n"
+		   "\t\t\t"          "d. embargoTokens[]\n"
+		   "\t\t\t"          "e. outpostPlayed\n"
+		   "\t\t\t"          "f. outpostTurn\n"
+		   "\t\t"       "7. Played card count is not 1\n"
+		   "\t\t"       "8. Played cards does not have Smithy @ idx 1 and is unchanged otherwise\n");
+
 	
 	//Print summary of all failed tests (max 500)
 	if(!failCt){
@@ -97,7 +134,7 @@ int main (int argc, char** argv) {
 			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n",
 						failCt, MAX_FAILS);
 		}
-		printf("(Note: See _unittest4helper.c when referencing line #)\n\n");
+		printf("(Note: See _cardtest1helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
 			printf("%d - LINE %d: %s\n\n", 

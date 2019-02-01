@@ -21,6 +21,9 @@ _unittest3helper.o: _unittest3helper.c _unittest3helper.h dominion.o
 _unittest4helper.o: _unittest4helper.c _unittest4helper.h dominion.o
 	gcc -c _unittest4helper.c -g  $(CFLAGS)
 	
+_cardtest1helper.o: _cardtest1helper.c _cardtest1helper.h dominion.o
+	gcc -c _cardtest1helper.c -g  $(CFLAGS)
+	
 playdom: dominion.o playdom.c
 	gcc -o playdom playdom.c -g dominion.o cardEffects.o rngs.o $(CFLAGS)
 #To run playdom you need to enter: ./playdom <any integer number> like ./playdom 10*/
@@ -46,12 +49,17 @@ unittest3: unittest3.c _unittest3helper.o dominion.o cardEffects.o rngs.o
 unittest4: unittest4.c _unittest4helper.o dominion.o cardEffects.o rngs.o
 	gcc -o unittest4 unittest4.c -g dominion.o cardEffects.o _unittest4helper.o rngs.o $(CFLAGS)
 	
+cardtest1: cardtest1.c _cardtest1helper.o dominion.o cardEffects.o rngs.o
+	gcc -o cardtest1 cardtest1.c -g dominion.o cardEffects.o _cardtest1helper.o rngs.o $(CFLAGS)
+	
 testAll: dominion.o testSuite.c 
 	gcc -o testSuite testSuite.c -g  dominion.o cardEffects.o rngs.o $(CFLAGS)
 	
-unittestresults: unittest1 unittest2 unittest3 unittest4
+unittestresults: unittest1 unittest2 unittest3 unittest4 cardtest1
 	@chmod +x unittestmakehelper
 	@./unittestmakehelper
+	@chmod +x cardtestmakehelper
+	@./cardtestmakehelper
 
 interface.o: interface.h interface.c
 	gcc -c interface.c -g  $(CFLAGS)
@@ -68,7 +76,9 @@ player: player.c interface.o
 all: playdom player 
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe unittest1 unittest2 unittest3 unittest4
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno \
+	*.so *.out testDrawCard testDrawCard.exe unittest1 unittest2 unittest3 unittest4 \
+	cardtest5
 	
 # References
 # https://stackoverflow.com/questions/3824500/compiling-c-on-remote-linux-machine-clock-skew-detected-warning

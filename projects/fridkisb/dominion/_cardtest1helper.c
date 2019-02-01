@@ -24,7 +24,10 @@
 #define MAX_FAILS 500
  
 int _cardtest1helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, cardtest1stats* ut3s, int isEmptyDeckTest, int isMaxDeckTest){
+	int* failCt, int deckCardCountSpecifier){
+		
+	//Test value variables	   
+	int i, j, deckSize, handSize;
 	 
 	//Ensure discard, deck, and hand are cleared for players 0 and 1
 	memset(G->discard[0], -1, sizeof(int) * MAX_DECK);
@@ -43,15 +46,17 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 	G->deckCount[1] = 0;
 	G->handCount[1] = 0;
 	
-	//Ensure whoseTurn, coin, numBuys, numActions, embargoTokens, outpostPlayed,
-	//outpostTurn are known values before Smithy play
+	//Ensure whoseTurn, coins, numBuys, numActions, embargoTokens, outpostPlayed,
+	//outpostTurn, playedCard, and playedCardCount are known values before Smithy play
 	G->whoseTurn = 0;
-	G->coin = 0;
+	G->coins = 0;
 	G->numBuys = 1;
 	G->numActions = 1;
 	memset(G->embargoTokens, 0, sizeof(int) * treasure_map + 1);
 	G->outpostPlayed = 0;
 	G->outpostTurn = 0;
+	memset(G->playedCards, -1, sizeof(int) * MAX_DECK);
+	G->playedCardCount = 0;
 	
 	//Ensure supply pile counts are of known value before Smithy play
 	//Set each to 10
@@ -59,13 +64,24 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		G->supplyCount[i] = 10;
 	}
 	
-	//Test value variables	   
-	int i, j, rv, deckSize, handSize;
+	//Re-select random stream 2 (since initializeGame will have selected
+	//stream 1 in parent function (main, see cardtest1.c)
+	SelectStream(2);
 	
-	//Determine random deck and hand sizes in range 1 to MAX_DECK/MAX_HAND
-	deckSize = 1 + (Random() * (MAX_DECK - 1));
+	//Determine random deck size, based on deckCardCountSpecifier
+	//(deckCardCountSpecifier == 3 guarantees a deck size in range
+	//3 - MAX_DECK. Otherwise, deckSize == deckCardCountSpecifier.
+	//This is so "boundary" conditions of decks with less than 3 cards
+	//can be tested.
+	if(deckCardCountSpecifier == 3){
+		deckSize = 3 + (Random() * (MAX_DECK - 3));
+	}
+	else{
+		deckSize = deckCardCountSpecifier;
+	}
+	
+	//Determine random hand size, in range 1 - MAX_HAND
 	handSize = 1 + (Random() * (MAX_HAND - 1));
-	
 	
 	//Load player 0's deck and hand with an equal number of each card,
 	//plus an extra starting at curse for each remainder after 
@@ -102,77 +118,91 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	G->handCount[0] = handSize;
 	
-	//Store deck and hand state info prior to smithy call
+	//Store deck info prior to smithy call
 	
 	//For deck...
 	int deckCountBeforeSmithy = G->deckCount[0];
 	int deckBeforeSmithy[MAX_DECK];
 	for(i = 0; i < G->deckCount[0]; i++){
-		deckBeforeShuffle[i] = G->deck[0][i];
+		deckBeforeSmithy[i] = G->deck[0][i];
 	}
 	
 	//For hand...
 	int handCountBeforeSmithy = G->handCount[0];
 	int handBeforeSmithy[MAX_HAND];
 	for(i = 0; i < G->handCount[0]; i++){
-		handBeforeShuffle[i] = G->hand[0][i];
+		handBeforeSmithy[i] = G->hand[0][i];
 	}
 	
 	//int for coin bonus (should remain unchanged after Smithy call)
 	int coin_bonus = 0;
 	
 	//Assign a random hand position for Smithy
-	int handPos = Random() * G->handCount[0];
-	if(handPos == G->handCount[0]){
-		handPos--;
+	int handPos = Random() * G->handCount[0] - 1;
+	if(handPos == -1){
+		handPos = 0;
 	}
 	G->hand[0][handPos] = smithy;
 	
 	//Call Smithy
-	rv = cardEffect(smithy, -1, -1, -1, G, handPos, &coin_bonus);
+	cardEffect(smithy, -1, -1, -1, G, handPos, &coin_bonus);
 	
-	//Check to make sure G->handCount[0] has been incremented by 2
-	//(Smithy should gain 3 cards but discard the played Smithy for 
-	//a total net gain of 2)
-	if(handCountBeforeSmithy + 2 != G->handCount[0] &&
+	//Check to make sure G->handCount[0] has been incremented by the
+	//appropriate amount. Smithy should gain 3 cards but discard the 
+	//played Smithy for a total net gain of 2, if the deck contains at 
+	//least 3 cards. If the deck contains less than three, the total
+	//net gain to the hand will be the deck count - 1, unless the deck
+	//count is 0, in which the hand will have one less card than starting
+	//(as the Smithy can still technically be played without any cards to draw).
+	if(((deckCardCountSpecifier == 0 && 
+		handCountBeforeSmithy - 1 != G->handCount[0]) ||
+		(deckCardCountSpecifier > 0 && 
+		handCountBeforeSmithy + deckCardCountSpecifier - 1
+		!= G->handCount[0])) &&
 		++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Hand count not updated properly after Smithy play\n"
 		"  Expected: %d ; Observed %d\n", 
-		handCountBeforeSmithy + 2, G->handCount[0]);
+		deckCardCountSpecifier == 0 ? handCountBeforeSmithy - 1 : 
+		handCountBeforeSmithy + deckCardCountSpecifier - 1, 
+		G->handCount[0]); 
 	}
 
 	//Check to make sure G->deckCount[0] has been decremented by 3
-	//(Smithy gains 3 cards from deck to hand)
-	if(deckCountBeforeSmithy - 3 != G->deckCount[0] &&
+	//(Smithy gains 3 cards from deck to hand), or is zero if deck
+	//count before Smithy is less than 3
+	if(((deckCountBeforeSmithy <= 3 && G->deckCount[0] != 0) ||
+		 (deckCountBeforeSmithy > 3 && deckCountBeforeSmithy - 3 
+		 != G->deckCount[0])) &&
 		++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Deck count not updated properly after Smithy play\n"
 		"  Expected: %d ; Observed %d\n", 
+		deckCountBeforeSmithy < 3 ? 0 :
 		deckCountBeforeSmithy - 3, G->deckCount[0]);
 	}	
 	
-	//Check to make sure that hand (up to the indexes holding the newly 
-	//gained cards) is same as before Smithy call, except that all cards 
-	//at and after handPos have been slid down one index (i.e. towards index 0). 
-	//(This is handled by discardCard, which is called from Smithy. 
-	// See dominion.c line 1062).
+	//Check to make sure that hand is same as before Smithy call, except 
+	//for the gained cards. The last gained card will go to index handPos,
+	//while any others (up to 2) will be at the "top" of the deck.
+	//(There is no way to know what is expected at handPos 
+	//[the index from which the Smithy is played] vs. what is expected
+	//at the "top" of the hand without "breaking into" the smithy function itself.
+	//(See dominion.c line 1062 for the details of the discardCard function and
+	//cardEffects.c line 29 for more details concerning the smithyEffect function.).
 	for(i = 0, j = 0; i < handCountBeforeSmithy - 1; i++){
-		if(((i < handPos && j < 7 && and G->hand[0][i] != i) ||
-			(i < handPos && j >= 7 && and G->hand[0][i] != k[j-7]) ||
-			(i == handPos && G->hand[0][i]] != handBeforeSmithy[handPos+1])) &&
+		if(((i != handPos && j < 7 && G->hand[0][i] != j) ||
+			(i != handPos && j >= 7 && G->hand[0][i] != k[j-7])) &&
 			++(*failCt) <= MAX_FAILS){
 				failures[*failCt-1].lineNumber = __LINE__;
 				sprintf(failures[*failCt-1].description,
 				"Hand contents not updated properly after Smithy play\n"
-				"  Incorrect card at idx %d ; Observed %d\n", 
-				handCountBeforeSmithy, G->handCount[0]);
+				"  Incorrect card at idx %d ; Expected %d : Observed %d\n", i,
+				i != handPos && j < 7 ? i : k[j-7],
+				G->hand[i][0]);
 				break;
-		}
-		if(i == handPos){
-			j++;
 		}
 		if(j == 16){
 			j = 0;
@@ -188,17 +218,27 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 	//from deck to hand should be hand's 3rd to last card,
 	//second drawn from deck to hand should be hand's 2nd 
 	//to last, and third drawn from deck to hand should be 
-	//hand's last.
-	for(i = 1; i <= 3; i++){
-		if(G->hand[0][handCountBeforeSmithy - 1 + (i - 1)] != 
-			deckBeforeSmithy[deckCountBeforeSmithy - 1 - (i - 1)] &&
+	//hand's last. (Does not check boundary cases [i.e. deck
+	//sizes less than 3]).
+	for(i = 1; deckCardCountSpecifier == 3 && i <= 3; i++){
+		if(((i == 3 && G->hand[0][handPos] != 
+			deckBeforeSmithy[deckCountBeforeSmithy - 1 - (i - 1)]) ||
+			(i != 3 && G->hand[0][handCountBeforeSmithy - 1 + (i - 1)] != 
+			deckBeforeSmithy[deckCountBeforeSmithy - 1 - (i - 1)])) &&
 			++(*failCt) <= MAX_FAILS){
 				failures[*failCt-1].lineNumber = __LINE__;
 				sprintf(failures[*failCt-1].description,
-				"Incorrect card types gained to hand from deck\n"
-				"  Expected #%d card gained to be %d ; Observed %d\n", 
+				"Incorrect card types gained to hand from deck,\n"
+				"\t\t\t\tor placed incorrectly in hand\n"
+				"  Expected #%d card gained from deck to be %d, and to be\n"
+				"  placed to %d idx of hand : Observed %d at idx %d\n", 
 				i, deckBeforeSmithy[deckCountBeforeSmithy - 1 - (i - 1)],
-				G->hand[0][handCountBeforeSmithy - 1 + (i - 1)]);
+				i == 3 ? handPos :
+				handCountBeforeSmithy - 1 + (i - 1),
+				i == 3 ? G->hand[0][handPos] :
+				G->hand[0][handBeforeSmithy[handCountBeforeSmithy - 1 - (i - 1)]],
+				i == 3 ? handPos :
+				handCountBeforeSmithy - 1 + (i - 1));
 				break;
 		}
 	}
@@ -210,16 +250,16 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
-			"Deck changed at unexpected index %d\n"
+			"Deck changed unexpectedly at index %d\n"
 			"  Expected %d ; Observed %d\n", 
-			deckBeforeSmithy[i], G->hand[0][i]);
+			i, deckBeforeSmithy[i], G->hand[0][i]);
 			break;
 		}
 	}
 	
 	//Make sure discard pile count hasn't changed
 	for(i = 0; i < MAX_DECK; i++){
-		if(G->discardCount[0][i] != 0 && ++(*failCt) <= MAX_FAILS){
+		if(G->discardCount[0] != 0 && ++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Discard pile count changed unexpectedly\n"
@@ -252,16 +292,16 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		}
 	}
 	
-	//Check numActions has been decremented by 1
-	if(G->numActions != 0 && ++(*failCt) <= MAX_FAILS){
+	//Make sure other game state values haven't changed
+	
+	//Check numActions ...
+	if(G->numActions != 1 && ++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Number of actions not updated correctly\n"
 		"  Expected 0 ; Observed %d\n", 
 		G->numActions);
 	}
-	
-	//Make sure other game state values haven't changed
 	
 	//Check whoseTurn...
 	if(G->whoseTurn != 0 && ++(*failCt) <= MAX_FAILS){
@@ -272,13 +312,13 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		G->whoseTurn);
 	}
 	
-	//Check coin...
-	if(G->coin != 0 && ++(*failCt) <= MAX_FAILS){
+	//Check coins...
+	if(G->coins != 0 && ++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
-		"Coin value changed unexpectedly\n"
+		"coins value changed unexpectedly\n"
 		"  Expected 0 ; Observed %d\n", 
-		G->coin);
+		G->coins);
 	}
 	
 	//Check numBuys...
@@ -380,6 +420,35 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			"Player 1 hand changed unexpectedly at idx %d\n"
 			"  Expected -1 ; Observed %d\n", 
 			i, G->hand[1][i]);
+		}
+		break;
+	}
+	
+	//Check playedCardCount (should be 1)
+	if(G->playedCardCount != 1 && ++(*failCt) <= MAX_FAILS){
+		failures[*failCt-1].lineNumber = __LINE__;
+		sprintf(failures[*failCt-1].description,
+		"Played card count not updated correctly\n"
+		"  Expected 1 ; Observed %d\n", 
+		G->playedCardCount);
+	}
+	//Check playedCards (should have Smithy at index 0, -1 all other indexes)
+	for(i = 0; i < MAX_DECK; i++){
+		if(i == 0 && G->playedCards[i] != smithy 
+			&& ++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Played cards not updated as expected at idx %d\n"
+			"  Expected %d ; Observed %d\n", 
+			i,smithy, G->playedCards[0]);
+		}
+		else if(i != 0 && G->playedCards[i] != -1 
+			&& ++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Played cards not updated as expected at idx %d\n"
+			"  Expected -1 ; Observed %d\n", 
+			i, G->playedCards[i]);
 		}
 		break;
 	}

@@ -16,6 +16,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <assert.h>
+#include <limits.h>
 #include "rngs.h"
 
 struct failedTest {
@@ -32,11 +33,8 @@ struct cardtest1helper2struct {
 	int expectedIdx;
 };
 
-typedef struct cardtest1helper2struct cardtest1helper2struct;
+int _cardtest1helper(int k[], struct gameState* G, failedTest failures[], 
+	int* failCt, int deckCardCountSpecifier);
 
-int _cardtest1helper(int k[], struct gameState* G, failedTest failures[]);
-	
-void _cardtest1helper2(cardtest1helper2struct ut2h2s, failedTest failures[],
-	int* failCt, struct gameState* G, int k[]);
 
 #endif

@@ -1,0 +1,369 @@
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++                                                                  ++
+++                           UNIT TEST 1                            ++
+++                                                                  ++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Result for running unittest1 (gainCard function test):
+unittest1.c:
+Starting unittest1 - Testing 'gainCard' function
+
+
+Gaining each supply card to each pile for player 0...
+
+*Running Fail Count: 0...
+
+
+Attempting to gain each supply card not in play (player 0)...
+
+*Running Fail Count: 0...
+
+
+Setting each supply card pile count to 0 and
+  attempting to gain each supply pile card (player 0)...
+
+*Running Fail Count: 0...
+
+
+Checking player 1's game state (should be unchanged)...
+
+*Running Fail Count: 0...
+
+
+*****************************
+******ALL TESTS PASSED!******
+*****************************
+
+Function 'gainCard'
+Lines executed:100.00% of 13
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++                                                                  ++
+++                           UNIT TEST 2                            ++
+++                                                                  ++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Result for running unittest2 (buyCard function test):
+unittest2.c:
+Starting unittest2 - Testing 'buyCard' function
+
+
+Testing buyCard with sufficient buys and coins for 10 kingdom cards
+**All tests for sufficient coins and sufficient buys passed!**
+
+
+TOTAL FAILED TESTS AFTER T1: 0
+
+
+Testing buyCard with insufficient coins and sufficient buys for 10 kingdom cards
+**All tests for insufficient coins and sufficient buys passed!**
+
+
+TOTAL FAILED TESTS AFTER T2: 0
+
+
+Testing buyCard with sufficient coins and insufficient buys for 10 kingdom cards
+**All tests for sufficient coins and insufficient buys passed!**
+
+
+TOTAL FAILED TESTS AFTER T3: 0
+
+
+*****************************
+******ALL TESTS PASSED!******
+*****************************
+
+Function 'buyCard'
+Lines executed:92.31% of 13
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++                                                                  ++
+++                           UNIT TEST 3                            ++
+++                                                                  ++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Result for running unittest3 (shuffle function test):
+unittest3.c:
+Starting unittest3 - Testing 'shuffle' function
+
+Executing 250 shuffles using random deck sizes in range 2 - 500 (MAX_DECK),
+	each with a random set of kingdom cards...
+
+Attempting empty deck shuffle...
+
+Attempting max deck size shuffle...
+
+
+*****************************
+******ALL TESTS PASSED!******
+*****************************
+
+
+  ***************************************************************************
+  ** % Variations (Relative to Deck Size) After Shuffles with no Failures **
+  ***************************************************************************
+
+					     0       : 1
+					> 0  - <11%  : 0
+					 11% - <21%  : 0
+					 21% - <31%  : 0
+					 31% - <41%  : 0
+					 41% - <51%  : 1
+					   >51%      : 249
+
+	The above values represent the number of tests for which the MINIMUM
+	number of observed changes divided by the deck size used produced the
+	given percentage. For example, if a deck size of 20 was compared before
+	and after shuffle, and 10 deck indexes contained the same card type both
+	before and after shuffle, while the other 10 deck indexes contained different
+	card types (when comparing the before and after decks), the test generated a
+	variance value of 50%. The above values are the incidence of tests in each
+	percentage range.
+
+	Note that a few tests in the lower ranges may not indicate a faulty shuffle
+	function, as these may be the result of very small deck sizes. However,
+	a large incidence in the lower ranges may indicate that shuffle is not
+	adequately redistributing the cards within the deck, while a large incidence
+	at the '0' range specifically may indicate that shuffle is not redistributing
+	the cards at all.
+
+	Finally, it is important to note that this variance test DOES NOT ACCOUNT FOR
+	CARD EXCHANGES OF THE SAME CARD TYPE. In other words, more shuffling may be
+	(and likely is) occurring than is accounted for by these numbers (and hence
+	the emphasis on 'minimum' above). This is an important consideration to take
+	into account when evaluating these statistics, especially when the low variance
+	ranges have low incidence. (In other words, a relatively low incidence for the
+	low variance ranges may not necessarily indicate an issue with shuffle.)
+
+	(Max number of tests in this breakdown is NUM_SHUFFLES + 1, as the MAX_DECK
+	 deck size shuffle test is included but the empty deck shuffle test is not.)
+
+Function 'shuffle'
+Lines executed:100.00% of 16
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++                                                                  ++
+++                           UNIT TEST 4                            ++
+++                                                                  ++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Result for running unittest4 (updateCoins function test):
+unittest4.c:
+Starting unittest4 - Testing 'updateCoins' function
+
+Executing 250 coin updates using hands with random assortment of treasure
+	cards and bonus values for each update...
+
+Attempting no treasure cards test...
+
+Attempting no bonus test...
+
+Attempting no treasure cards and bonus test...
+
+
+*****************************
+******ALL TESTS PASSED!******
+*****************************
+
+Function 'updateCoins'
+Lines executed:100.00% of 11
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++                                                                  ++
+++                           CARD TEST 1                            ++
+++                                                                  ++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Result for running cardtest1 (smithy card test):
+cardtest1.c:
+Starting cardtest1 - Testing 'smithy' card
+
+Executing 100 Smithy plays using hands with random assortment of 
+	 supply cards, with at least 3 in deck...
+
+BOUNDARY: Executing Smithy play using hand with random assortment of 
+	 supply cards, with 1 card in deck...
+
+BOUNDARY: Executing Smithy play using hand with random assortment of 
+	 supply cards, with 2 cards in deck...
+
+BOUNDARY: Executing Smithy play using hand with random assortment of 
+	 supply cards, with 0 cards in deck...
+
+	Each test (that is not marked 'BOUNDARY') verifies proper game state
+	modification, reporting a failure if any of the following conditions are met:
+		1. Current player variable (whoseTurn) is changed
+		2. Player's hand does not gain 3 cards from the top of Player's deck
+			a. Player's deck count is not decremented by 3.
+			b. Player's hand count is not incremented by 2
+					(A total of 3 cards are gained but the Smithy
+					itself is discarded so the net gain from the previous
+					is 2.)
+			c. Player's deck contents are not the same before and after the play
+					(Besides the 3 less cards gained therefrom)
+			d. Player's hand order and content are changed
+					(Besides the removal/insertion of the Smithy played/last card drawn
+					 and 2 additional cards gained to the end of the hand
+		3. Player 1's or 2's discard pile or count is changed
+		4. Player 2's deck, hand, deck count, and/or hand count is changed
+		5. Any supply pile count (curses, victory cards, or kingdom cards) is changed
+		6. Any of the following game states are changed:
+			a. coins
+			b. numActions
+			c. numBuys
+			d. embargoTokens[]
+			e. outpostPlayed
+			f. outpostTurn
+		7. Played card count is not 1
+		8. Played cards does not have Smithy @ idx 1 and is unchanged otherwise
+
+		* BOUNDARY tests verify all of the above except for #2a & #2b. #2c verifies    *
+		* that only the number of starting deck cards is decremented (since this value *
+		* is < 3), and #2d verifies that hand only increases by deck starting count in *
+		* likewise.                                                                    *
+
+
+*****************************
+******ALL TESTS PASSED!******
+*****************************
+
+	Coverage Report:
+
+Function 'smithyEffect'
+Lines executed:100.00% of 5
+
+	The following functions are called by smithyEffect...
+
+Function 'drawCard'
+Lines executed:77.27% of 22
+
+Function 'discardCard'
+Lines executed:84.62% of 13
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++                                                                  ++
+++                           CARD TEST 2                            ++
+++                                                                  ++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Result for running cardtest2 (adventurer card test):
+cardtest2.c:
+Starting cardtest2 - Testing 'adventurer' card
+
+Executing 100 Adventurer plays using hands with random assortment of 
+	 supply cards, with at least 2 treasures in deck...
+
+BOUNDARY: Executing Adventurer play using hand with random assortment of 
+	 supply cards, with 1 treasure card in deck...
+
+BOUNDARY: Executing Adventurer play using hand with random assortment of 
+	 supply cards, with 0 treasure cards in deck...
+
+BOUNDARY: Executing Adventurer play using hand with random assortment of 
+	 supply cards, with 0 cards in deck (should be same outcome as no treasure cards...)
+
+	Each test (that is not marked 'BOUNDARY') verifies proper game state
+	modification, reporting a failure if any of the following conditions are NOT met:
+		1. Current player variable (whoseTurn) is unchanged
+		2. Player's hand gains only 2 treasure cards from deck
+			a. Same 2 treasure card types are removed from deck and added to hand.
+			b. Deck count and hand counts are updated correctly
+		3. Hand does not gain any non-treasure cards
+		4. Discard does not gain any treasure cards
+		5. All non-treasure cards removed from deck are added to hand
+		6. All of the following game states are unchanged:
+			a. coins
+			b. numActions
+			c. numBuys
+			d. embargoTokens[]
+			e. outpostPlayed
+			f. outpostTurn
+		7. Played card count is unchanged
+		8. Played cards is unchanged
+
+		*  BOUNDARY tests verify all of the above except for #2a, where instead  *
+		*  the boundary case checks for the appropriate number of treasure card  *
+		*  removals and insertions based on the designated treasure card amount  *
+		*  (i.e. as is passed in via the 'treasureCardCountSpecifier' variable.) *
+		
+		********************* NOTE FOR BOUNDARY CASE / BUG REPORT ****************** 
+		**																		   ** 
+		** Technically, the Adventurer card does not explicitly state what should ** 
+		**    be done in the event that the set of the player's deck and discard  ** 
+		**     piles do not contain a total of at least 2 treasure cards. For a   ** 
+		**       'literal minded' machine such as a computer, this creates an     ** 
+		** infinite loop of sorts, that must be handled accordingly. The findings ** 
+		**  of this testing exercise have indicated a bug related to this aspect  ** 
+		**  of adventurer, one which does not result in a stuck loop but rather   ** 
+		** incorrect behavior in some conditions (i.e. when discard and deck do   ** 
+		**  not contain at least 2 treasures, but hand has enough to make up the  ** 
+		** difference) or a segmentation fault in others (i.e. when there are not ** 
+		**   at least 2 treasures between deck, discard, and hand combined). This ** 
+		**   program (cardtest2) has been deliberately set up to avoid a full on  ** 
+		**    crash due to this error, so that all remaining tests and code will  ** 
+		**     be processed to completion. The incorrect behavior (that does not  ** 
+		** result in a full crash) caused by this bug is captured in the BOUNDARY ** 
+		**  test results. Please see cardEffects.c and the assignment write-up    ** 
+		**                  for a complete description of the error.              ** 
+		**                                                                        ** 
+		**************************************************************************** 
+
+
+	9 tests failed, as follows:
+
+(Note: See _cardtest2helper.c when referencing line #)
+
+1 - LINE 550: Player 1 hand changed unexpectedly at idx 0
+  Expected -1 ; Observed 5 (Non-Boundary)
+
+
+2 - LINE 196: Hand count not updated properly after Adventurer play
+  Expected: 450 ; Observed 449 (Boundary)
+
+
+3 - LINE 289: Non treasure card added to hand pile
+ -1 13(s) added to hand (Boundary)
+
+
+4 - LINE 307: Hand count not as expected
+  Expected: 450 Added ; Observed 449 (Boundary)
+
+
+5 - LINE 345: Different cards or card quantities added to discard pile
+				than removed from deck
+    1 '13' cards added to discard : 0 of these removed from deck (Boundary)
+
+
+6 - LINE 392: Discard pile count updated incorrectly
+Expected 4 cards in discard pile ; Observed  5 (Boundary)
+
+
+7 - LINE 289: Non treasure card added to hand pile
+ -1 0(s) added to hand (Boundary)
+
+
+8 - LINE 345: Different cards or card quantities added to discard pile
+				than removed from deck
+    1 '0' cards added to discard : 0 of these removed from deck (Boundary)
+
+
+9 - LINE 392: Discard pile count updated incorrectly
+Expected 0 cards in discard pile ; Observed  14 (Boundary)
+
+
+	Coverage Report:
+
+Function 'adventurerEffect'
+Lines executed:100.00% of 16
+
+	The following functions are called by adventurerEffect...
+
+Function 'drawCard'
+Lines executed:77.27% of 22
+
+
+

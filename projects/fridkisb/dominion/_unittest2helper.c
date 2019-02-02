@@ -23,7 +23,7 @@
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
 //Set this in unittest2.c also!
-#define MAX_FAILS 500
+#define MAX_FAILS 10
  
 int _unittest2helper(int testCase, int k[], struct gameState* G,
 	failedTest failures[], int* failedTestCount){

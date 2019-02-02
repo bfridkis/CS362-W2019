@@ -4,8 +4,8 @@
 
 int adventurerEffect(int currentPlayer, struct gameState *state){
 	int temphand[MAX_HAND];
-	int drawntreasure = 0, z = 0;
-	while(drawntreasure<2){
+	int drawntreasure = 0, z = 1;
+	while(drawntreasure<3){
 	if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
 	  shuffle(currentPlayer, state);
 	}
@@ -29,13 +29,13 @@ int adventurerEffect(int currentPlayer, struct gameState *state){
 int smithyEffect(int currentPlayer, struct gameState *state, int handPos){
 	int i;
 	//+3 Cards
-      for (i = 0; i < 3; i++)
+      for (i = 0; i < 4; i++)
 	{
 	  drawCard(currentPlayer, state);
 	}
 			
       //discard card from hand
-      discardCard(handPos, currentPlayer, state, 0);
+      discardCard(handPos+1, currentPlayer, state, 0);
       return 0;
 }
 

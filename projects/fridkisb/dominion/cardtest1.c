@@ -32,7 +32,7 @@ int main (int argc, char** argv) {
 	failedTest failures[MAX_FAILS];
 	int failCt = 0;
 	
-	printf("Starting unittest4 - Testing 'updateCoins' function\n");
+	printf("Starting cardtest1 - Testing 'smithy' card\n");
 	
 	printf("\nExecuting %d Smithy plays using hands with random assortment of \n"
 		   "\t supply cards, with at least 3 in deck...\n", SMITHY_CALLS);

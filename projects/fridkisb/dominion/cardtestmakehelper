@@ -16,7 +16,7 @@ echo -e "\tCoverage Report:\n" >> unittestresults.out
 
 line=$(gcov cardEffects.c --function-summaries | grep -n smithyEffect | cut -f1 -d:)
 ((line++))
-gcov dominion.c --function-summaries | head -n$(echo $line) | tail -n2 >> unittestresults.out
+gcov cardEffects.c --function-summaries | head -n$(echo $line) | tail -n2 >> unittestresults.out
 
 echo -e "\n\tThe following functions are called by smithyEffect...\n" >> unittestresults.out
 line=$(gcov dominion.c --function-summaries | grep -n drawCard | cut -f1 -d:)
@@ -26,5 +26,29 @@ echo >> unittestresults.out
 line=$(gcov dominion.c --function-summaries | grep -n discardCard | cut -f1 -d:)
 ((line++))
 gcov dominion.c --function-summaries | head -n$(echo $line) | tail -n2 >> unittestresults.out
+
+echo -e "\n\n" >>unittestresults.out
+
+echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> unittestresults.out
+echo "++                                                                  ++" >> unittestresults.out
+echo "++                           CARD TEST 2                            ++" >> unittestresults.out
+echo "++                                                                  ++" >> unittestresults.out
+echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> unittestresults.out
+
+echo "Result for running cardtest2 (adventurer card test):" >> unittestresults.out
+echo "cardtest2.c:" >> unittestresults.out 
+./cardtest2 >> unittestresults.out
+
+echo -e "\tCoverage Report:\n" >> unittestresults.out
+
+line=$(gcov cardEffects.c --function-summaries | grep -n adventurerEffect | cut -f1 -d:)
+((line++))
+gcov cardEffects.c --function-summaries | head -n$(echo $line) | tail -n2 >> unittestresults.out
+
+echo -e "\n\tThe following functions are called by adventurerEffect...\n" >> unittestresults.out
+line=$(gcov dominion.c --function-summaries | grep -n drawCard | cut -f1 -d:)
+((line++))
+gcov dominion.c --function-summaries | head -n$(echo $line) | tail -n2 >> unittestresults.out
+
 
 echo -e "\n\n" >>unittestresults.out

@@ -24,7 +24,7 @@
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
 //Set this in unittest4.c also!
-#define MAX_FAILS 500
+#define MAX_FAILS 10
  
 int _unittest4helper(int k[], struct gameState* G, failedTest failures[], 
 	int* failCt, int isNoTreasureTest, int isNoBonusTest){
@@ -110,6 +110,10 @@ int _unittest4helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//Add random bonus to expectedCoinValue (or 0 for no bonus test)
 	expectedCoinValue += bonusValue;
+	
+	/*************************  SET UP ENDS HERE  **************************/
+	
+	/************************* CHECKS BEGIN HERE  **************************/
 	
 	//Update Coins
 	updateCoins(0, G, bonusValue);

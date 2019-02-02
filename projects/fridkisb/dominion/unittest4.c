@@ -19,7 +19,7 @@
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
 //Set this in unittest4helper.c also!
-#define MAX_FAILS 500
+#define MAX_FAILS 10
 
 #define NUM_COIN_UPDATES 250
 

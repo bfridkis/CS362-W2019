@@ -2,14 +2,14 @@
  * Benjamin Fridkis - CS362 
  * Assignment 3
  *
- *       _cardtest1helper.h
+ *       _cardtest2helper.h
  *
- * Header file for _cardtest1helper.c.
+ * Header file for _cardtest2helper.c.
  * -------------------------------------
  */
 
-#ifndef _CARDTEST1HELPER_H
-#define _CARDTEST1HELPER_H
+#ifndef _CARDTEST2HELPER_H
+#define _CARDTEST2HELPER_H
 
 #include "dominion.h"
 #include "dominion_helpers.h"
@@ -26,8 +26,8 @@ struct failedTest {
 
 typedef struct failedTest failedTest;
 
-int _cardtest1helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int deckCardCountSpecifier);
+int _cardtest2helper(int k[], struct gameState* G, failedTest failures[], 
+	int* failCt, int treasureCardCountSpecifier);
 
 
 #endif

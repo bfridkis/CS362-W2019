@@ -23,7 +23,7 @@
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
 //Set this in unittest3.c also!
-#define MAX_FAILS 500
+#define MAX_FAILS 10
  
 int _unittest3helper(int k[], struct gameState* G, failedTest failures[], 
 	int* failCt, unittest3stats* ut3s, int isEmptyDeckTest, int isMaxDeckTest){
@@ -74,9 +74,12 @@ int _unittest3helper(int k[], struct gameState* G, failedTest failures[],
 		cardCountByTypeBeforeShuffle[G->deck[0][i]]++;
 	}
 	
+	/*************************  SET UP ENDS HERE  **************************/
+	
+	/************************* CHECKS BEGIN HERE  **************************/
+	
 	//Shuffle deck
 	rv = shuffle(0, G);
-	
 	
 	//Check for proper return value
 	if(rv != 0 && !isEmptyDeckTest && ++(*failCt) <= MAX_FAILS){

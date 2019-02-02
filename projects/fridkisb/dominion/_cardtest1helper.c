@@ -118,7 +118,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	G->handCount[0] = handSize;
 	
-	//Store deck info prior to smithy call
+	//Store deck and hand info prior to smithy call
 	
 	//For deck...
 	int deckCountBeforeSmithy = G->deckCount[0];
@@ -143,6 +143,10 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		handPos = 0;
 	}
 	G->hand[0][handPos] = smithy;
+	
+	/*************************  SET UP ENDS HERE  **************************/
+	
+	/************************* CHECKS BEGIN HERE  **************************/
 	
 	//Call Smithy
 	cardEffect(smithy, -1, -1, -1, G, handPos, &coin_bonus);

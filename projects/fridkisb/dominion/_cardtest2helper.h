@@ -22,12 +22,13 @@
 struct failedTest {
 	int lineNumber;
 	char description[256];
+	int isBoundary;
 };
 
 typedef struct failedTest failedTest;
 
 int _cardtest2helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int treasureCardCountSpecifier);
+	int* failCt, int treasureCardCountSpecifier, int isBoundary);
 
 
 #endif

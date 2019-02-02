@@ -2,6 +2,26 @@
 #include "dominion_helpers.h"
 #include <stdio.h>
 
+//  Note:
+//                        Main bug in adventurer function :
+//			(Before the introduction of additional bugs for assignment 2) 
+//		
+//		If there are not at least 2 treasure cards in
+//		the set of cards making up the deck and discard piles, the function will
+//		start "consuming" the hand itself in search of treasures. These will be
+//		used erroneously if found. If there are not at least 2 treasures in the
+//		set of cards making up the deck, discard, and hand (i.e. the set of all
+//		cards for the given player), the function will eventually fault the program
+//		by attempting to access memory representing the player's hand array
+// 		(state->hand[player]) in continuous search of treasures. The faulty mechanism
+//		lies in the fact that drawCard will simply return a -1 once it has placed
+//		all cards in the temp hand after depleting both the deck and discard piles,
+//		whereafter adventurerEffect still erroneously assumes drawCard is still adding 
+//		to the hand. The hand itself is then added to the temp hand until no cards are
+//		remaining (i.e. handCount has reached. Finally it (handCount) will reach -1,
+//		and the attempt on line 33 to access state->hand[currentPlayer][-1] will crash
+//		the program.
+
 int adventurerEffect(int currentPlayer, struct gameState *state){
 	int temphand[MAX_HAND];
 	int drawntreasure = 0, z = 0;

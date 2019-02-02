@@ -57,7 +57,7 @@ int main (int argc, char** argv) {
 		//Play Adventurer with random kingdom card set with a deck
 		//containing at least 2 treasure cards.
 		//(see _cardtest2helper for more details)
-		_cardtest2helper(k, &G, failures, &failCt, 2);
+		_cardtest2helper(k, &G, failures, &failCt, 2, 0);
 	}
 	
 	printf("\nBOUNDARY: Executing Adventurer play using hand with random assortment of \n"
@@ -69,7 +69,7 @@ int main (int argc, char** argv) {
 		k[j] = Random() * 19 + 7;
 	}
 	initializeGame(2, k, Random() * INT_MAX, &G);
-	_cardtest2helper(k, &G, failures, &failCt, 1);
+	_cardtest2helper(k, &G, failures, &failCt, 1, 1);
 	
 	printf("\nBOUNDARY: Executing Adventurer play using hand with random assortment of \n"
 		   "\t supply cards, with 0 treasure cards in deck...\n");
@@ -80,7 +80,18 @@ int main (int argc, char** argv) {
 		k[j] = Random() * 19 + 7;
 	}
 	initializeGame(2, k, Random() * INT_MAX, &G);
-	_cardtest2helper(k, &G, failures, &failCt, 0);
+	_cardtest2helper(k, &G, failures, &failCt, 0, 1);
+	
+	printf("\nBOUNDARY: Executing Adventurer play using hand with random assortment of \n"
+		   "\t supply cards, with 0 cards in deck (should be same outcome as no treasure cards...)\n");
+	
+	//Test with only 2 cards in the player's deck
+	//Generate set of 10 random Kingdom cards
+	for(j = 0; j < 10; j++){		
+		k[j] = Random() * 19 + 7;
+	}
+	initializeGame(2, k, Random() * INT_MAX, &G);
+	_cardtest2helper(k, &G, failures, &failCt, -1, 1);
 	
 	printf("\n\tEach test (that is not marked 'BOUNDARY') verifies proper game state\n"
 		   "\tmodification, reporting a failure if any of the following conditions are NOT met:\n"
@@ -101,12 +112,33 @@ int main (int argc, char** argv) {
 		   "\t\t"       "7. Played card count is unchanged\n"
 		   "\t\t"       "8. Played cards is unchanged\n"
 		   "\n"
-		   "\t\t"       "* BOUNDARY tests verify all of the above except for #2a, where instead *\n"
-		   "\t\t"       "* the boundary case checks for the appropriate number of treasure card *\n"
-		   "\t\t"       "* removals and insertions based on the desiganted treasure card amount *\n"
-		   "\t\t"       "*  i.e. As is passed in via the 'treasureCardCountSpecifier' variable. *\n");
-
-	
+		   "\t\t"       "*  BOUNDARY tests verify all of the above except for #2a, where instead  *\n"
+		   "\t\t"       "*  the boundary case checks for the appropriate number of treasure card  *\n"
+		   "\t\t"       "*  removals and insertions based on the designated treasure card amount  *\n"
+		   "\t\t"       "*  (i.e. as is passed in via the 'treasureCardCountSpecifier' variable.) *\n"
+		   "\t\t"
+		   "\n"
+		   "\t\t"		"********************* NOTE FOR BOUNDARY CASE / BUG REPORT ****************** \n"
+		   "\t\t" 		"**																		   ** \n"
+		   "\t\t" 		"** Technically, the Adventurer card does not explicitly state what should ** \n"
+		   "\t\t" 		"**    be done in the event that the set of the player's deck and discard  ** \n"
+		   "\t\t"		"**     piles do not contain a total of at least 2 treasure cards. For a   ** \n"
+		   "\t\t"		"**       'literal minded' machine such as a computer, this creates an     ** \n"
+		   "\t\t"		"** infinite loop of sorts, that must be handled accordingly. The findings ** \n"
+		   "\t\t"		"**  of this testing exercise have indicated a bug related to this aspect  ** \n"
+		   "\t\t"		"**  of adventurer, one which does not result in a stuck loop but rather   ** \n"
+		   "\t\t"		"** incorrect behavior in some conditions (i.e. when discard and deck do   ** \n"
+		   "\t\t"		"**  not contain at least 2 treasures, but hand has enough to make up the  ** \n" 
+		   "\t\t"		"** difference) or a segmentation fault in others (i.e. when there are not ** \n" 
+		   "\t\t"		"**   at least 2 treasures between deck, discard, and hand combined). This ** \n"
+		   "\t\t"		"**   program (cardtest2) has been deliberately set up to avoid a full on  ** \n"
+		   "\t\t"		"**    crash due to this error, so that all remaining tests and code will  ** \n"
+		   "\t\t"		"**     be processed to completion. The incorrect behavior (that does not  ** \n"
+		   "\t\t" 		"** result in a full crash) caused by this bug is captured in the BOUNDARY ** \n"
+		   "\t\t" 		"**  test results. Please see cardEffects.c and the assignment write-up    ** \n"
+		   "\t\t" 		"**                  for a complete description of the error.              ** \n"
+		   "\t\t" 		"**                                                                        ** \n"
+		   "\t\t" 		"**************************************************************************** \n");
 	
 	if(!failCt){
 		printf("\n\n*****************************\n"

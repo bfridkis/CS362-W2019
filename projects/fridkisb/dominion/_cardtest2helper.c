@@ -376,7 +376,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Deck count after Adventurer does not correspond to cards removed\n"
-			" %d cards removed, but resulting deck count is %d\n %s", 
+			" %d cards removed, but resulting deck count is %d %s\n", 
 			totalNumCardsRemovedFromDeck, G->deckCount[0],
 			isBoundary ? "(Boundary)" : "(Non-Boundary)");
 	}

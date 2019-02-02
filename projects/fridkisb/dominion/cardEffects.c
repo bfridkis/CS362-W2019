@@ -60,9 +60,9 @@ int smithyEffect(int currentPlayer, struct gameState *state, int handPos){
 }
 
 int cutpurseEffect(int currentPlayer, struct gameState *state, int handPos){
-	updateCoins(currentPlayer, state, 3);
+	updateCoins(currentPlayer, state, 2);
       int i, j, k;
-	  for (i = 0; i < state->numPlayers-1; i++)
+	  for (i = 0; i < state->numPlayers; i++)
 	{
 	  if (i != currentPlayer)
 	    {

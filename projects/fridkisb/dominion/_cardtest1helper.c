@@ -222,8 +222,10 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 	//from deck to hand should be hand's 3rd to last card,
 	//second drawn from deck to hand should be hand's 2nd 
 	//to last, and third drawn from deck to hand should be 
-	//put into hand at handPos (where the Smithy that was 
-	//just played previously resided. 
+	//put into hand at handPos, i.e. where the Smithy that was 
+	//just played previously resided. (It is the discardCard 
+	//function that puts the last card of the hand after Smithy's 
+	//3 draws into handPos.)
 	//(Does not check boundary cases [i.e. deck sizes less than 3]).
 	for(i = 1; deckCardCountSpecifier == 3 && i <= 3; i++){
 		if(((i == 3 && G->hand[0][handPos] != 

@@ -65,8 +65,9 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//Determine random hand size for each player in 
 	//range 1 - MAX_HAND
+	int handSize[playerCount];
 	for(i = 0; i < playerCount; i++){
-		handSize[i] = 1 + Random() * (MAX_HAND - 1);
+		handSize[i] = 1 + (Random() * (MAX_HAND - 1));
 	}
 	
 	//Load each player's hand with an equal number of each card,
@@ -74,32 +75,31 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	//final multiple of 17, for handSize as determined above 
 	//(e.g. a 20 card deck will have 1 of each card plus 1 extra 
 	//curse, estate, and duchy.)
-	int handSize[MAX_PLAYERS];
 	for(m = 0; m < playerCount; m++){
 		for(i = 0, j = 0; i < handSize[m]; i++){
 			if(j < 7){
-				G->hand[k][i] = j++;
+				G->hand[m][i] = j++;
 			}
 			else{
-				G->hand[k][i] = k[j++ - 7];
+				G->hand[m][i] = k[j++ - 7];
 			}
 			if(j == 17){
 				j = 0;
 			}
 		}
-		G->handCount[k] = handSize[k];
+		G->handCount[m] = handSize[m];
 	}
 	
-	//Assign a random hand position for Cutpurse 
-	//for each player
-	int handPos[MAX_PLAYERS];
-	for(i = 0 ; i < playerCount; i++){
-		handPos[i] = Random() * G->handCount[i] - 1;
-		if(handPos == -1){
-			handPos = 0;
-		}
-		G->hand[i][handPos[i]] = cutpurse;
+	//Determine random player to play cutpurse
+	int activePlayer = Random() * (playerCount - 1);
+	G->whoseTurn = activePlayer;
+	
+	//Assign a random hand position for Cutpurse for active player
+	int handPos = Random() * (G->handCount[activePlayer] - 1);
+	if(handPos == -1){
+		handPos = 0;
 	}
+	G->hand[activePlayer][handPos] = cutpurse;
 	
 	//If this is not the boundary test in which players
 	//have no copper, add a copper to any player with a 
@@ -109,7 +109,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	if(!noCopper){
 		for(i = 0; i < playerCount; i++){
 			if(handSize[i] < 4){
-				G->hand[i][Random() * (handSize[i] - 1)] = copper;
+				G->hand[i][(int)Random() * (handSize[i] - 1)] = copper;
 			}
 		}
 	}
@@ -132,16 +132,12 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	
 	//Store hand card counts prior to cutpurse call for each player
-	int handCardCountByTypeBeforeCutpurse[MAX_PLAYERS][27] = {0};
+	int handCardCountByTypeBeforeCutpurse[MAX_PLAYERS][27] = {{0}};
 	for(i = 0; i < playerCount; i++){
 		for(j = 0; j < G->handCount[i]; j++){
 			handCardCountByTypeBeforeCutpurse[i][G->hand[i][j]]++;
 		}
 	}
-	
-	//Determine random player to play cutpurse
-	int activePlayer = Random() * playerCount - 1;
-	G->whoseTurn = activePlayer;
 	
 	//int for coin bonus (should remain unchanged after Cutpurse call)
 	int coin_bonus = 0;
@@ -151,10 +147,10 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	/************************* CHECKS BEGIN HERE  **************************/
 	
 	//Call Cutpurse
-	cardEffect(cutpurse, -1, -1, -1, G, handPos[activePlayer, &coin_bonus);
+	cardEffect(cutpurse, -1, -1, -1, G, handPos, &coin_bonus);
 	
 	//Store hand card counts after cutpurse call for each player
-	int handCardCountByTypeAfterCutpurse[MAX_PLAYERS][27] = {0};
+	int handCardCountByTypeAfterCutpurse[MAX_PLAYERS][27] = {{0}};
 	for(i = 0; i < playerCount; i++){
 		for(j = 0; j < G->handCount[i]; j++){
 			handCardCountByTypeAfterCutpurse[i][G->hand[i][j]]++;
@@ -174,7 +170,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 			    handCardCountByTypeAfterCutpurse[i][j]) ||
 			   ((j < copper || j > copper) && 
 			    handCardCountByTypeBeforeCutpurse[i][j] !=
-			    handCardCountByTypeAfterCutpurse)) &&
+			    handCardCountByTypeAfterCutpurse[i][j])) &&
 				++(*failCt) <= MAX_FAILS){
 				failures[*failCt-1].lineNumber = __LINE__;
 				sprintf(failures[*failCt-1].description,
@@ -193,7 +189,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 					handCardCountByTypeAfterCutpurse[i][j]) ||
 				   ((j < cutpurse || j > cutpurse) && 
 					handCardCountByTypeBeforeCutpurse[i][j] !=
-					handCardCountByTypeAfterCutpurse))
+					handCardCountByTypeAfterCutpurse[i][j])) &&
 					++(*failCt) <= MAX_FAILS){
 					failures[*failCt-1].lineNumber = __LINE__;
 					sprintf(failures[*failCt-1].description,
@@ -213,9 +209,9 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	//If this is not the no coppers boundary test,
 	//Check to make sure all hand counts are decremented by one.
 	//(Non-active players discard 1 copper, active player discards
-	// one cutpurse.)
+	// 1 cutpurse.)
 	for(int i; i < playerCount && !noCopper; i++){
-		if(deckSize[i] - 1 != G->handCount[i] &&
+		if(handSize[i] - 1 != G->handCount[i] &&
 			++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
@@ -225,7 +221,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 			"  Expected: %d ; Observed %d %s\n", 
 			j, i,
 			i == activePlayer ? "played" : "did not play",
-			deckSize[i] - 1, G->handCount[i],
+			handSize[i] - 1, G->handCount[i],
 			noCopper ? "(Boundary)" : "(Non-Boundary)"); 
 		}
 	}
@@ -255,7 +251,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 				   ((j == cutpurse && handCardCountByTypeBeforeCutpurse[i][j] - 1 != 
 				     handCardCountByTypeAfterCutpurse[i][j]) ||
 				   ((j < cutpurse || j > cutpurse) && handCardCountByTypeBeforeCutpurse[i][j] !=
-					handCardCountByTypeAfterCutpurse + 1)) &&
+					handCardCountByTypeAfterCutpurse[i][j])) &&
 					++(*failCt) <= MAX_FAILS){
 					failures[*failCt-1].lineNumber = __LINE__;
 					sprintf(failures[*failCt-1].description,
@@ -312,7 +308,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 		"coins value not updated correctly\n"
 		"  Expected 2 ; Observed %d %s\n", 
 		G->coins,
-		isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		noCopper ? "(Boundary)" : "(Non-Boundary)");
 	}
 	
 	//Make sure supply piles haven't changed
@@ -323,7 +319,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 			"Supply pile count changed unexpectedly at pile %d\n"
 			"  Expected 10 ; Observed %d %s\n", 
 			i, G->supplyCount[i],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			noCopper ? "(Boundary)" : "(Non-Boundary)");
 			break;
 		}
 	}
@@ -341,7 +337,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 			i, 
 			i == activePlayer ? "played" : "did not play",
 			G->discardCount[i],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			noCopper ? "(Boundary)" : "(Non-Boundary)");
 		}
 	}
 	
@@ -350,30 +346,30 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	//for all other players, as the active player discards cutpurse
 	//and no other players discard
 	for(i = 0; i < playerCount && noCopper; i++){
-		if(i == activePlayer && G->discardCount[i] != 1 ||
-		   i == && ++(*failCt) <= MAX_FAILS){
+		if(i == activePlayer && G->discardCount[i] != 1 && 
+			++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Discard card count not updated correctly\n"
 			"    (player who played cutpurse)\n"
 			"  Expected 1 ; Observed %d %s\n", 
 			G->discardCount[i],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			noCopper ? "(Boundary)" : "(Non-Boundary)");
 		}
-		else if(i != activePlayer && G->discardCount[i] != 0 ||
-		   i == && ++(*failCt) <= MAX_FAILS){
+		else if(i != activePlayer && G->discardCount[i] != 0 && 
+			++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Discard card count not updated correctly\n"
 			"    (player who did not play cutpurse)\n"
 			"  Expected 0 ; Observed %d %s\n", 
 			G->discardCount[i],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			noCopper ? "(Boundary)" : "(Non-Boundary)");
 		}
 	}
 	
 	//Check that cutpurse is placed in the active player's discard pile,
-	//and that no other discard pile index value has changed
+	//and that no other discard pile index value (for active player) has changed
 	for(i = 0; i < MAX_DECK; i++){
 		if(i == 0 && G->discard[activePlayer][i] != cutpurse 
 			&& ++(*failCt) <= MAX_FAILS){
@@ -382,7 +378,8 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 			"Discard pile not updated as expected at idx %d for player %d\n"
 			"    (player who played cutpurse)\n"
 			"  Expected cutpurse ; Observed %d %s\n", 
-			i, activePlayer, G->discard[activePlayer][i]);
+			i, activePlayer, G->discard[activePlayer][i],
+			noCopper ? "(Boundary)" : "(Non-Boundary)");
 		}
 		else if(i != 0 && G->discard[activePlayer][i] != -1 
 			&& ++(*failCt) <= MAX_FAILS){
@@ -391,8 +388,8 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 			"Discard pile not updated as expected at idx %d for player %d\n"
 			"    (player who played cutpurse)\n"
 			"  Expected -1 ; Observed %d %s\n", 
-			i, G->discard[activePlayer][i],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			i, activePlayer, G->discard[activePlayer][i],
+			noCopper ? "(Boundary)" : "(Non-Boundary)");
 		}
 		break;
 	}
@@ -410,7 +407,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 				"    (player who did not play cutpurse)\n"
 				"  Expected copper ; Observed %d %s\n", 
 				i, m, G->discard[m][i],
-				isBoundary ? "(Boundary)" : "(Non-Boundary)");
+				noCopper ? "(Boundary)" : "(Non-Boundary)");
 			}
 			else if(i != 0 && G->discard[m][i] != -1 
 				&& ++(*failCt) <= MAX_FAILS){
@@ -419,16 +416,15 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 				"Discard pile not updated as expected at idx %d for player %d\n"
 				"    (player who did not play cutpurse)\n"
 				"  Expected -1 ; Observed %d %s\n", 
-				i, m G->discard[m][i],
-				isBoundary ? "(Boundary)" : "(Non-Boundary)");
+				i, m, G->discard[m][i],
+				noCopper ? "(Boundary)" : "(Non-Boundary)");
 			}
 			break;
 		}
 	}
 	
 	//If this is the no copper boundary test,
-	//make sure a copper is placed into each non-active player's
-	//discard pile
+	//make sure each non-active player's discard pile does not change
 	for(m = 0; m < playerCount && noCopper; m++){	
 		for(i = 0; i < MAX_DECK; i++){
 			if(G->discard[m][i] != -1 
@@ -438,8 +434,8 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 				"Discard pile not updated as expected at idx %d for player %d\n"
 				"    (player who did not play cutpurse)\n"
 				"  Expected -1 ; Observed %d %s\n", 
-				i, m G->discard[m][i],
-				isBoundary ? "(Boundary)" : "(Non-Boundary)");
+				i, m, G->discard[m][i],
+				noCopper ? "(Boundary)" : "(Non-Boundary)");
 			}
 			break;
 		}
@@ -455,17 +451,17 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 		"Number of actions not updated correctly\n"
 		"  Expected 0 ; Observed %d\n %s", 
 		G->numActions,
-		isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		noCopper ? "(Boundary)" : "(Non-Boundary)");
 	}
 	
 	//Check whoseTurn...
-	if(G->whoseTurn != 0 && ++(*failCt) <= MAX_FAILS){
+	if(G->whoseTurn != activePlayer && ++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Whose turn changed unexpectedly\n"
-		"  Expected 0 ; Observed %d %s\n", 
-		G->whoseTurn,
-		isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		"  Expected %d ; Observed %d %s\n", 
+		activePlayer, G->whoseTurn,
+		noCopper ? "(Boundary)" : "(Non-Boundary)");
 	}
 	
 	//Check numBuys...
@@ -475,7 +471,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 		"Number of buys changed unexpectedly\n"
 		"  Expected 1 ; Observed %d %s\n", 
 		G->numBuys,
-		isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		noCopper ? "(Boundary)" : "(Non-Boundary)");
 	}
 	
 	//Check embargo tokens...
@@ -486,7 +482,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 			"Number of embargo tokens changed unexpectedly for card %d\n"
 			"  Expected 0 ; Observed %d %s\n", 
 			i, G->embargoTokens[i],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			noCopper ? "(Boundary)" : "(Non-Boundary)");
 		}
 	}
 	
@@ -497,7 +493,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 		"Outpost played changed unexpectedly\n"
 		"  Expected 0 ; Observed %d %s\n", 
 		G->outpostPlayed,
-		isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		noCopper ? "(Boundary)" : "(Non-Boundary)");
 	}
 	
 	//Check outpost turn...
@@ -507,10 +503,31 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 		"Outpost turn changed unexpectedly\n"
 		"  Expected 0 ; Observed %d %s\n", 
 		G->outpostTurn,
-		isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		noCopper ? "(Boundary)" : "(Non-Boundary)");
 	}
 	
-	//Check playedCards (should have cutpurse at index 0, -1 all other indexes) (???)
+	//NOTE: I initially wrote this test assuming the discardCard
+	//		function was functioning properly (i.e. the Smithy
+	//		was supposed to end up in playedCard after its use.
+	//		Upon further investigation and consideration, I 
+	//		realize that the test here should be to make sure
+	//		Smithy gets to the proper discard pile, as this is
+	//		its final destination per the game specifications.
+	//		There appears to be a bug in discardCard accordingly,
+	//		which I discuss in more detail in the assignment writeup.
+	//		We still run this test to allow for the possibility that
+	//		playedCards receives the card being played, even though
+	//		the use of playedCards appears to be irrelevant.
+	
+	//Check playedCardCount (should be 1)
+	if(G->playedCardCount != 1 && ++(*failCt) <= MAX_FAILS){
+		failures[*failCt-1].lineNumber = __LINE__;
+		sprintf(failures[*failCt-1].description,
+		"Played card count not updated correctly\n"
+		"  Expected 1 ; Observed %d\n", 
+		G->playedCardCount);
+	}
+	//Check playedCards (should have Smithy at index 0, -1 all other indexes)
 	for(i = 0; i < MAX_DECK; i++){
 		if(i == 0 && G->playedCards[i] != cutpurse 
 			&& ++(*failCt) <= MAX_FAILS){

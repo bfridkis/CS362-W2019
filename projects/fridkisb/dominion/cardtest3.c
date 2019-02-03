@@ -34,8 +34,11 @@ int main (int argc, char** argv) {
 	
 	printf("Starting cardtest3 - Testing 'cutpurse' card\n");
 	
-	printf("\nExecuting %d Cutpurse plays using hands with random assortment of \n"
-		   "\t hand cards for each player, with at least 1 copper in each hand...\n", CUTPURSE_CALLS);
+	printf("\nExecuting %d Cutpurse %s using hands with random assortment of \n"
+		   "\t hand cards for each player, with at least 1 copper in each hand...\n\n"
+		   "\t\t" "-Set 'CUTPURSE_CALLS' in cardtest3.c\n"
+		   "\t\t" " to modify number of runs.\n", CUTPURSE_CALLS,
+		   CUTPURSE_CALLS > 1 ? "plays" : "play");
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
 	//This random number will be used as the game's seed.
@@ -61,9 +64,9 @@ int main (int argc, char** argv) {
 	}
 	
 	printf("\nBOUNDARY: Executing Cutpurse play using hand with random assortment of \n"
-		   "\t hand cards for each player, with 0 treasure cards in each hand...\n");
+		   "\t hand cards for each player but with no copper cards...\n");
 	
-	//Test with only 1 treasure card in the player's deck
+	//Test with no copper cards in each player's hand
 	//Generate set of 10 random Kingdom cards
 	for(j = 0; j < 10; j++){		
 		k[j] = Random() * 19 + 7;
@@ -71,16 +74,17 @@ int main (int argc, char** argv) {
 	initializeGame(2, k, Random() * INT_MAX, &G);
 	_cardtest3helper(k, &G, failures, &failCt, NUM_PLAYERS, 1);
 	
-    /*	NEEDS UPDATING...
 	printf("\n\tEach test (that is not marked 'BOUNDARY') verifies proper game state\n"
 		   "\tmodification, reporting a failure if any of the following conditions are NOT met:\n"
 		   "\t\t"       "1. Current player variable (whoseTurn) is unchanged\n"
-		   "\t\t"       "2. Player's hand gains only 2 treasure cards from deck\n"
-		   "\t\t\t"         "a. Same 2 treasure card types are removed from deck and added to hand.\n"
-		   "\t\t\t"         "b. Deck count and hand counts are updated correctly\n"
-		   "\t\t"       "3. Hand does not gain any non-treasure cards\n"
-		   "\t\t"       "4. Discard does not gain any treasure cards\n"
-		   "\t\t"       "5. All non-treasure cards removed from deck are added to hand\n"
+		   "\t\t"       "2. Player who plays cutpurse has same hand after play less 1 cutpurse\n"
+		   "\t\t"       "3. Players who did not play cutpurse have same hand after play less 1 copper\n"
+		   "\t\t\t"          "EXCEPTION: Boundary case of no copper in which players who did not play\n"
+		   "\t\t\t"          "           copper have same hand after cutpurse is played\n"
+		   "\t\t"       "4. Hand counts are decremented by 1 for each player\n"
+		   "\t\t\t"         "(1 cutpurse discarded for active player or 1 copper\n" 
+		   "\t\t\t"          "discarded for inactive players)\n"
+		   "\t\t"       "5. The game state's 'coins' variable is incremented by 2\n"
 		   "\t\t"       "6. All of the following game states are unchanged:\n"
 		   "\t\t\t"          "a. coins\n"
 		   "\t\t\t"          "b. numActions\n"
@@ -88,41 +92,9 @@ int main (int argc, char** argv) {
 		   "\t\t\t"          "d. embargoTokens[]\n"
 		   "\t\t\t"          "e. outpostPlayed\n"
 		   "\t\t\t"          "f. outpostTurn\n"
-		   "\t\t"       "7. Played card count is unchanged\n"
-		   "\t\t"       "8. Played cards is unchanged\n"
-		   "\n"
-		   "\t\t"       "*  BOUNDARY tests verify all of the above except for #2a, where instead  *\n"
-		   "\t\t"       "*  the boundary case checks for the appropriate number of treasure card  *\n"
-		   "\t\t"       "*  removals and insertions based on the designated treasure card amount  *\n"
-		   "\t\t"       "*  (i.e. as is passed in via the 'treasureCardCountSpecifier' variable.) *\n"
-		   "\t\t"
-		   "\n"
-		   "\t\t"		"********************* NOTE FOR BOUNDARY CASE / BUG REPORT ****************** \n"
-		   "\t\t" 		"**																		   ** \n"
-		   "\t\t" 		"** Technically, the Cutpurse card does not explicitly state what should ** \n"
-		   "\t\t" 		"**    be done in the event that the set of the player's deck and discard  ** \n"
-		   "\t\t"		"**     piles do not contain a total of at least 2 treasure cards. For a   ** \n"
-		   "\t\t"		"**       'literal minded' machine such as a computer, this creates an     ** \n"
-		   "\t\t"		"** infinite loop of sorts, that must be handled accordingly. The findings ** \n"
-		   "\t\t"		"**  of this testing exercise have indicated a bug related to this aspect  ** \n"
-		   "\t\t"		"**  of cutpurse, one which does not result in a stuck loop but rather   ** \n"
-		   "\t\t"		"** incorrect behavior in some conditions (i.e. when discard and deck do   ** \n"
-		   "\t\t"		"**  not contain at least 2 treasures, but hand has enough to make up the  ** \n" 
-		   "\t\t"		"** difference) or a segmentation fault in others (i.e. when there are not ** \n" 
-		   "\t\t"		"**   at least 2 treasures between deck, discard, and hand combined). This ** \n"
-		   "\t\t"		"**   program (cardtest3) has been deliberately set up to avoid a full on  ** \n"
-		   "\t\t"		"**    crash due to this error, so that all remaining tests and code will  ** \n"
-		   "\t\t"		"**     be processed to completion. The incorrect behavior (that does not  ** \n"
-		   "\t\t" 		"** result in a full crash) caused by this bug is captured in the BOUNDARY ** \n"
-		   "\t\t" 		"**  test results. Please see cardEffects.c and the assignment write-up    ** \n"
-		   "\t\t" 		"**                  for a complete description of the error.              ** \n"
-		   "\t\t" 		"**                                                                        ** \n"
-		   "\t\t" 		"**  (The bug mentioned above was NOT introduced as part of assignment 2.  ** \n"
-		   "\t\t" 		"**    The test results here should indicate additional findings which     ** \n"
-		   "\t\t" 		"**          ARE the result of bugs introduced for assignment 2.)          ** \n" 
-		   "\t\t" 		"**                                                                        ** \n"
-		   "\t\t" 		"**************************************************************************** \n");
-	*/
+		   "\t\t\t"          "g. All players' decks are unchanged\n"
+		   "\t\t"       "7. Played card count is incremented by 1 (for cutpurse played)\n"
+		   "\t\t"       "8. Played cards gains one and only cutpurse\n");
 	
 	if(!failCt){
 		printf("\n\n*****************************\n"

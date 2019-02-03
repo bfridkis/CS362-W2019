@@ -34,8 +34,11 @@ int main (int argc, char** argv) {
 	
 	printf("Starting cardtest1 - Testing 'smithy' card\n");
 	
-	printf("\nExecuting %d Smithy plays using hands with random assortment of \n"
-		   "\t supply cards, with at least 3 in deck...\n", SMITHY_CALLS);
+	printf("\nExecuting %d Smithy %s using hands with random assortment of \n"
+		   "\t supply cards, with at least 3 in deck...\n\n"
+		   "\t\t" "-Set 'SMITHY_CALLS' in cardtest1.c\n"
+		   "\t\t" " to modify number of runs.\n", SMITHY_CALLS,
+		   SMITHY_CALLS > 1 ? "plays" : "play");
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
 	//This random number will be used as the game's seed.

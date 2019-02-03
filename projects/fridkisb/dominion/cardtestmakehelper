@@ -52,3 +52,27 @@ gcov dominion.c --function-summaries | head -n$(echo $line) | tail -n2 >> unitte
 
 
 echo -e "\n\n" >>unittestresults.out
+
+echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> unittestresults.out
+echo "++                                                                  ++" >> unittestresults.out
+echo "++                           CARD TEST 3                            ++" >> unittestresults.out
+echo "++                                                                  ++" >> unittestresults.out
+echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> unittestresults.out
+
+echo "Result for running cardtest3 (cutpurse card test):" >> unittestresults.out
+echo "cardtest3.c:" >> unittestresults.out 
+./cardtest3 >> unittestresults.out
+
+echo -e "\tCoverage Report:\n" >> unittestresults.out
+
+line=$(gcov cardEffects.c --function-summaries | grep -n cutpurseEffect | cut -f1 -d:)
+((line++))
+gcov cardEffects.c --function-summaries | head -n$(echo $line) | tail -n2 >> unittestresults.out
+
+echo -e "\n\tThe following functions are called by cutpurseEffect...\n" >> unittestresults.out
+line=$(gcov dominion.c --function-summaries | grep -n discardCard | cut -f1 -d:)
+((line++))
+gcov dominion.c --function-summaries | head -n$(echo $line) | tail -n2 >> unittestresults.out
+
+
+echo -e "\n\n" >>unittestresults.out

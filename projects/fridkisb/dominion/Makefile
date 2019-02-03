@@ -27,6 +27,9 @@ _cardtest1helper.o: _cardtest1helper.c _cardtest1helper.h dominion.o
 _cardtest2helper.o: _cardtest2helper.c _cardtest2helper.h dominion.o
 	gcc -c _cardtest2helper.c -g  $(CFLAGS)
 	
+_cardtest3helper.o: _cardtest3helper.c _cardtest3helper.h dominion.o
+	gcc -c _cardtest3helper.c -g  $(CFLAGS)
+	
 playdom: dominion.o playdom.c
 	gcc -o playdom playdom.c -g dominion.o cardEffects.o rngs.o $(CFLAGS)
 #To run playdom you need to enter: ./playdom <any integer number> like ./playdom 10*/
@@ -58,10 +61,13 @@ cardtest1: cardtest1.c _cardtest1helper.o dominion.o cardEffects.o rngs.o
 cardtest2: cardtest2.c _cardtest2helper.o dominion.o cardEffects.o rngs.o
 	gcc -o cardtest2 cardtest2.c -g dominion.o cardEffects.o _cardtest2helper.o rngs.o $(CFLAGS)
 	
+cardtest3: cardtest3.c _cardtest3helper.o dominion.o cardEffects.o rngs.o
+	gcc -o cardtest3 cardtest3.c -g dominion.o cardEffects.o _cardtest3helper.o rngs.o $(CFLAGS)
+	
 testAll: dominion.o testSuite.c 
 	gcc -o testSuite testSuite.c -g  dominion.o cardEffects.o rngs.o $(CFLAGS)
 	
-unittestresults: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2
+unittestresults: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3
 	@chmod +x unittestmakehelper
 	@./unittestmakehelper
 	@chmod +x cardtestmakehelper

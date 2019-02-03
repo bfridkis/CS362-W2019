@@ -138,7 +138,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 	int coin_bonus = 0;
 	
 	//Assign a random hand position for Smithy
-	int handPos = Random() * G->handCount[0] - 1;
+	int handPos = Random() * (G->handCount[0] - 1);
 	if(handPos == -1){
 		handPos = 0;
 	}
@@ -265,12 +265,12 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	
 	//Check that Smithy is placed in player 0's discard pile
-	if(G->discardCount != 1 && ++(*failCt) <= MAX_FAILS){
+	if(G->discardCount[0] != 1 && ++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Discard card count not updated correctly\n"
 		"  Expected 1 ; Observed %d\n", 
-		G->playedCardCount);
+		G->discardCount[0]);
 	}
 	//Check player 0 discard (should have Smithy at index 0, 
 	// -1 all other indexes)
@@ -448,8 +448,11 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 	//		its final destination per the game specifications.
 	//		There appears to be a bug in discardCard accordingly,
 	//		which I discuss in more detail in the assignment writeup.
+	//		We still run this test to allow for the possibility that
+	//		playedCards receives the card being played, even though
+	//		the use of playedCards appears to be irrelevant.
 	
-	/* //Check playedCardCount (should be 1)
+	//Check playedCardCount (should be 1)
 	if(G->playedCardCount != 1 && ++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
@@ -476,7 +479,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			i, G->playedCards[i]);
 		}
 		break;
-	} */
+	} 
 	
 	return 0;
 }

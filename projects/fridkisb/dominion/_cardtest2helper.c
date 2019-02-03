@@ -143,7 +143,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	shuffle(0, G);
 	
 	//Assign a random hand position for Adventurer
-	int handPos = Random() * G->handCount[0] - 1;
+	int handPos = Random() * (G->handCount[0] - 1);
 	if(handPos == -1){
 		handPos = 0;
 	}
@@ -332,7 +332,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	
 	//Make sure the discard pile has only copies of non-treasure cards 
-	//that have been removed from deck
+	//that have been removed from deck + 1 adventurer
 	int discardCardCountByTypeAfterAdventurer[27] = {0};
 	for(i = 0; i < G->discardCount[0]; i++){
 		discardCardCountByTypeAfterAdventurer[G->discard[0][i]]++;
@@ -365,6 +365,16 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		}
 	}
 	
+	//Make sure discard has 1 (and only 1) adventurer card
+	if(discardCardCountByTypeAfterAdventurer[adventurer] != 1 &&
+		++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Expected 1 adventurer in discard : Observed %d %s\n",
+			discardCardCountByTypeAfterAdventurer[adventurer],
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+	}
+	
 	//Make sure deck count has been updated in accordance with the number
 	//of cards removed.
 	int totalNumCardsRemovedFromDeck = 0;
@@ -382,20 +392,24 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	
 	//Make sure discard count is updated correctly
+	//(Also account for the adventurer itself which should be discarded,
+	// such that if two treasures are gained to hand, all other
+	// cards removed from the deck - 2 treasures + 1 adventurer should
+	// equal the current deck count, and so forth.)
 	if(((treasureCardCountSpecifier >= 2 && 
-		G->discardCount[0] != totalNumCardsRemovedFromDeck - 2) ||
-	   (treasureCardCountSpecifier == 1 &&
 		G->discardCount[0] != totalNumCardsRemovedFromDeck - 1) ||
+	   (treasureCardCountSpecifier == 1 &&
+		G->discardCount[0] != totalNumCardsRemovedFromDeck) ||
 		(treasureCardCountSpecifier <= 0 &&
-		G->discardCount[0] != totalNumCardsRemovedFromDeck)) &&
+		G->discardCount[0] != totalNumCardsRemovedFromDeck + 1)) &&
 		++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Discard pile count updated incorrectly\n"
-			"Expected %d cards in discard pile ; Observed % d %s\n", 
-			treasureCardCountSpecifier >= 2 ? totalNumCardsRemovedFromDeck - 2 :
-			totalNumCardsRemovedFromDeck == 1 ? totalNumCardsRemovedFromDeck - 1 :
-			totalNumCardsRemovedFromDeck, G->discardCount[0],
+			"  Expected %d cards in discard pile ; Observed % d %s\n", 
+			treasureCardCountSpecifier >= 2 ? totalNumCardsRemovedFromDeck - 1 :
+			totalNumCardsRemovedFromDeck == 1 ? totalNumCardsRemovedFromDeck :
+			totalNumCardsRemovedFromDeck + 1, G->discardCount[0],
 			isBoundary ? "(Boundary)" : "(Non-Boundary)");
 	}
 	

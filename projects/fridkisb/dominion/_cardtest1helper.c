@@ -306,7 +306,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Number of actions not updated correctly\n"
-		"  Expected 0 ; Observed %d\n", 
+		"  Expected 1 ; Observed %d\n", 
 		G->numActions);
 	}
 	
@@ -446,8 +446,8 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Played cards not updated as expected at idx %d\n"
-			"  Expected %d ; Observed %d\n", 
-			i,smithy, G->playedCards[0]);
+			"  Expected smithy ; Observed %d\n", 
+			i, G->playedCards[0]);
 		}
 		else if(i != 0 && G->playedCards[i] != -1 
 			&& ++(*failCt) <= MAX_FAILS){

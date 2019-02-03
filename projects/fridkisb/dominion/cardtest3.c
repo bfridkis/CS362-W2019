@@ -21,9 +21,9 @@
 //Set this in cardtest3helper.c also!
 #define MAX_FAILS 10
 
-#define NUM_PLAYERS 2
+#define NUM_PLAYERS 4
 
-#define ADVENTURER_CALLS 100
+#define CUTPURSE_CALLS 100
 
 int main (int argc, char** argv) {
 	struct gameState G;
@@ -35,7 +35,7 @@ int main (int argc, char** argv) {
 	printf("Starting cardtest3 - Testing 'cutpurse' card\n");
 	
 	printf("\nExecuting %d Cutpurse plays using hands with random assortment of \n"
-		   "\t supply cards, with at least 2 treasures in deck...\n", ADVENTURER_CALLS);
+		   "\t hand cards for each player, with at least 1 copper in each hand...\n", CUTPURSE_CALLS);
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
 	//This random number will be used as the game's seed.
@@ -44,7 +44,7 @@ int main (int argc, char** argv) {
 	PutSeed(-1);
 		   
 	int i, j, k[10];
-	for(i = 0; i < ADVENTURER_CALLS; i++){
+	for(i = 0; i < CUTPURSE_CALLS; i++){
 		
 		//Generate set of 10 random Kingdom cards
 		for(j = 0; j < 10; j++){		
@@ -52,16 +52,16 @@ int main (int argc, char** argv) {
 		}
 		
 		//Initializes game for two players
-		initializeGame(2, k, Random() * INT_MAX, &G);
+		initializeGame(NUM_PLAYERS, k, Random() * INT_MAX, &G);
 		
 		//Play Cutpurse with random kingdom card set with a deck
 		//containing at least 2 treasure cards.
 		//(see _cardtest3helper for more details)
-		_cardtest3helper(k, &G, failures, &failCt, 2, 0);
+		_cardtest3helper(k, &G, failures, &failCt, NUM_PLAYERS, 0);
 	}
 	
 	printf("\nBOUNDARY: Executing Cutpurse play using hand with random assortment of \n"
-		   "\t supply cards, with 1 treasure card in deck...\n");
+		   "\t hand cards for each player, with 0 treasure cards in each hand...\n");
 	
 	//Test with only 1 treasure card in the player's deck
 	//Generate set of 10 random Kingdom cards
@@ -69,30 +69,9 @@ int main (int argc, char** argv) {
 		k[j] = Random() * 19 + 7;
 	}
 	initializeGame(2, k, Random() * INT_MAX, &G);
-	_cardtest3helper(k, &G, failures, &failCt, 1, 1);
+	_cardtest3helper(k, &G, failures, &failCt, NUM_PLAYERS, 1);
 	
-	printf("\nBOUNDARY: Executing Cutpurse play using hand with random assortment of \n"
-		   "\t supply cards, with 0 treasure cards in deck...\n");
-	
-	//Test with only 2 cards in the player's deck
-	//Generate set of 10 random Kingdom cards
-	for(j = 0; j < 10; j++){		
-		k[j] = Random() * 19 + 7;
-	}
-	initializeGame(2, k, Random() * INT_MAX, &G);
-	_cardtest3helper(k, &G, failures, &failCt, 0, 1);
-	
-	printf("\nBOUNDARY: Executing Cutpurse play using hand with random assortment of \n"
-		   "\t supply cards, with 0 cards in deck (should be same outcome as no treasure cards...)\n");
-	
-	//Test with only 2 cards in the player's deck
-	//Generate set of 10 random Kingdom cards
-	for(j = 0; j < 10; j++){		
-		k[j] = Random() * 19 + 7;
-	}
-	initializeGame(2, k, Random() * INT_MAX, &G);
-	_cardtest3helper(k, &G, failures, &failCt, -1, 1);
-	
+    /*	NEEDS UPDATING...
 	printf("\n\tEach test (that is not marked 'BOUNDARY') verifies proper game state\n"
 		   "\tmodification, reporting a failure if any of the following conditions are NOT met:\n"
 		   "\t\t"       "1. Current player variable (whoseTurn) is unchanged\n"
@@ -143,6 +122,7 @@ int main (int argc, char** argv) {
 		   "\t\t" 		"**          ARE the result of bugs introduced for assignment 2.)          ** \n" 
 		   "\t\t" 		"**                                                                        ** \n"
 		   "\t\t" 		"**************************************************************************** \n");
+	*/
 	
 	if(!failCt){
 		printf("\n\n*****************************\n"

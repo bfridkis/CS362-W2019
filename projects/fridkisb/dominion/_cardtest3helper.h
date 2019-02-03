@@ -28,7 +28,7 @@ struct failedTest {
 typedef struct failedTest failedTest;
 
 int _cardtest3helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int treasureCardCountSpecifier, int isBoundary);
+	int* failCt, int playerCount, int noCopper);
 
 
 #endif

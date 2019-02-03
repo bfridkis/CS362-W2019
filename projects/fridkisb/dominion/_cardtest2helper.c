@@ -419,7 +419,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Number of actions not updated correctly\n"
-		"  Expected 0 ; Observed %d\n %s", 
+		"  Expected 1 ; Observed %d\n %s", 
 		G->numActions,
 		isBoundary ? "(Boundary)" : "(Non-Boundary)");
 	}

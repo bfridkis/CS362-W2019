@@ -24,10 +24,10 @@
 #define MAX_FAILS 10
  
 int _cardtest3helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int treasureCardCountSpecifier, int isBoundary){
+	int* failCt, int playerCount, int noCopper){
 		
 	//Test value variables	   
-	int i, j, m, deckSize, handSize[MAX_PLAYERS];
+	int i, j, m;
 	
 	//Ensure discardCount, deckCount, and handCount are all set to 0
 	//and discard, deck, and hand are cleared for all players
@@ -74,6 +74,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	//final multiple of 17, for handSize as determined above 
 	//(e.g. a 20 card deck will have 1 of each card plus 1 extra 
 	//curse, estate, and duchy.)
+	int handSize[MAX_PLAYERS];
 	for(m = 0; m < playerCount; m++){
 		for(i = 0, j = 0; i < handSize[m]; i++){
 			if(j < 7){
@@ -103,7 +104,8 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	//If this is not the boundary test in which players
 	//have no copper, add a copper to any player with a 
 	//hand size less than 4 (any deck size greater or
-	//equal to 4 is guaranteed to have at least 1 copper.
+	//equal to 4 is guaranteed to have at least 1 copper
+	//already).
 	if(!noCopper){
 		for(i = 0; i < playerCount; i++){
 			if(handSize[i] < 4){
@@ -137,7 +139,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 		}
 	}
 	
-	//Determine random player to play cut
+	//Determine random player to play cutpurse
 	int activePlayer = Random() * playerCount - 1;
 	G->whoseTurn = activePlayer;
 	
@@ -151,224 +153,199 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	//Call Cutpurse
 	cardEffect(cutpurse, -1, -1, -1, G, handPos[activePlayer, &coin_bonus);
 	
-	//Check to make sure G->handCount[0] has been incremented by the
-	//appropriate amount (i.e. number of treasures gained). Cutpurse should 
-	//gain 2 treasure cards to hand (so long as two are present in the deck).
-	//If only 1 treasure is in the deck, only 1 treasure should be gained
-	//and handCount should only increment once, and if no treasures are in 
-	//the deck, no treasures should be gained and handCount should remain
-	//unchanged.
-	if(((treasureCardCountSpecifier == 2 && 
-		G->handCount[0] != handCountBeforeCutpurse + 2) ||
-		(treasureCardCountSpecifier == 1 && 
-		G->handCount[0] != handCountBeforeCutpurse + 1) ||
-		(treasureCardCountSpecifier == 0 && 
-		G->handCount[0] != handCountBeforeCutpurse)) &&
-		++(*failCt) <= MAX_FAILS){
-		failures[*failCt-1].lineNumber = __LINE__;
-		sprintf(failures[*failCt-1].description,
-		"Hand count not updated properly after Cutpurse play\n"
-		"  Expected: %d ; Observed %d %s\n", 
-		treasureCardCountSpecifier == 2 ? handCountBeforeCutpurse + 2 : 
-		treasureCardCountSpecifier == 1 ? handCountBeforeCutpurse + 1 : 
-		handCountBeforeCutpurse,
-		G->handCount[0],
-		isBoundary ? "(Boundary)" : "(Non-Boundary)"); 
-	}
-	
-	//Determine how many of each card type have been removed from (or 
-	//erroneously added to) the deck
-	int deckCardCountByTypeAfterCutpurse[27] = {0};
-	for(i = 0; i < G->deckCount[0]; i++){
-		deckCardCountByTypeAfterCutpurse[G->deck[0][i]]++;
-	}
-	int deckDiffsAfterCutpurse[27] = {0};
-	for(i = 0; i < 27; i++){
-		deckDiffsAfterCutpurse[i] =
-			deckCardCountByTypeBeforeCutpurse[i] -
-			deckCardCountByTypeAfterCutpurse[i];
-	}
-	
-	//Determine how many of each card type have been added to (or erroneously
-	//removed from) the deck
-	int handCardCountByTypeAfterCutpurse[27] = {0};
-	for(i = 0; i < G->handCount[0]; i++){
-		handCardCountByTypeAfterCutpurse[G->hand[0][i]]++;
-	}
-	int handDiffsAfterCutpurse[27] = {0};
-	for(i = 0; i < 27; i++){
-		handDiffsAfterCutpurse[i] =
-			handCardCountByTypeAfterCutpurse[i] -
-			handCardCountByTypeBeforeCutpurse[i];
-	}
-	
-	//Make sure correct number of treasure cards were removed from deck
-	if(((treasureCardCountSpecifier == 2 &&
-		deckDiffsAfterCutpurse[copper] + 
-		deckDiffsAfterCutpurse[silver] + 
-		deckDiffsAfterCutpurse[gold] != 2) ||
-	   (treasureCardCountSpecifier == 1 &&
-		deckDiffsAfterCutpurse[copper] + 
-		deckDiffsAfterCutpurse[silver] + 
-		deckDiffsAfterCutpurse[gold] != 1) ||
-		(treasureCardCountSpecifier == 0 &&
-		deckDiffsAfterCutpurse[copper] + 
-		deckDiffsAfterCutpurse[silver] + 
-		deckDiffsAfterCutpurse[gold] != 0)) &&
-		++(*failCt) <= MAX_FAILS){
-			failures[*failCt-1].lineNumber = __LINE__;
-			sprintf(failures[*failCt-1].description,
-			"Incorrect number of treasure cards removed from deck after Cutpurse play\n"
-			"  Expected: %d Removed ; Observed %d %s\n", 
-			treasureCardCountSpecifier == 2 ? 2 : 
-			treasureCardCountSpecifier == 1 ? 1 : 0, 
-			deckDiffsAfterCutpurse[copper] + 
-			deckDiffsAfterCutpurse[silver] + 
-			deckDiffsAfterCutpurse[gold],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)"); 
-	}
-	
-	//Make sure correct number of treasure cards were added to hand
-	if(((treasureCardCountSpecifier == 2 &&
-		handDiffsAfterCutpurse[copper] + 
-		handDiffsAfterCutpurse[silver] + 
-		handDiffsAfterCutpurse[gold] != 2) ||
-	   (treasureCardCountSpecifier == 1 &&
-		handDiffsAfterCutpurse[copper] + 
-		handDiffsAfterCutpurse[silver] + 
-		handDiffsAfterCutpurse[gold] != 1) ||
-		(treasureCardCountSpecifier == 0 &&
-		handDiffsAfterCutpurse[copper] + 
-		handDiffsAfterCutpurse[silver] + 
-		handDiffsAfterCutpurse[gold] != 0)) &&
-		++(*failCt) <= MAX_FAILS){
-			failures[*failCt-1].lineNumber = __LINE__;
-			sprintf(failures[*failCt-1].description,
-			"Incorrect number of treasure cards added to hand\n"
-			"  Expected: %d ; Observed %d %s\n", 
-			treasureCardCountSpecifier == 2 ? 2 : 
-			treasureCardCountSpecifier == 1 ? 1 : 0, 
-			handDiffsAfterCutpurse[copper] + 
-			handDiffsAfterCutpurse[silver] + 
-			handDiffsAfterCutpurse[gold],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)"); 
-	}
-	
-	//Make sure no non-treasure cards have been added to the hand
-	for(i = 0; i < 27; i++){
-		if((i < copper || i > gold) && handDiffsAfterCutpurse[i] != 0 &&
-			++(*failCt) <= MAX_FAILS){
-				failures[*failCt-1].lineNumber = __LINE__;
-				sprintf(failures[*failCt-1].description,
-				"Non treasure card added to hand pile\n"
-				" %d %d(s) added to hand %s\n", 
-				handDiffsAfterCutpurse[i], i,
-				isBoundary ? "(Boundary)" : "(Non-Boundary)");
-				break;
+	//Store hand card counts after cutpurse call for each player
+	int handCardCountByTypeAfterCutpurse[MAX_PLAYERS][27] = {0};
+	for(i = 0; i < playerCount; i++){
+		for(j = 0; j < G->handCount[i]; j++){
+			handCardCountByTypeAfterCutpurse[i][G->hand[i][j]]++;
 		}
 	}
 	
-	//Make sure hand count is updated correctly
-	if(((treasureCardCountSpecifier == 2 && 
-	     G->handCount[0] != handCountBeforeCutpurse + 2) || 
-	    (treasureCardCountSpecifier == 1 && 
-	     G->handCount[0] != handCountBeforeCutpurse + 1) || 
-	    (treasureCardCountSpecifier == 0 && 
-	   G->handCount[0] != handCountBeforeCutpurse)) &&
-	   ++(*failCt) <= MAX_FAILS){
-			failures[*failCt-1].lineNumber = __LINE__;
-			sprintf(failures[*failCt-1].description,
-			"Hand count not as expected\n"
-			"  Expected: %d Added ; Observed %d %s\n", 
-			treasureCardCountSpecifier == 2 ? handCountBeforeCutpurse + 2 : 
-			treasureCardCountSpecifier == 1 ? handCountBeforeCutpurse + 1 : 
-			handCountBeforeCutpurse, 
-			G->handCount[0],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)"); 
-	}
-	
-	//Make sure the same treasure cards that were removed from the
-	//deck were those that were added to the hand
-	if((handDiffsAfterCutpurse[copper] != deckDiffsAfterCutpurse[copper] ||
-	    handDiffsAfterCutpurse[silver] != deckDiffsAfterCutpurse[silver] ||
-	    handDiffsAfterCutpurse[gold] != deckDiffsAfterCutpurse[gold]) &&
-	   ++(*failCt) <= MAX_FAILS){
-			failures[*failCt-1].lineNumber = __LINE__;
-			sprintf(failures[*failCt-1].description,
-			"Different treasure cards added to hand than removed from deck\n"
-			"    Cards added to hand   : Copper - %d Silver - %d Gold - %d \n"
-			"  Cards removed from deck : Copper - %d Silver - %d Gold - %d %s\n", 
-			handDiffsAfterCutpurse[copper], handDiffsAfterCutpurse[silver], handDiffsAfterCutpurse[gold],
-			deckDiffsAfterCutpurse[copper], deckDiffsAfterCutpurse[silver], deckDiffsAfterCutpurse[gold],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)"); 
-	}
-	
-	//Make sure the discard pile has only copies of non-treasure cards 
-	//that have been removed from deck
-	int discardCardCountByTypeAfterCutpurse[27] = {0};
-	for(i = 0; i < G->discardCount[0]; i++){
-		discardCardCountByTypeAfterCutpurse[G->discard[0][i]]++;
-	}
-	for(i = 0; i < 27; i++){
-		if(i != copper && i != silver && i != gold && 
-		   discardCardCountByTypeAfterCutpurse[i] !=
-		   deckDiffsAfterCutpurse[i] &&
-		    ++(*failCt) <= MAX_FAILS){
-				failures[*failCt-1].lineNumber = __LINE__;
-				sprintf(failures[*failCt-1].description,
-				"Different cards or card quantities added to discard pile\n"
-				"\t\t\t\t" "than removed from deck\n"
-				"    %d '%d' cards added to discard : %d of these removed from deck %s\n", 
-				discardCardCountByTypeAfterCutpurse[i], i, deckDiffsAfterCutpurse[i],
-				isBoundary ? "(Boundary)" : "(Non-Boundary)");
-				break;
-		}
-		else if((i >= copper && i <= gold) && 
-				deckDiffsAfterCutpurse[i] != 
-				handDiffsAfterCutpurse[i] && 
+	//If this is not the no coppers boundary test,
+	//check to make sure each player's hand contains the same
+	//cards as before the cutpurse play minus one (and only one)
+	//copper for all non-active players. For active player, make
+	//sure hand is the same as before the cutpurse play minus 
+	//one cutpurse only.
+	for(int i; i < playerCount && !noCopper; i++){
+		for(j = 0; j < 27; j++){
+			if( i != activePlayer && 
+			  ((j == copper && handCardCountByTypeBeforeCutpurse[i][j] - 1 != 
+			    handCardCountByTypeAfterCutpurse[i][j]) ||
+			   ((j < copper || j > copper) && 
+			    handCardCountByTypeBeforeCutpurse[i][j] !=
+			    handCardCountByTypeAfterCutpurse)) &&
 				++(*failCt) <= MAX_FAILS){
+				failures[*failCt-1].lineNumber = __LINE__;
+				sprintf(failures[*failCt-1].description,
+				"Hand cards not updated properly after Cutpurse play\n"
+				"  Incorrect number of %d cards for player %d\n"
+				"   (player who did not play cutpurse)\n"
+				"  Expected: %d ; Observed %d %s\n", 
+				j, i, 
+				j == copper ? handCardCountByTypeBeforeCutpurse[i][j] - 1 :
+				handCardCountByTypeBeforeCutpurse[i][j],
+				handCardCountByTypeAfterCutpurse[i][j],
+				noCopper ? "(Boundary)" : "(Non-Boundary)"); 
+			}
+			else if( i == activePlayer && 
+				  ((j == cutpurse && handCardCountByTypeBeforeCutpurse[i][j] - 1 != 
+					handCardCountByTypeAfterCutpurse[i][j]) ||
+				   ((j < cutpurse || j > cutpurse) && 
+					handCardCountByTypeBeforeCutpurse[i][j] !=
+					handCardCountByTypeAfterCutpurse))
+					++(*failCt) <= MAX_FAILS){
 					failures[*failCt-1].lineNumber = __LINE__;
 					sprintf(failures[*failCt-1].description,
-					"Treasure card added to discard pile\n"
-					" %d %d(s) observed in discard pile %s\n", 
-					discardCardCountByTypeAfterCutpurse[i], i,
-					isBoundary ? "(Boundary)" : "(Non-Boundary)");
-					break;
+					"Hand cards not updated properly after Cutpurse play\n"
+					"  Incorrect number of %d cards for player %d\n"
+					"    (player who played cutpurse)\n"
+					"  Expected: %d ; Observed %d %s\n", 
+					j, i, 
+					j == cutpurse ? handCardCountByTypeBeforeCutpurse[i][j] - 1 :
+					handCardCountByTypeBeforeCutpurse[i][j],
+					handCardCountByTypeAfterCutpurse[i][j],
+					noCopper ? "(Boundary)" : "(Non-Boundary)"); 
+			}
 		}
 	}
 	
-	//Make sure deck count has been updated in accordance with the number
-	//of cards removed.
-	int totalNumCardsRemovedFromDeck = 0;
-	for(i = 0; i < 27; i++){
-		totalNumCardsRemovedFromDeck += deckDiffsAfterCutpurse[i];
-	}
-	if(deckCountBeforeCutpurse - totalNumCardsRemovedFromDeck !=
-	   G->deckCount[0] && ++(*failCt) <= MAX_FAILS){
+	//If this is not the no coppers boundary test,
+	//Check to make sure all hand counts are decremented by one.
+	//(Non-active players discard 1 copper, active player discards
+	// one cutpurse.)
+	for(int i; i < playerCount && !noCopper; i++){
+		if(deckSize[i] - 1 != G->handCount[i] &&
+			++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
-			"Deck count after Cutpurse does not correspond to cards removed\n"
-			" %d cards removed, but resulting deck count is %d %s\n", 
-			totalNumCardsRemovedFromDeck, G->deckCount[0],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			"Hand counts not updated properly after Cutpurse play\n"
+			"  Incorrect number of %d cards for player %d\n"
+			"    (player who %s cutpurse)\n"
+			"  Expected: %d ; Observed %d %s\n", 
+			j, i,
+			i == activePlayer ? "played" : "did not play",
+			deckSize[i] - 1, G->handCount[i],
+			noCopper ? "(Boundary)" : "(Non-Boundary)"); 
+		}
 	}
 	
-	//Make sure discard count is updated correctly
-	if(((treasureCardCountSpecifier >= 2 && 
-		G->discardCount[0] != totalNumCardsRemovedFromDeck - 2) ||
-	   (treasureCardCountSpecifier == 1 &&
-		G->discardCount[0] != totalNumCardsRemovedFromDeck - 1) ||
-		(treasureCardCountSpecifier <= 0 &&
-		G->discardCount[0] != totalNumCardsRemovedFromDeck)) &&
-		++(*failCt) <= MAX_FAILS){
+	//If this is the no coppers boundary test,
+	//check to make sure each player's hand contains the same
+	//cards as before the cutpurse play. For active player, make
+	//sure hand is the same as before the cutpurse play minus one 
+	//cutpurse only.
+	for(int i; i < playerCount && noCopper; i++){
+		for(j = 0; j < 27; j++){
+			if(i != activePlayer && 
+			   handCardCountByTypeBeforeCutpurse[i][j] != 
+			   handCardCountByTypeAfterCutpurse[i][j] && 
+			   ++(*failCt) <= MAX_FAILS){
+				failures[*failCt-1].lineNumber = __LINE__;
+				sprintf(failures[*failCt-1].description,
+				"Hand cards not updated properly after Cutpurse play\n"
+				"  Incorrect number of %d cards for player %d\n"
+				"   (player who did not play cutpurse)\n"
+				"  Expected: %d ; Observed %d %s\n", 
+				j, i, handCardCountByTypeBeforeCutpurse[i][j],
+				handCardCountByTypeAfterCutpurse[i][j],
+				noCopper ? "(Boundary)" : "(Non-Boundary)"); 
+			}
+			else if( i == activePlayer && 
+				   ((j == cutpurse && handCardCountByTypeBeforeCutpurse[i][j] - 1 != 
+				     handCardCountByTypeAfterCutpurse[i][j]) ||
+				   ((j < cutpurse || j > cutpurse) && handCardCountByTypeBeforeCutpurse[i][j] !=
+					handCardCountByTypeAfterCutpurse + 1)) &&
+					++(*failCt) <= MAX_FAILS){
+					failures[*failCt-1].lineNumber = __LINE__;
+					sprintf(failures[*failCt-1].description,
+					"Hand cards not updated properly after Cutpurse play\n"
+					"  Incorrect number of %d cards for player %d\n"
+					"    (player who played cutpurse)\n"
+					"  Expected: %d ; Observed %d %s\n", 
+					j, i, 
+					j == cutpurse ? handCardCountByTypeBeforeCutpurse[i][j] - 1 :
+					handCardCountByTypeBeforeCutpurse[i][j],
+					handCardCountByTypeAfterCutpurse[i][j],
+					noCopper ? "(Boundary)" : "(Non-Boundary)"); 
+			}
+		}
+	}
+	
+	//Make sure no deck counts have changed
+	for(i = 0; i < playerCount; i++){
+		if(G->deckCount[i] != 0 && ++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
-			"Discard pile count updated incorrectly\n"
-			"Expected %d cards in discard pile ; Observed % d %s\n", 
-			treasureCardCountSpecifier >= 2 ? totalNumCardsRemovedFromDeck - 2 :
-			totalNumCardsRemovedFromDeck == 1 ? totalNumCardsRemovedFromDeck - 1 :
-			totalNumCardsRemovedFromDeck, G->discardCount[0],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			"Deck Count for player %d unexpectedly changed\n"
+			"    (player who %s cutpurse)\n"
+			"  Expected: 0 ; Observed %d %s\n", 
+			i, 
+			i == activePlayer ? "played" : "did not play",
+			G->deckCount[i],
+			noCopper ? "(Boundary)" : "(Non-Boundary)"); 
+		}
+	}
+	
+	//Make sure no discard counts have changed (???)
+	for(i = 0; i < playerCount; i++){
+		if(G->discardCount[i] != 0 && ++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Discard Count for player %d unexpectedly changed\n"
+			"    (player who %s cutpurse)\n"
+			"  Expected: 0 ; Observed %d %s\n", 
+			i, 
+			i == activePlayer ? "played" : "did not play",
+			G->discardCount[i],
+			noCopper ? "(Boundary)" : "(Non-Boundary)"); 
+		}
+	}
+	
+	//Make sure no decks have changed
+	for(i = 0; i < playerCount; i++){
+		for(j = 0; j < MAX_DECK; j++){
+			if(G->deck[i][j] != -1 && ++(*failCt) <= MAX_FAILS){
+				failures[*failCt-1].lineNumber = __LINE__;
+				sprintf(failures[*failCt-1].description,
+				"Deck for player %d unexpectedly changed\n"
+				"    (player who %s cutpurse)\n"
+				"  Expected: -1 at idx %d ; Observed %d %s\n", 
+				i, 
+				i == activePlayer ? "played" : "did not play",
+				j, G->deck[i][j],
+				noCopper ? "(Boundary)" : "(Non-Boundary)"); 
+				break;
+			}
+		}
+	}
+	
+	//Make sure no discards have changed
+	for(i = 0; i < playerCount; i++){
+		for(j = 0; j < MAX_DECK; j++){
+			if(G->discard[i][j] != -1 && ++(*failCt) <= MAX_FAILS){
+				failures[*failCt-1].lineNumber = __LINE__;
+				sprintf(failures[*failCt-1].description,
+				"Discard for player %d unexpectedly changed\n"
+				"    (player who %s cutpurse)\n"
+				"  Expected: -1 at idx %d ; Observed %d %s\n", 
+				i, 
+				i == activePlayer ? "played" : "did not play",
+				j, G->discard[i][j],
+				noCopper ? "(Boundary)" : "(Non-Boundary)"); 
+				break;
+			}
+		}
+	}
+	
+	//Check coins (should be incremented by 2)...
+	if(G->coins != 2 && ++(*failCt) <= MAX_FAILS){
+		failures[*failCt-1].lineNumber = __LINE__;
+		sprintf(failures[*failCt-1].description,
+		"coins value not updated correctly\n"
+		"  Expected 2 ; Observed %d %s\n", 
+		G->coins,
+		isBoundary ? "(Boundary)" : "(Non-Boundary)");
 	}
 	
 	//Make sure supply piles haven't changed
@@ -403,16 +380,6 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 		"Whose turn changed unexpectedly\n"
 		"  Expected 0 ; Observed %d %s\n", 
 		G->whoseTurn,
-		isBoundary ? "(Boundary)" : "(Non-Boundary)");
-	}
-	
-	//Check coins...
-	if(G->coins != 0 && ++(*failCt) <= MAX_FAILS){
-		failures[*failCt-1].lineNumber = __LINE__;
-		sprintf(failures[*failCt-1].description,
-		"coins value changed unexpectedly\n"
-		"  Expected 0 ; Observed %d %s\n", 
-		G->coins,
 		isBoundary ? "(Boundary)" : "(Non-Boundary)");
 	}
 	
@@ -458,96 +425,23 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 		isBoundary ? "(Boundary)" : "(Non-Boundary)");
 	}
 	
-	//Check player 1 values (all should be unchanged)
-	
-	//Check player 1 discard count...
-	if(G->discardCount[1] != 0 && ++(*failCt) <= MAX_FAILS){
-		failures[*failCt-1].lineNumber = __LINE__;
-		sprintf(failures[*failCt-1].description,
-		"Player 1 discard count changed unexpectedly\n"
-		"  Expected 0 ; Observed %d %s\n", 
-		G->discardCount[1],
-		isBoundary ? "(Boundary)" : "(Non-Boundary)");
-	}
-	
-	//Check player 1 deck count...
-	if(G->deckCount[1] != 0 && ++(*failCt) <= MAX_FAILS){
-		failures[*failCt-1].lineNumber = __LINE__;
-		sprintf(failures[*failCt-1].description,
-		"Player 1 deck count changed unexpectedly\n"
-		"  Expected 0 ; Observed %d %s\n", 
-		G->deckCount[1],
-		isBoundary ? "(Boundary)" : "(Non-Boundary)");
-	}
-	
-	//Check player 1 hand count...
-	if(G->handCount[1] != 0 && ++(*failCt) <= MAX_FAILS){
-		failures[*failCt-1].lineNumber = __LINE__;
-		sprintf(failures[*failCt-1].description,
-		"Player 1 hand count changed unexpectedly\n"
-		"  Expected 0 ; Observed %d %s\n", 
-		G->handCount[1],
-		isBoundary ? "(Boundary)" : "(Non-Boundary)");
-	}
-	
-	//Check player 1 discard pile...
+	//Check playedCards (should have cutpurse at index 0, -1 all other indexes) (???)
 	for(i = 0; i < MAX_DECK; i++){
-		if(G->discard[1][i] != -1 && ++(*failCt) <= MAX_FAILS){
-			failures[*failCt-1].lineNumber = __LINE__;
-			sprintf(failures[*failCt-1].description,
-			"Player 1 deck changed unexpectedly at idx %d\n"
-			"  Expected -1 ; Observed %d %s\n", 
-			i, G->discard[1][i],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)");
-		}
-		break;
-	}
-	
-	//Check player 1 deck...
-	for(i = 0; i < MAX_DECK; i++){
-		if(G->deck[1][i] != -1 && ++(*failCt) <= MAX_FAILS){
-			failures[*failCt-1].lineNumber = __LINE__;
-			sprintf(failures[*failCt-1].description,
-			"Player 1 deck changed unexpectedly at idx %d\n"
-			"  Expected -1 ; Observed %d %s\n", 
-			i, G->deck[1][i],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)");
-		}
-		break;
-	}
-	
-	//Check player 1 hand...
-	for(i = 0; i < MAX_HAND; i++){
-		if(G->hand[1][i] != -1 && ++(*failCt) <= MAX_FAILS){
-			failures[*failCt-1].lineNumber = __LINE__;
-			sprintf(failures[*failCt-1].description,
-			"Player 1 hand changed unexpectedly at idx %d\n"
-			"  Expected -1 ; Observed %d %s\n", 
-			i, G->hand[1][i],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)");
-		}
-		break;
-	}
-	
-	//Check playedCardCount (should be 0)
-	if(G->playedCardCount != 0 && ++(*failCt) <= MAX_FAILS){
-		failures[*failCt-1].lineNumber = __LINE__;
-		sprintf(failures[*failCt-1].description,
-		"Played card count not updated correctly\n"
-		"  Expected 0 ; Observed %d %s\n", 
-		G->playedCardCount,
-		isBoundary ? "(Boundary)" : "(Non-Boundary)");
-	}
-	//Check playedCards (should be unchanged)
-	for(i = 0; i < MAX_DECK; i++){
-		if(G->playedCards[i] != -1 
+		if(i == 0 && G->playedCards[i] != cutpurse 
 			&& ++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Played cards not updated as expected at idx %d\n"
-			"  Expected -1 ; Observed %d %s\n", 
-			i, G->playedCards[i],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			"  Expected cutpurse ; Observed %d\n", 
+			i, G->playedCards[0]);
+		}
+		else if(i != 0 && G->playedCards[i] != -1 
+			&& ++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Played cards not updated as expected at idx %d\n"
+			"  Expected -1 ; Observed %d\n", 
+			i, G->playedCards[i]);
 		}
 		break;
 	}

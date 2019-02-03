@@ -287,21 +287,6 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 		}
 	}
 	
-	//Make sure no discard counts have changed (???)
-	for(i = 0; i < playerCount; i++){
-		if(G->discardCount[i] != 0 && ++(*failCt) <= MAX_FAILS){
-			failures[*failCt-1].lineNumber = __LINE__;
-			sprintf(failures[*failCt-1].description,
-			"Discard Count for player %d unexpectedly changed\n"
-			"    (player who %s cutpurse)\n"
-			"  Expected: 0 ; Observed %d %s\n", 
-			i, 
-			i == activePlayer ? "played" : "did not play",
-			G->discardCount[i],
-			noCopper ? "(Boundary)" : "(Non-Boundary)"); 
-		}
-	}
-	
 	//Make sure no decks have changed
 	for(i = 0; i < playerCount; i++){
 		for(j = 0; j < MAX_DECK; j++){
@@ -314,24 +299,6 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 				i, 
 				i == activePlayer ? "played" : "did not play",
 				j, G->deck[i][j],
-				noCopper ? "(Boundary)" : "(Non-Boundary)"); 
-				break;
-			}
-		}
-	}
-	
-	//Make sure no discards have changed
-	for(i = 0; i < playerCount; i++){
-		for(j = 0; j < MAX_DECK; j++){
-			if(G->discard[i][j] != -1 && ++(*failCt) <= MAX_FAILS){
-				failures[*failCt-1].lineNumber = __LINE__;
-				sprintf(failures[*failCt-1].description,
-				"Discard for player %d unexpectedly changed\n"
-				"    (player who %s cutpurse)\n"
-				"  Expected: -1 at idx %d ; Observed %d %s\n", 
-				i, 
-				i == activePlayer ? "played" : "did not play",
-				j, G->discard[i][j],
 				noCopper ? "(Boundary)" : "(Non-Boundary)"); 
 				break;
 			}
@@ -361,9 +328,127 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 		}
 	}
 	
+	//If this is not the no copper boundary check, 
+	//check that discard count for each player is 1, as active player
+	//discards cutpurse and inactive players discard copper...
+	for(i = 0; i < playerCount && !noCopper; i++){
+		if(G->discardCount[i] != 1 && ++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Discard card count not updated correctly for player %d\n"
+			"    (player who %s cutpurse)\n"
+			"  Expected 1 ; Observed %d %s\n", 
+			i, 
+			i == activePlayer ? "played" : "did not play",
+			G->discardCount[i],
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		}
+	}
+	
+	//If this is the no copper boundary check, 
+	//check that discard count for active player is 1, and 0
+	//for all other players, as the active player discards cutpurse
+	//and no other players discard
+	for(i = 0; i < playerCount && noCopper; i++){
+		if(i == activePlayer && G->discardCount[i] != 1 ||
+		   i == && ++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Discard card count not updated correctly\n"
+			"    (player who played cutpurse)\n"
+			"  Expected 1 ; Observed %d %s\n", 
+			G->discardCount[i],
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		}
+		else if(i != activePlayer && G->discardCount[i] != 0 ||
+		   i == && ++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Discard card count not updated correctly\n"
+			"    (player who did not play cutpurse)\n"
+			"  Expected 0 ; Observed %d %s\n", 
+			G->discardCount[i],
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		}
+	}
+	
+	//Check that cutpurse is placed in the active player's discard pile,
+	//and that no other discard pile index value has changed
+	for(i = 0; i < MAX_DECK; i++){
+		if(i == 0 && G->discard[activePlayer][i] != cutpurse 
+			&& ++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Discard pile not updated as expected at idx %d for player %d\n"
+			"    (player who played cutpurse)\n"
+			"  Expected cutpurse ; Observed %d %s\n", 
+			i, activePlayer, G->discard[activePlayer][i]);
+		}
+		else if(i != 0 && G->discard[activePlayer][i] != -1 
+			&& ++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Discard pile not updated as expected at idx %d for player %d\n"
+			"    (player who played cutpurse)\n"
+			"  Expected -1 ; Observed %d %s\n", 
+			i, G->discard[activePlayer][i],
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		}
+		break;
+	}
+	
+	//If this is not the no copper boundary test,
+	//make sure a copper is placed into each non-active player's
+	//discard pile
+	for(m = 0; m < playerCount && !noCopper; m++){	
+		for(i = 0; i < MAX_DECK; i++){
+			if(i == 0 && G->discard[m][i] != copper 
+				&& ++(*failCt) <= MAX_FAILS){
+				failures[*failCt-1].lineNumber = __LINE__;
+				sprintf(failures[*failCt-1].description,
+				"Discard pile not updated as expected at idx %d for player %d\n"
+				"    (player who did not play cutpurse)\n"
+				"  Expected copper ; Observed %d %s\n", 
+				i, m, G->discard[m][i],
+				isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			}
+			else if(i != 0 && G->discard[m][i] != -1 
+				&& ++(*failCt) <= MAX_FAILS){
+				failures[*failCt-1].lineNumber = __LINE__;
+				sprintf(failures[*failCt-1].description,
+				"Discard pile not updated as expected at idx %d for player %d\n"
+				"    (player who did not play cutpurse)\n"
+				"  Expected -1 ; Observed %d %s\n", 
+				i, m G->discard[m][i],
+				isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			}
+			break;
+		}
+	}
+	
+	//If this is the no copper boundary test,
+	//make sure a copper is placed into each non-active player's
+	//discard pile
+	for(m = 0; m < playerCount && noCopper; m++){	
+		for(i = 0; i < MAX_DECK; i++){
+			if(G->discard[m][i] != -1 
+				&& ++(*failCt) <= MAX_FAILS){
+				failures[*failCt-1].lineNumber = __LINE__;
+				sprintf(failures[*failCt-1].description,
+				"Discard pile not updated as expected at idx %d for player %d\n"
+				"    (player who did not play cutpurse)\n"
+				"  Expected -1 ; Observed %d %s\n", 
+				i, m G->discard[m][i],
+				isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			}
+			break;
+		}
+	}
+	
 	//Make sure other game state values haven't changed
 	
-	//Check numActions ...
+	//Check numActions (numActions is updated by parent function
+	//playCard, not cutpurseEffect or any function called by it)...
 	if(G->numActions != 1 && ++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,

@@ -264,27 +264,34 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		}
 	}
 	
-	//Make sure discard pile count hasn't changed
-	for(i = 0; i < MAX_DECK; i++){
-		if(G->discardCount[0] != 0 && ++(*failCt) <= MAX_FAILS){
-			failures[*failCt-1].lineNumber = __LINE__;
-			sprintf(failures[*failCt-1].description,
-			"Discard pile count changed unexpectedly\n"
-			"  Expected 0 ; Observed %d\n", G->discardCount[0]);
-			break;
-		}
+	//Check that Smithy is placed in player 0's discard pile
+	if(G->discardCount != 1 && ++(*failCt) <= MAX_FAILS){
+		failures[*failCt-1].lineNumber = __LINE__;
+		sprintf(failures[*failCt-1].description,
+		"Discard card count not updated correctly\n"
+		"  Expected 1 ; Observed %d\n", 
+		G->playedCardCount);
 	}
-	
-	//Make sure discard pile hasn't changed
+	//Check player 0 discard (should have Smithy at index 0, 
+	// -1 all other indexes)
 	for(i = 0; i < MAX_DECK; i++){
-		if(G->discard[0][i] != -1 && ++(*failCt) <= MAX_FAILS){
+		if(i == 0 && G->discard[0][i] != smithy 
+			&& ++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
-			"Discard pile changed unexpectedly at index %d\n"
-			"  Expected %d ; Observed %d\n", 
-			i, deckBeforeSmithy[i], G->hand[0][i]);
-			break;
+			"Discard pile not updated as expected at idx %d\n"
+			"  Expected smithy ; Observed %d\n", 
+			i, G->discard[0][i]);
 		}
+		else if(i != 0 && G->discard[0][i] != -1 
+			&& ++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Discard pile not updated as expected at idx %d\n"
+			"  Expected -1 ; Observed %d\n", 
+			i, G->discard[0][i]);
+		}
+		break;
 	}
 	
 	//Make sure supply piles haven't changed
@@ -301,7 +308,8 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//Make sure other game state values haven't changed
 	
-	//Check numActions ...
+	//Check numActions (numActions is updated by parent function
+	//playCard, not smithyEffect or any function called by it)...
 	if(G->numActions != 1 && ++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
@@ -431,7 +439,17 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		break;
 	}
 	
-	//Check playedCardCount (should be 1)
+	//NOTE: I initially wrote this test assuming the discardCard
+	//		function was functioning properly (i.e. the Smithy
+	//		was supposed to end up in playedCard after its use.
+	//		Upon further investigation and consideration, I 
+	//		realize that the test here should be to make sure
+	//		Smithy gets to the proper discard pile, as this is
+	//		its final destination per the game specifications.
+	//		There appears to be a bug in discardCard accordingly,
+	//		which I discuss in more detail in the assignment writeup.
+	
+	/* //Check playedCardCount (should be 1)
 	if(G->playedCardCount != 1 && ++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
@@ -458,7 +476,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			i, G->playedCards[i]);
 		}
 		break;
-	}
+	} */
 	
 	return 0;
 }

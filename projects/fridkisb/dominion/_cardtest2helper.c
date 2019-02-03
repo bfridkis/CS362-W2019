@@ -414,7 +414,8 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//Make sure other game state values haven't changed
 	
-	//Check numActions ...
+	//Check numActions (numActions is updated by parent function
+	//playCard, not adventurerEffect or any function called by it)...
 	if(G->numActions != 1 && ++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,

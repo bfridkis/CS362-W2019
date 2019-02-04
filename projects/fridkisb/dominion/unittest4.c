@@ -16,11 +16,6 @@
 
 #include "_unittest4helper.h"
 
-//This max is only for documenting failure specifics.
-//i.e. Failures in excess of this number are still counted, but not documented.
-//Set this in unittest4helper.c also!
-#define MAX_FAILS 10
-
 #define NUM_COIN_UPDATES 250
 
 int main (int argc, char** argv) {
@@ -54,14 +49,15 @@ int main (int argc, char** argv) {
 		
 		//Run updateCoin test on random kingdom card set.
 		//(see _unittest4helper for more details)
-		_unittest4helper(k, &G, failures, &failCt, 0, 0);
+		_unittest4helper(k, &G, failures, &failCt, 0, 0, i + 1);
 	}
 	
 	printf("\nAttempting no treasure cards test...\n");
 	
 	//Attempting shuffle on empty deck
 	initializeGame(2, k, 5000, &G);
-	if(_unittest4helper(k, &G, failures, &failCt, 1, 0) != 0){
+	if(_unittest4helper(k, &G, failures, &failCt, 1, 
+			0, NUM_COIN_UPDATES + 1) != 0){
 		printf("\nNo treasure card test failed\n");
 	}
 	
@@ -69,7 +65,8 @@ int main (int argc, char** argv) {
 	
 	//Attempting shuffle on max deck
 	initializeGame(2, k, Random() * INT_MAX, &G);
-	if(_unittest4helper(k, &G, failures, &failCt, 0, 1) != 0){
+	if(_unittest4helper(k, &G, failures, &failCt, 0, 
+			1, NUM_COIN_UPDATES + 2) != 0){
 		printf("\nNo bonus test failed\n");
 	}
 	
@@ -77,7 +74,8 @@ int main (int argc, char** argv) {
 	
 	//Attempting no treasure cards and no bonus test
 	initializeGame(2, k, Random() * INT_MAX, &G);
-	if(_unittest4helper(k, &G, failures, &failCt, 1, 1) != 0){
+	if(_unittest4helper(k, &G, failures, &failCt, 1, 
+			1, NUM_COIN_UPDATES + 3) != 0){
 		printf("\nNo treasure cards and no bonus test failed\n");
 	}
 	
@@ -94,16 +92,16 @@ int main (int argc, char** argv) {
 		}
 		else{
 			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n"
-				   "\t\t-Set MAX_FAILS in unittest4.c\n"
-				   "\t\t and _unittest4helper.c to\n"
-				   "\t\t print more errors.\n\n",
+				   "\t\t-Set MAX_FAILS in _unittest4helper.h\n"
+				   "\t\t to print more errors.\n\n",
 						failCt, MAX_FAILS);
 		}
 		printf("(Note: See _unittest4helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
-			printf("%d - LINE %d: %s\n\n", 
-				i + 1, failures[i].lineNumber, failures[i].description);
+			printf("%d - TEST #%d @ LINE %d: %s\n\n", 
+				i + 1, failures[i].testNumber, 
+				failures[i].lineNumber, failures[i].description);
 		}
 	}
 

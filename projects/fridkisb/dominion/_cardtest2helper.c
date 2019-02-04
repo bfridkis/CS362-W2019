@@ -17,14 +17,9 @@
  */
  
 #include "_cardtest2helper.h"
-
-//This max is only for documenting failure specifics.
-//i.e. Failures in excess of this number are still counted, but not documented.
-//Set this in cardtest2.c also!
-#define MAX_FAILS 10
  
 int _cardtest2helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int treasureCardCountSpecifier, int isBoundary){
+	int* failCt, int treasureCardCountSpecifier, int isBoundary, int testNumber){
 		
 	//Test value variables	   
 	int i, j, deckSize, handSize;
@@ -154,22 +149,22 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	//For deck...
 	int deckCardCountByTypeBeforeAdventurer[27] = {0};
 	int deckCountBeforeAdventurer = G->deckCount[0];	//Just to use different variable name, could use deckSize
-	//int deckBeforeAdventurer[MAX_DECK];
+	int deckBeforeAdventurer[MAX_DECK];
 	for(i = 0; i < G->deckCount[0]; i++){
-		//deckBeforeAdventurer[i] = G->deck[0][i];
+		deckBeforeAdventurer[i] = G->deck[0][i];
 		deckCardCountByTypeBeforeAdventurer[G->deck[0][i]]++;
 	}
 	
 	//For hand...
 	int handCardCountByTypeBeforeAdventurer[27] = {0};
 	int handCountBeforeAdventurer = G->handCount[0];	//Just to use different variable name, could use handSize
-	//int handBeforeAdventurer[MAX_HAND];
+	//int handBeforeAdventurer[MAX_HAND];				//Not needed, since order of hand doesn't matter
 	for(i = 0; i < G->handCount[0]; i++){
 		//handBeforeAdventurer[i] = G->hand[0][i];
 		handCardCountByTypeBeforeAdventurer[G->hand[0][i]]++;
 	}
 	
-	//int for coin bonus (should remain unchanged after Adventurer call)
+	//int for coin bonus (unused by Adventurer call)
 	int coin_bonus = 0;
 	
 	/*************************  SET UP ENDS HERE  **************************/
@@ -202,6 +197,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		handCountBeforeAdventurer,
 		G->handCount[0],
 		isBoundary ? "(Boundary)" : "(Non-Boundary)"); 
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Determine how many of each card type have been removed from (or 
@@ -253,7 +249,8 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			deckDiffsAfterAdventurer[copper] + 
 			deckDiffsAfterAdventurer[silver] + 
 			deckDiffsAfterAdventurer[gold],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)"); 
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Make sure correct number of treasure cards were added to hand
@@ -279,7 +276,8 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			handDiffsAfterAdventurer[copper] + 
 			handDiffsAfterAdventurer[silver] + 
 			handDiffsAfterAdventurer[gold],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)"); 
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Make sure no non-treasure cards have been added to the hand
@@ -289,9 +287,11 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 				failures[*failCt-1].lineNumber = __LINE__;
 				sprintf(failures[*failCt-1].description,
 				"Non treasure card added to hand pile\n"
-				" %d %d(s) added to hand %s\n", 
+				"  %d %d(s) added to (or removed from) hand %s\n"
+				"    (negative value indicates removal)\n", 
 				handDiffsAfterAdventurer[i], i,
 				isBoundary ? "(Boundary)" : "(Non-Boundary)");
+				failures[*failCt-1].testNumber = testNumber;
 				break;
 		}
 	}
@@ -312,7 +312,8 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			treasureCardCountSpecifier == 1 ? handCountBeforeAdventurer + 1 : 
 			handCountBeforeAdventurer, 
 			G->handCount[0],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)"); 
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Make sure the same treasure cards that were removed from the
@@ -328,7 +329,8 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			"  Cards removed from deck : Copper - %d Silver - %d Gold - %d %s\n", 
 			handDiffsAfterAdventurer[copper], handDiffsAfterAdventurer[silver], handDiffsAfterAdventurer[gold],
 			deckDiffsAfterAdventurer[copper], deckDiffsAfterAdventurer[silver], deckDiffsAfterAdventurer[gold],
-			isBoundary ? "(Boundary)" : "(Non-Boundary)"); 
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Make sure the discard pile has only copies of non-treasure cards 
@@ -349,6 +351,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 				"    %d '%d' cards added to discard : %d of these removed from deck %s\n", 
 				discardCardCountByTypeAfterAdventurer[i], i, deckDiffsAfterAdventurer[i],
 				isBoundary ? "(Boundary)" : "(Non-Boundary)");
+				failures[*failCt-1].testNumber = testNumber;
 				break;
 		}
 		else if((i >= copper && i <= gold) && 
@@ -361,6 +364,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 					" %d %d(s) observed in discard pile %s\n", 
 					discardCardCountByTypeAfterAdventurer[i], i,
 					isBoundary ? "(Boundary)" : "(Non-Boundary)");
+					failures[*failCt-1].testNumber = testNumber;
 					break;
 		}
 	}
@@ -370,9 +374,11 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
-			"Expected 1 adventurer in discard : Observed %d %s\n",
+			"Discard pile updated incorrectly\n"
+			"  Expected 1 adventurer in discard pile : Observed %d %s\n",
 			discardCardCountByTypeAfterAdventurer[adventurer],
 			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Make sure deck count has been updated in accordance with the number
@@ -389,6 +395,23 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			" %d cards removed, but resulting deck count is %d %s\n", 
 			totalNumCardsRemovedFromDeck, G->deckCount[0],
 			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
+	}
+	
+	//Make sure the deck order is not changed (for cards remaining in deck)
+	for(i = 0; i < deckCountBeforeAdventurer - totalNumCardsRemovedFromDeck &&
+			i < G->deckCount[0]; i++){
+		if(deckBeforeAdventurer[i] != G->deck[0][i]
+			&& ++(*failCt) <= MAX_FAILS){
+				failures[*failCt-1].lineNumber = __LINE__;
+				sprintf(failures[*failCt-1].description,
+				"Deck after Adventurer re-ordered unexpectedly\n"
+				" Expected %d at idx %d ; Observed %d %s\n", 
+				deckBeforeAdventurer[i], i, G->deck[0][i],
+				isBoundary ? "(Boundary)" : "(Non-Boundary)");
+				failures[*failCt-1].testNumber = testNumber;
+				break;
+		}
 	}
 	
 	//Make sure discard count is updated correctly
@@ -411,6 +434,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			totalNumCardsRemovedFromDeck == 1 ? totalNumCardsRemovedFromDeck :
 			totalNumCardsRemovedFromDeck + 1, G->discardCount[0],
 			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Make sure supply piles haven't changed
@@ -422,6 +446,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			"  Expected 10 ; Observed %d %s\n", 
 			i, G->supplyCount[i],
 			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 			break;
 		}
 	}
@@ -437,6 +462,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		"  Expected 1 ; Observed %d\n %s", 
 		G->numActions,
 		isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check whoseTurn...
@@ -447,6 +473,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		"  Expected 0 ; Observed %d %s\n", 
 		G->whoseTurn,
 		isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check coins...
@@ -457,6 +484,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		"  Expected 0 ; Observed %d %s\n", 
 		G->coins,
 		isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check numBuys...
@@ -467,6 +495,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		"  Expected 1 ; Observed %d %s\n", 
 		G->numBuys,
 		isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check embargo tokens...
@@ -478,6 +507,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			"  Expected 0 ; Observed %d %s\n", 
 			i, G->embargoTokens[i],
 			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 		}
 	}
 	
@@ -489,6 +519,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		"  Expected 0 ; Observed %d %s\n", 
 		G->outpostPlayed,
 		isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check outpost turn...
@@ -499,6 +530,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		"  Expected 0 ; Observed %d %s\n", 
 		G->outpostTurn,
 		isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check player 1 values (all should be unchanged)
@@ -511,6 +543,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		"  Expected 0 ; Observed %d %s\n", 
 		G->discardCount[1],
 		isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check player 1 deck count...
@@ -521,6 +554,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		"  Expected 0 ; Observed %d %s\n", 
 		G->deckCount[1],
 		isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check player 1 hand count...
@@ -531,6 +565,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		"  Expected 0 ; Observed %d %s\n", 
 		G->handCount[1],
 		isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check player 1 discard pile...
@@ -542,6 +577,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			"  Expected -1 ; Observed %d %s\n", 
 			i, G->discard[1][i],
 			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;
 	}
@@ -555,6 +591,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			"  Expected -1 ; Observed %d %s\n", 
 			i, G->deck[1][i],
 			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;
 	}
@@ -568,6 +605,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			"  Expected -1 ; Observed %d %s\n", 
 			i, G->hand[1][i],
 			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;
 	}
@@ -580,6 +618,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		"  Expected 0 ; Observed %d %s\n", 
 		G->playedCardCount,
 		isBoundary ? "(Boundary)" : "(Non-Boundary)");
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	//Check playedCards (should be unchanged)
 	for(i = 0; i < MAX_DECK; i++){
@@ -591,6 +630,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			"  Expected -1 ; Observed %d %s\n", 
 			i, G->playedCards[i],
 			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;
 	}

@@ -2,23 +2,23 @@
  * Benjamin Fridkis - CS362 
  * Assignment 3
  *
- *                         cardtest1.c
+ *                         cardtest4.c
  *
- *	     Test for "smithy" card effect - See cardEffects.c line 29
+ *	     Test for "council_room" card effect - See cardEffects.c line 29
  *
  * Include the following lines in your makefile:
  *
- * cardtest1: cardtest1.c _cardtest1helper.o dominion.o cardEffects.o rngs.o
- * 		gcc -o cardtest1 cardtest1.c -g dominion.o cardEffects.o 
- * 		_cardtest1helper.o rngs.o $(CFLAGS)
+ * cardtest4: cardtest4.c _cardtest4helper.o dominion.o cardEffects.o rngs.o
+ * 		gcc -o cardtest4 cardtest4.c -g dominion.o cardEffects.o 
+ * 		_cardtest4helper.o rngs.o $(CFLAGS)
  * ---------------------------------------------------------------------------
  */
 
-#include "_cardtest1helper.h"
+#include "_cardtest4helper.h"
 
-#define NUM_PLAYERS 2
+#define NUM_PLAYERS 4
 
-#define SMITHY_CALLS 100
+#define COUNCIL_ROOM_CALLS 100
 
 int main (int argc, char** argv) {
 	struct gameState G;
@@ -27,13 +27,13 @@ int main (int argc, char** argv) {
 	failedTest failures[MAX_FAILS];
 	int failCt = 0;
 	
-	printf("Starting cardtest1 - Testing 'smithy' card\n");
+	printf("Starting cardtest4 - Testing 'council_room' card\n");
 	
-	printf("\nExecuting %d Smithy %s using hands with random assortment of \n"
+	printf("\nExecuting %d Council_Room %s using hands with random assortment of \n"
 		   "\t supply cards, with at least 3 in deck...\n\n"
-		   "\t\t" "-Set 'SMITHY_CALLS' in cardtest1.c\n"
-		   "\t\t" " to modify number of plays.\n", SMITHY_CALLS,
-		   SMITHY_CALLS > 1 ? "plays" : "play");
+		   "\t\t" "-Set 'COUNCIL_ROOM_CALLS' in cardtest4.c\n"
+		   "\t\t" " to modify number of plays.\n", COUNCIL_ROOM_CALLS,
+		   COUNCIL_ROOM_CALLS > 1 ? "plays" : "play");
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
 	//This random number will be used as the game's seed.
@@ -42,7 +42,7 @@ int main (int argc, char** argv) {
 	PutSeed(-1);
 		   
 	int i, j, k[10];
-	for(i = 0; i < SMITHY_CALLS; i++){
+	for(i = 0; i < COUNCIL_ROOM_CALLS; i++){
 		
 		//Generate set of 10 random Kingdom cards
 		for(j = 0; j < 10; j++){		
@@ -52,12 +52,12 @@ int main (int argc, char** argv) {
 		//Initializes game for two players
 		initializeGame(2, k, Random() * INT_MAX, &G);
 		
-		//Play Smithy with random kingdom card set.
-		//(see _cardtest1helper for more details)
-		_cardtest1helper(k, &G, failures, &failCt, 3, i + 1);
+		//Play Council_Room with random kingdom card set.
+		//(see _cardtest4helper for more details)
+		_cardtest4helper(k, &G, failures, &failCt, 3, i + 1);
 	}
 	
-	printf("\nBOUNDARY: Executing Smithy play using hand with random assortment of \n"
+	printf("\nBOUNDARY: Executing Council_Room play using hand with random assortment of \n"
 		   "\t supply cards, with 1 card in deck...\n");
 	
 	//Test with only 1 card in the player's deck
@@ -66,9 +66,9 @@ int main (int argc, char** argv) {
 		k[j] = Random() * 19 + 7;
 	}
 	initializeGame(2, k, Random() * INT_MAX, &G);
-	_cardtest1helper(k, &G, failures, &failCt, 1, SMITHY_CALLS + 1);
+	_cardtest4helper(k, &G, failures, &failCt, 1, COUNCIL_ROOM_CALLS + 1);
 	
-	printf("\nBOUNDARY: Executing Smithy play using hand with random assortment of \n"
+	printf("\nBOUNDARY: Executing Council_Room play using hand with random assortment of \n"
 		   "\t supply cards, with 2 cards in deck...\n");
 	
 	//Test with only 2 cards in the player's deck
@@ -77,9 +77,9 @@ int main (int argc, char** argv) {
 		k[j] = Random() * 19 + 7;
 	}
 	initializeGame(2, k, Random() * INT_MAX, &G);
-	_cardtest1helper(k, &G, failures, &failCt, 2, SMITHY_CALLS + 2);
+	_cardtest4helper(k, &G, failures, &failCt, 2, COUNCIL_ROOM_CALLS + 2);
 	
-	printf("\nBOUNDARY: Executing Smithy play using hand with random assortment of \n"
+	printf("\nBOUNDARY: Executing Council_Room play using hand with random assortment of \n"
 		   "\t supply cards, with 0 cards in deck...\n");
 	
 	//Test with 0 cards in the player's deck
@@ -88,7 +88,7 @@ int main (int argc, char** argv) {
 		k[j] = Random() * 19 + 7;
 	}
 	initializeGame(2, k, Random() * INT_MAX, &G);
-	_cardtest1helper(k, &G, failures, &failCt, 0, SMITHY_CALLS + 3);
+	_cardtest4helper(k, &G, failures, &failCt, 0, COUNCIL_ROOM_CALLS + 3);
 	
 	printf("\n\tEach test (that is not marked 'BOUNDARY') verifies proper game state\n"
 		   "\tmodification, reporting a failure if any of the following conditions are met:\n"
@@ -96,13 +96,13 @@ int main (int argc, char** argv) {
 		   "\t\t"       "2. Player's hand does not gain 3 cards from the top of Player's deck\n"
 		   "\t\t\t"         "a. Player's deck count is not decremented by 3.\n"
 		   "\t\t\t"         "b. Player's hand count is not incremented by 2\n"
-		   "\t\t\t\t\t"          "(A total of 3 cards are gained but the Smithy\n"
+		   "\t\t\t\t\t"          "(A total of 3 cards are gained but the Council_Room\n"
 		   "\t\t\t\t\t"          "itself is discarded so the net gain from the previous\n"
 		   "\t\t\t\t\t"          "is 2.)\n"
 		   "\t\t\t"         "c. Player's deck contents are not the same before and after the play\n"
 		   "\t\t\t\t\t"          "(Besides the 3 less cards gained therefrom)\n"
 		   "\t\t\t"         "d. Player's hand order and content are changed\n"
-		   "\t\t\t\t\t"          "(Besides the removal/insertion of the Smithy played/last card drawn\n"
+		   "\t\t\t\t\t"          "(Besides the removal/insertion of the Council_Room played/last card drawn\n"
 		   "\t\t\t\t\t"          " and 2 additional cards gained to the end of the hand\n"
 		   "\t\t"       "3. Player 1's or 2's discard pile or count is changed\n"
 		   "\t\t"       "4. Player 2's deck, hand, deck count, and/or hand count is changed\n"
@@ -115,7 +115,7 @@ int main (int argc, char** argv) {
 		   "\t\t\t"          "e. outpostPlayed\n"
 		   "\t\t\t"          "f. outpostTurn\n"
 		   "\t\t"       "7. Played card count is not 1\n"
-		   "\t\t"       "8. Played cards does not have Smithy @ idx 1 and is unchanged otherwise\n"
+		   "\t\t"       "8. Played cards does not have Council_Room @ idx 1 and is unchanged otherwise\n"
 		   "\n"
 		   "\t\t"       "* BOUNDARY tests verify all of the above except for #2a & #2b. #2c verifies    *\n"
 		   "\t\t"       "* that only the number of starting deck cards is decremented (since this value *\n"
@@ -137,11 +137,11 @@ int main (int argc, char** argv) {
 		}
 		else{
 			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n"
-				   "\t\t-Set MAX_FAILS in _cardtest1helper.h\n"
+				   "\t\t-Set MAX_FAILS in _cardtest4helper.h\n"
 				   "\t\t to print more errors.\n\n",
 						failCt, MAX_FAILS);
 		}
-		printf("(Note: See _cardtest1helper.c when referencing line #)\n\n");
+		printf("(Note: See _cardtest4helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
 			printf("%d - TEST #%d @ LINE %d: %s\n\n", 

@@ -16,14 +16,9 @@
 
 #include "_cardtest2helper.h"
 
-//This max is only for documenting failure specifics.
-//i.e. Failures in excess of this number are still counted, but not documented.
-//Set this in cardtest2helper.c also!
-#define MAX_FAILS 10
-
 #define NUM_PLAYERS 2
 
-#define ADVENTURER_CALLS 100
+#define ADVENTURER_CALLS 1
 
 int main (int argc, char** argv) {
 	struct gameState G;
@@ -37,7 +32,7 @@ int main (int argc, char** argv) {
 	printf("\nExecuting %d Adventurer %s using hands with random assortment of \n"
 		   "\t supply cards, with at least 2 treasures in deck...\n\n"
 			"\t\t" "-Set 'ADVENTURER_CALLS' in cardtest2.c\n"
-		   "\t\t"  " to modify number of runs.\n", ADVENTURER_CALLS,
+		   "\t\t"  " to modify number of plays.\n", ADVENTURER_CALLS,
 		   ADVENTURER_CALLS > 1 ? "plays" : "play");
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
@@ -60,7 +55,7 @@ int main (int argc, char** argv) {
 		//Play Adventurer with random kingdom card set with a deck
 		//containing at least 2 treasure cards.
 		//(see _cardtest2helper for more details)
-		_cardtest2helper(k, &G, failures, &failCt, 2, 0);
+		_cardtest2helper(k, &G, failures, &failCt, 2, 0, i + 1);
 	}
 	
 	printf("\nBOUNDARY: Executing Adventurer play using hand with random assortment of \n"
@@ -72,7 +67,7 @@ int main (int argc, char** argv) {
 		k[j] = Random() * 19 + 7;
 	}
 	initializeGame(2, k, Random() * INT_MAX, &G);
-	_cardtest2helper(k, &G, failures, &failCt, 1, 1);
+	_cardtest2helper(k, &G, failures, &failCt, 1, 1, ADVENTURER_CALLS + 1);
 	
 	printf("\nBOUNDARY: Executing Adventurer play using hand with random assortment of \n"
 		   "\t supply cards, with 0 treasure cards in deck...\n");
@@ -83,7 +78,7 @@ int main (int argc, char** argv) {
 		k[j] = Random() * 19 + 7;
 	}
 	initializeGame(2, k, Random() * INT_MAX, &G);
-	_cardtest2helper(k, &G, failures, &failCt, 0, 1);
+	_cardtest2helper(k, &G, failures, &failCt, 0, 1, ADVENTURER_CALLS + 2);
 	
 	printf("\nBOUNDARY: Executing Adventurer play using hand with random assortment of \n"
 		   "\t supply cards, with 0 cards in deck (should be same outcome as no treasure cards...)\n");
@@ -94,7 +89,7 @@ int main (int argc, char** argv) {
 		k[j] = Random() * 19 + 7;
 	}
 	initializeGame(2, k, Random() * INT_MAX, &G);
-	_cardtest2helper(k, &G, failures, &failCt, -1, 1);
+	_cardtest2helper(k, &G, failures, &failCt, -1, 1, ADVENTURER_CALLS + 3);
 	
 	printf("\n\tEach test (that is not marked 'BOUNDARY') verifies proper game state\n"
 		   "\tmodification, reporting a failure if any of the following conditions are NOT met:\n"
@@ -160,16 +155,16 @@ int main (int argc, char** argv) {
 		}
 		else{
 			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n"
-				   "\t\t-Set MAX_FAILS in cardtest2.c\n"
-				   "\t\t and _cardtest2helper.c to\n"
-				   "\t\t print more errors.\n\n",
+				   "\t\t-Set MAX_FAILS in _cardtest2helper.h\n\n"
+				   "\t\t to print more errors.\n",
 						failCt, MAX_FAILS);
 		}
 		printf("(Note: See _cardtest2helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
-			printf("%d - LINE %d: %s\n\n", 
-				i + 1, failures[i].lineNumber, failures[i].description);
+			printf("%d - TEST #%d @ LINE %d: %s\n\n", 
+				i + 1, failures[i].testNumber, 
+				failures[i].lineNumber, failures[i].description);
 		}
 	}
 

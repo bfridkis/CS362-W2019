@@ -73,6 +73,10 @@ echo -e "\n\tThe following functions are called by cutpurseEffect...\n" >> unitt
 line=$(gcov dominion.c --function-summaries | grep -n discardCard | cut -f1 -d:)
 ((line++))
 gcov dominion.c --function-summaries | head -n$(echo $line) | tail -n2 >> unittestresults.out
+echo >> unittestresults.out
+line=$(gcov dominion.c --function-summaries | grep -n updateCoins | cut -f1 -d:)
+((line++))
+gcov dominion.c --function-summaries | head -n$(echo $line) | tail -n2 >> unittestresults.out
 
 
 echo -e "\n\n" >>unittestresults.out

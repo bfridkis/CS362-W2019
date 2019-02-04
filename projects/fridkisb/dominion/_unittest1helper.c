@@ -19,11 +19,6 @@
 #include "_unittest1helper.h"
  
 #define NUM_PLAYERS 2
-
-//This max is only for documenting failure specifics.
-//i.e. Failures in excess of this number are still counted, but not documented.
-//Set this in unittest1.c also!
-#define MAX_FAILS 10
  
 int _unittest1helper(int k[], struct gameState* G, failedTest failures[]){
 	 

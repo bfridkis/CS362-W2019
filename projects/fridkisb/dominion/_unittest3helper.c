@@ -19,14 +19,10 @@
 #include "_unittest3helper.h"
  
 #define NUM_PLAYERS 2
-
-//This max is only for documenting failure specifics.
-//i.e. Failures in excess of this number are still counted, but not documented.
-//Set this in unittest3.c also!
-#define MAX_FAILS 10
  
 int _unittest3helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, unittest3stats* ut3s, int isEmptyDeckTest, int isMaxDeckTest){
+	int* failCt, unittest3stats* ut3s, int isEmptyDeckTest, int isMaxDeckTest,
+	int testNumber){
 	 
 	//Ensure deck and deckCount are cleared for players 0 and 1
 	memset(G->deck[0], -1, sizeof(int) * MAX_DECK);
@@ -88,6 +84,7 @@ int _unittest3helper(int k[], struct gameState* G, failedTest failures[],
 		"Return value not as expected after shuffle\n"
 		"  Expected: 0 ; Observed %d\n"
 		"  **Aborting remaining tests for this shuffle...**", rv);
+		failures[*failCt-1].testNumber = testNumber;
 		return -1;
 	}
 	
@@ -100,6 +97,7 @@ int _unittest3helper(int k[], struct gameState* G, failedTest failures[],
 		"Return value not as expected after shuffle\n"
 		"  Expected: -1 ; Observed %d\n"
 		"  **Aborting remaining tests for this shuffle...**", rv);
+		failures[*failCt-1].testNumber = testNumber;
 		return -1;
 	}
 	//Check that deckCount remains unchanged after attempting to shuffle
@@ -108,7 +106,9 @@ int _unittest3helper(int k[], struct gameState* G, failedTest failures[],
 	else if(isEmptyDeckTest && G->deckCount[0] != 0 && ++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
-		"Deck count updated (not 0) after empty deck test\n");
+		"Deck count updated (not 0) after empty deck test\n"
+		"  **Aborting remaining tests for this shuffle...**");
+		failures[*failCt-1].testNumber = testNumber;
 		return -1;
 	}
 	else if(isEmptyDeckTest){
@@ -124,6 +124,7 @@ int _unittest3helper(int k[], struct gameState* G, failedTest failures[],
 			"  Expected: %d ; Observed %d\n"
 			"  **Aborting remaining tests for this shuffle...**", 
 			deckCountBeforeShuffle, G->deckCount[0]);
+			failures[*failCt-1].testNumber = testNumber;
 		return -1;
 	}
 	
@@ -140,6 +141,7 @@ int _unittest3helper(int k[], struct gameState* G, failedTest failures[],
 				"Deck contains invalid card number '%d' after shuffle\n"
 				"  **Aborting remaining tests for this shuffle...**", 
 				G->deck[0][i]);
+				failures[*failCt-1].testNumber = testNumber;
 			return -1;
 			}
 		}			
@@ -154,6 +156,7 @@ int _unittest3helper(int k[], struct gameState* G, failedTest failures[],
 				sprintf(failures[*failCt-1].description,
 				"Deck does not contain same number of each card type after shuffle\n"
 				"  **Aborting statistics report for this shuffle...**");
+				failures[*failCt-1].testNumber = testNumber;
 				return -1;
 		}
 	}
@@ -198,12 +201,14 @@ int _unittest3helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Player one's deckCount changed after shuffle");
+			failures[*failCt-1].testNumber = testNumber;
 	}
 	for(i = 0; i < MAX_DECK; i++){
 		if(G->deck[1][i] != -1 && ++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Player one's deck changed after shuffle");
+			failures[*failCt-1].testNumber = testNumber;
 			break;
 		}
 	}

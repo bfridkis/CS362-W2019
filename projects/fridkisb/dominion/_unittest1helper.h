@@ -11,6 +11,10 @@
 #ifndef _UNITTEST1HELPER_H
 #define _UNITTEST1HELPER_H
 
+//This max is only for documenting failure specifics.
+//i.e. Failures in excess of this number are still counted, but not documented.
+#define MAX_FAILS 10
+
 #include "dominion.h"
 #include "dominion_helpers.h"
 #include <string.h>

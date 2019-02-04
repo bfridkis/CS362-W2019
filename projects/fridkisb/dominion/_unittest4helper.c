@@ -20,14 +20,9 @@
  
 #define NUM_PLAYERS 2
 #define MAX_BONUS 100
-
-//This max is only for documenting failure specifics.
-//i.e. Failures in excess of this number are still counted, but not documented.
-//Set this in unittest4.c also!
-#define MAX_FAILS 10
  
 int _unittest4helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int isNoTreasureTest, int isNoBonusTest){
+	int* failCt, int isNoTreasureTest, int isNoBonusTest, int testNumber){
 	 
 	//Ensure hand and handCount are cleared for player 0
 	memset(G->hand[0], -1, sizeof(int) * MAX_HAND);
@@ -126,6 +121,7 @@ int _unittest4helper(int k[], struct gameState* G, failedTest failures[],
 		sprintf(failures[*failCt-1].description,
 		"No treasure cards & no bonus test failed\n"
 		"  Expected: 0 ; Observed %d\n", G->coins);
+		failures[*failCt-1].testNumber = testNumber;
 		return -1;
 	}
 	
@@ -136,6 +132,7 @@ int _unittest4helper(int k[], struct gameState* G, failedTest failures[],
 		sprintf(failures[*failCt-1].description,
 		"No treasure cards test failed\n"
 		"  Expected: %d (bonus value only); Observed %d\n", bonusValue, G->coins);
+		failures[*failCt-1].testNumber = testNumber;
 		return -1;
 	}
 	
@@ -145,8 +142,9 @@ int _unittest4helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"No bonus test failed\n"
-		"  Expected: %d (treasure value only); Observed %d\n", 
+		"  Expected: %d (treasure value only); Observed %d\n",
 		expectedCoinValue, G->coins);
+		failures[*failCt-1].testNumber = testNumber;
 		return -1;
 	}
 	
@@ -157,6 +155,7 @@ int _unittest4helper(int k[], struct gameState* G, failedTest failures[],
 		sprintf(failures[*failCt-1].description,
 		"Coin value not updated correctly\n"
 		"  Expected: %d ; Observed %d\n", expectedCoinValue, G->coins);
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	return 0;

@@ -16,11 +16,6 @@
 
 #include "_unittest1helper.h"
 
-//This max is only for documenting failure specifics.
-//i.e. Failures in excess of this number are still counted, but not documented.
-//Set this in unittest1helper.c also!
-#define MAX_FAILS 10
-
 int main (int argc, char** argv) {
 	struct gameState G;
 
@@ -51,9 +46,8 @@ int main (int argc, char** argv) {
 		}
 		else{
 			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n"
-				   "\t\t-Set MAX_FAILS in unittest1.c\n"
-				   "\t\t and _unittest1helper.c to\n"
-				   "\t\t print more errors.\n\n",
+				   "\t\t-Set MAX_FAILS in _unittest1helper.h\n"
+				   "\t\t to print more errors.\n\n",
 						failCt, MAX_FAILS);
 		}
 		printf("(Note: See _unittest1helper.c when referencing line #)\n\n");

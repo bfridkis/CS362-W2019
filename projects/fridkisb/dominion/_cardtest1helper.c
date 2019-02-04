@@ -17,14 +17,9 @@
  */
  
 #include "_cardtest1helper.h"
-
-//This max is only for documenting failure specifics.
-//i.e. Failures in excess of this number are still counted, but not documented.
-//Set this in cardtest1.c also!
-#define MAX_FAILS 10
  
 int _cardtest1helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int deckCardCountSpecifier){
+	int* failCt, int deckCardCountSpecifier, int testNumber){
 		
 	//Test value variables	   
 	int i, j, deckSize, handSize;
@@ -134,7 +129,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		handBeforeSmithy[i] = G->hand[0][i];
 	}
 	
-	//int for coin bonus (should remain unchanged after Smithy call)
+	//int for coin bonus (unused by Smithy call)
 	int coin_bonus = 0;
 	
 	//Assign a random hand position for Smithy
@@ -171,6 +166,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		deckCardCountSpecifier == 0 ? handCountBeforeSmithy - 1 : 
 		handCountBeforeSmithy + deckCardCountSpecifier - 1, 
 		G->handCount[0]); 
+		failures[*failCt-1].testNumber = testNumber;
 	}
 
 	//Check to make sure G->deckCount[0] has been decremented by 3
@@ -186,6 +182,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		"  Expected: %d ; Observed %d\n", 
 		deckCountBeforeSmithy < 3 ? 0 :
 		deckCountBeforeSmithy - 3, G->deckCount[0]);
+		failures[*failCt-1].testNumber = testNumber;
 	}	
 	
 	//Check to make sure that hand is same as before Smithy call, except 
@@ -206,6 +203,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 				"  Incorrect card at idx %d ; Expected %d : Observed %d\n", i,
 				i != handPos && j < 7 ? i : k[j-7],
 				G->hand[0][i]);
+				failures[*failCt-1].testNumber = testNumber;
 				break;
 		}
 		if(j == 16){
@@ -246,6 +244,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 				G->hand[0][handBeforeSmithy[handCountBeforeSmithy - 1 - (i - 1)]],
 				i == 3 ? handPos :
 				handCountBeforeSmithy + (i - 1));
+				failures[*failCt-1].testNumber = testNumber;
 				break;
 		}
 	}
@@ -260,6 +259,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			"Deck changed unexpectedly at index %d\n"
 			"  Expected %d ; Observed %d\n", 
 			i, deckBeforeSmithy[i], G->hand[0][i]);
+			failures[*failCt-1].testNumber = testNumber;
 			break;
 		}
 	}
@@ -271,6 +271,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		"Discard card count not updated correctly\n"
 		"  Expected 1 ; Observed %d\n", 
 		G->discardCount[0]);
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	//Check player 0 discard (should have Smithy at index 0, 
 	// -1 all other indexes)
@@ -282,6 +283,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			"Discard pile not updated as expected at idx %d\n"
 			"  Expected smithy ; Observed %d\n", 
 			i, G->discard[0][i]);
+			failures[*failCt-1].testNumber = testNumber;
 		}
 		else if(i != 0 && G->discard[0][i] != -1 
 			&& ++(*failCt) <= MAX_FAILS){
@@ -290,6 +292,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			"Discard pile not updated as expected at idx %d\n"
 			"  Expected -1 ; Observed %d\n", 
 			i, G->discard[0][i]);
+			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;
 	}
@@ -302,6 +305,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			"Supply pile count changed unexpectedly at pile %d\n"
 			"  Expected 10 ; Observed %d\n", 
 			i, G->supplyCount[i]);
+			failures[*failCt-1].testNumber = testNumber;
 			break;
 		}
 	}
@@ -316,6 +320,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		"Number of actions not updated correctly\n"
 		"  Expected 1 ; Observed %d\n", 
 		G->numActions);
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check whoseTurn...
@@ -325,6 +330,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		"Whose turn changed unexpectedly\n"
 		"  Expected 0 ; Observed %d\n", 
 		G->whoseTurn);
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check coins...
@@ -334,6 +340,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		"coins value changed unexpectedly\n"
 		"  Expected 0 ; Observed %d\n", 
 		G->coins);
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check numBuys...
@@ -343,6 +350,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		"Number of buys changed unexpectedly\n"
 		"  Expected 1 ; Observed %d\n", 
 		G->numBuys);
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check embargo tokens...
@@ -353,6 +361,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			"Number of embargo tokens changed unexpectedly for card %d\n"
 			"  Expected 0 ; Observed %d\n", 
 			i, G->embargoTokens[i]);
+			failures[*failCt-1].testNumber = testNumber;
 		}
 	}
 	
@@ -363,6 +372,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		"Outpost played changed unexpectedly\n"
 		"  Expected 0 ; Observed %d\n", 
 		G->outpostPlayed);
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check outpost turn...
@@ -372,6 +382,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		"Outpost turn changed unexpectedly\n"
 		"  Expected 0 ; Observed %d\n", 
 		G->outpostTurn);
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check player 1 values (all should be unchanged)
@@ -383,6 +394,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		"Player 1 discard count changed unexpectedly\n"
 		"  Expected 0 ; Observed %d\n", 
 		G->discardCount[1]);
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check player 1 deck count...
@@ -392,6 +404,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		"Player 1 deck count changed unexpectedly\n"
 		"  Expected 0 ; Observed %d\n", 
 		G->deckCount[1]);
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check player 1 hand count...
@@ -401,6 +414,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		"Player 1 hand count changed unexpectedly\n"
 		"  Expected 0 ; Observed %d\n", 
 		G->handCount[1]);
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check player 1 discard pile...
@@ -411,6 +425,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			"Player 1 deck changed unexpectedly at idx %d\n"
 			"  Expected -1 ; Observed %d\n", 
 			i, G->discard[1][i]);
+			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;
 	}
@@ -423,6 +438,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			"Player 1 deck changed unexpectedly at idx %d\n"
 			"  Expected -1 ; Observed %d\n", 
 			i, G->deck[1][i]);
+			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;
 	}
@@ -435,6 +451,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			"Player 1 hand changed unexpectedly at idx %d\n"
 			"  Expected -1 ; Observed %d\n", 
 			i, G->hand[1][i]);
+			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;
 	}
@@ -459,6 +476,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		"Played card count not updated correctly\n"
 		"  Expected 1 ; Observed %d\n", 
 		G->playedCardCount);
+		failures[*failCt-1].testNumber = testNumber;
 	}
 	//Check playedCards (should have Smithy at index 0, -1 all other indexes)
 	for(i = 0; i < MAX_DECK; i++){
@@ -469,6 +487,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			"Played cards not updated as expected at idx %d\n"
 			"  Expected smithy ; Observed %d\n", 
 			i, G->playedCards[0]);
+			failures[*failCt-1].testNumber = testNumber;
 		}
 		else if(i != 0 && G->playedCards[i] != -1 
 			&& ++(*failCt) <= MAX_FAILS){
@@ -477,6 +496,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			"Played cards not updated as expected at idx %d\n"
 			"  Expected -1 ; Observed %d\n", 
 			i, G->playedCards[i]);
+			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;
 	} 

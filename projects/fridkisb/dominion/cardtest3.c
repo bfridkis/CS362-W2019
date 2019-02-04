@@ -16,14 +16,7 @@
 
 #include "_cardtest3helper.h"
 
-//This max is only for documenting failure specifics.
-//i.e. Failures in excess of this number are still counted, but not documented.
-//Set this in cardtest3helper.c also!
-#define MAX_FAILS 10
-
-#define NUM_PLAYERS 4
-
-#define CUTPURSE_CALLS 100
+#define CUTPURSE_CALLS 1
 
 int main (int argc, char** argv) {
 	struct gameState G;
@@ -37,7 +30,7 @@ int main (int argc, char** argv) {
 	printf("\nExecuting %d Cutpurse %s using hands with random assortment of \n"
 		   "\t hand cards for each player, with at least 1 copper in each hand...\n\n"
 		   "\t\t" "-Set 'CUTPURSE_CALLS' in cardtest3.c\n"
-		   "\t\t" " to modify number of runs.\n", CUTPURSE_CALLS,
+		   "\t\t" " to modify number of plays.\n", CUTPURSE_CALLS,
 		   CUTPURSE_CALLS > 1 ? "plays" : "play");
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
@@ -60,7 +53,7 @@ int main (int argc, char** argv) {
 		//Play Cutpurse with random kingdom card set with a deck
 		//containing at least 2 treasure cards.
 		//(see _cardtest3helper for more details)
-		_cardtest3helper(k, &G, failures, &failCt, NUM_PLAYERS, 0);
+		_cardtest3helper(k, &G, failures, &failCt, NUM_PLAYERS, 0, i + 1);
 	}
 	
 	printf("\nBOUNDARY: Executing Cutpurse play using hand with random assortment of \n"
@@ -72,7 +65,7 @@ int main (int argc, char** argv) {
 		k[j] = Random() * 19 + 7;
 	}
 	initializeGame(2, k, Random() * INT_MAX, &G);
-	_cardtest3helper(k, &G, failures, &failCt, NUM_PLAYERS, 1);
+	_cardtest3helper(k, &G, failures, &failCt, NUM_PLAYERS, 1, CUTPURSE_CALLS + 1);
 	
 	printf("\n\tEach test (that is not marked 'BOUNDARY') verifies proper game state\n"
 		   "\tmodification, reporting a failure if any of the following conditions are NOT met:\n"
@@ -86,13 +79,12 @@ int main (int argc, char** argv) {
 		   "\t\t\t"          "discarded for inactive players)\n"
 		   "\t\t"       "5. The game state's 'coins' variable is incremented by 2\n"
 		   "\t\t"       "6. All of the following game states are unchanged:\n"
-		   "\t\t\t"          "a. coins\n"
-		   "\t\t\t"          "b. numActions\n"
-		   "\t\t\t"          "c. numBuys\n"
-		   "\t\t\t"          "d. embargoTokens[]\n"
-		   "\t\t\t"          "e. outpostPlayed\n"
-		   "\t\t\t"          "f. outpostTurn\n"
-		   "\t\t\t"          "g. All players' decks are unchanged\n"
+		   "\t\t\t"          "a. numActions\n"
+		   "\t\t\t"          "b. numBuys\n"
+		   "\t\t\t"          "c. embargoTokens[]\n"
+		   "\t\t\t"          "d. outpostPlayed\n"
+		   "\t\t\t"          "e. outpostTurn\n"
+		   "\t\t\t"          "f. All players' decks are unchanged\n"
 		   "\t\t"       "7. Played card count is incremented by 1 (for cutpurse played)\n"
 		   "\t\t"       "8. Played cards gains one and only cutpurse\n");
 	
@@ -109,16 +101,16 @@ int main (int argc, char** argv) {
 		}
 		else{
 			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n"
-				   "\t\t-Set MAX_FAILS in cardtest3.c\n"
-				   "\t\t and _cardtest3helper.c to\n"
-				   "\t\t print more errors.\n\n",
+				   "\t\t-Set MAX_FAILS in _cardtest3helper.h\n"
+				   "\t\t to print more errors.\n\n",
 						failCt, MAX_FAILS);
 		}
 		printf("(Note: See _cardtest3helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
-			printf("%d - LINE %d: %s\n\n", 
-				i + 1, failures[i].lineNumber, failures[i].description);
+			printf("%d - TEST #%d @ LINE %d: %s\n\n", 
+				i + 1, failures[i].testNumber, 
+				failures[i].lineNumber, failures[i].description);
 		}
 	}
 

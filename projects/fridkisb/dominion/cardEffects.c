@@ -73,6 +73,7 @@ int cutpurseEffect(int currentPlayer, struct gameState *state, int handPos){
 		      discardCard(j, i, state, 0);
 		      break;
 		    }
+			//The if statement below can never be true...
 		  if (j == state->handCount[i])
 		    {
 		      for (k = 0; k < state->handCount[i]; k++)

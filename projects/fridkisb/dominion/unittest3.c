@@ -16,11 +16,6 @@
 
 #include "_unittest3helper.h"
 
-//This max is only for documenting failure specifics.
-//i.e. Failures in excess of this number are still counted, but not documented.
-//Set this in unittest3helper.c also!
-#define MAX_FAILS 10
-
 #define NUM_SHUFFLES 250
 
 int main (int argc, char** argv) {
@@ -57,14 +52,15 @@ int main (int argc, char** argv) {
 		
 		//Run shuffle test on random kingdom card set.
 		//(see _unittest3helper for more details)
-		_unittest3helper(k, &G, failures, &failCt, &ut3s, 0, 0);
+		_unittest3helper(k, &G, failures, &failCt, &ut3s, 0, 0, i + 1);
 	}
 	
 	printf("\nAttempting empty deck shuffle...\n");
 	
 	//Attempting shuffle on empty deck
 	initializeGame(2, k, Random() * INT_MAX, &G);
-	if(_unittest3helper(k, &G, failures, &failCt, &ut3s, 1, 0) != 0){
+	if(_unittest3helper(k, &G, failures, &failCt, &ut3s, 1, 
+			0, NUM_SHUFFLES + 1) != 0){
 		printf("\nEmpty deck test failed\n");
 	}
 	
@@ -72,7 +68,8 @@ int main (int argc, char** argv) {
 	
 	//Attempting shuffle on max deck
 	initializeGame(2, k, Random() * INT_MAX, &G);
-	if(_unittest3helper(k, &G, failures, &failCt, &ut3s, 0, 1) != 0){
+	if(_unittest3helper(k, &G, failures, &failCt, &ut3s, 0,
+			1, NUM_SHUFFLES + 2) != 0){
 		printf("\nMax deck size test failed\n");
 	}
 	
@@ -89,16 +86,16 @@ int main (int argc, char** argv) {
 		}
 		else{
 			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n"
-				   "\t\t-Set MAX_FAILS in unittest3.c\n"
-				   "\t\t and _unittest3helper.c to\n"
-				   "\t\t print more errors.\n\n",
+				   "\t\t-Set MAX_FAILS in _unittest3helper.h\n"
+				   "\t\t to print more errors.\n\n",
 						failCt, MAX_FAILS);
 		}
 		printf("(Note: See _unittest3helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
-			printf("%d - LINE %d: %s\n\n", 
-				i + 1, failures[i].lineNumber, failures[i].description);
+			printf("%d - TEST #%d @ LINE %d: %s\n\n", 
+				i + 1, failures[i].testNumber, 
+				failures[i].lineNumber, failures[i].description);
 		}
 	}
 	

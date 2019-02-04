@@ -11,6 +11,10 @@
 #ifndef _CARDTEST2HELPER_H
 #define _CARDTEST2HELPER_H
 
+//This max is only for documenting failure specifics.
+//i.e. Failures in excess of this number are still counted, but not documented.
+#define MAX_FAILS 50
+
 #include "dominion.h"
 #include "dominion_helpers.h"
 #include <string.h>
@@ -22,13 +26,13 @@
 struct failedTest {
 	int lineNumber;
 	char description[256];
-	int isBoundary;
+	int testNumber;
 };
 
 typedef struct failedTest failedTest;
 
 int _cardtest2helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int treasureCardCountSpecifier, int isBoundary);
+	int* failCt, int treasureCardCountSpecifier, int isBoundary, int testNumber);
 
 
 #endif

@@ -57,14 +57,26 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	//stream 1 in parent function (main, see cardtest4.c)
 	SelectStream(2);
 	
+	//Determine random player to play council_room
+	int activePlayer = Random() * (NUM_PLAYERS - 1);
+	G->whoseTurn = activePlayer;
 	
-	//Determine random deck size for each player in 
-	//range 1 - MAX_DECK
-	int deckSize[NUM_PLAYERS];
-	for(i = 0; i < NUM_PLAYERS; i++){
-		deckSize[i] = 1 + (Random() * (MAX_DECK - 1));
+	//If this is not the emptyDecks boundary test
+	if(!emptyDecks){	
+		//Determine random deck size for each player in 
+		//range 1 - MAX_DECK
+		int deckSize[NUM_PLAYERS];
+		for(i = 0; i < NUM_PLAYERS; i++){
+			deckSize[i] = 1 + (Random() * (MAX_DECK - 1));
+		}
+	
+		//Ensure active player has at least 4 cards to draw,
+		//if this is not the emptyDecks boundary test
+		if(deckSize[activePlayer] < 4){
+			deckSize[activePlayer] = 4;
+		}
 	}
-	
+		
 	//Determine random hand size for each player in 
 	//range 1 - MAX_HAND
 	int handSize[NUM_PLAYERS];
@@ -112,10 +124,6 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 		G->handCount[m] = handSize[m];
 	}
 	
-	//Determine random player to play council_room
-	int activePlayer = Random() * (NUM_PLAYERS - 1);
-	G->whoseTurn = activePlayer;
-	
 	//Assign a random hand position for Council_Room for active player
 	int handPos = Random() * (G->handCount[activePlayer] - 1);
 	if(handPos == -1){
@@ -143,27 +151,27 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	//Store deck and hand info prior to adventurer call
 	
 	//For deck...
-	int deckCardCountByTypeBeforeAdventurer[NUM_PLAYERS][27] = {{0}};
-	int deckCountBeforeAdventurer[NUM_PLAYERS];						//Just to use different variable name, could use deckSize
-	int deckBeforeAdventurer[NUM_PLAYERS][MAX_DECK];
+	int deckCardCountByTypeBeforeCouncil_Room[NUM_PLAYERS][27] = {{0}};
+	int deckCountBeforeCouncil_Room[NUM_PLAYERS];						//Just to use different variable name, could use deckSize
+	int deckBeforeCouncil_Room[NUM_PLAYERS][MAX_DECK];
 	for(i = 0; i < NUM_PLAYERS; i++){
 		for(j = 0; j < G->deckCount[j]; i++){
-			deckBeforeAdventurer[i] = G->deck[i][j];
-			deckCardCountByTypeBeforeAdventurer[G->deck[i][j]]++;
+			deckBeforeCouncil_Room[i][j] = G->deck[i][j];
+			deckCardCountByTypeBeforeCouncil_Room[i][G->deck[i][j]]++;
 		}
-		deckCountBeforeAdventurer[i] = G->deckCount[i];
+		deckCountBeforeCouncil_Room[i] = G->deckCount[i];
 	}
 	
 	//For hand...
-	int handCardCountByTypeBeforeAdventurer[NUM_PLAYERS][27] = {{0}};
-	int handCountBeforeAdventurer[NUM_PLAYERS];						//Just to use different variable name, could use handSize
-	//int handBeforeAdventurer[MAX_DECK];							//Not needed since order of hand doesn't matter
+	int handCardCountByTypeBeforeCouncil_Room[NUM_PLAYERS][27] = {{0}};
+	int handCountBeforeCouncil_Room[NUM_PLAYERS];						//Just to use different variable name, could use handSize
+	int handBeforeCouncil_Room[NUM_PLAYERS][MAX_DECK];							//Not needed since order of hand doesn't matter
 	for(i = 0; i < NUM_PLAYERS; i++){
 		for(j = 0; j < G->handCount[j]; i++){
-			//handBeforeAdventurer[i] = G->hand[i][j];
-			handCardCountByTypeBeforeAdventurer[G->hand[i][j]]++;
+			handBeforeCouncil_Room[i][j] = G->hand[i][j];
+			handCardCountByTypeBeforeCouncil_Room[i][G->hand[i][j]]++;
 		}
-		handCountBeforeAdventurer[i] = G->handCount[i];
+		handCountBeforeCouncil_Room[i] = G->handCount[i];
 	}
 	
 	//int for coin bonus (unused by Council_Room call)
@@ -188,31 +196,31 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//Determine how many of each card type have been removed from (or 
 	//erroneously added to) the deck
-	int deckCardCountByTypeAfterAdventurer[NUM_PLAYERS][27] = {0};
-	int deckDiffsAfterAdventurer[NUM_PLAYERS][27] = {0};
+	int deckCardCountByTypeAfterCouncil_Room[NUM_PLAYERS][27] = {0};
+	int deckDiffsAfterCouncil_Room[NUM_PLAYERS][27] = {0};
 	for(m = 0; m < NUM_PLAYERS; m++){
 		for(i = 0; i < G->deckCount[m]; i++){
-			deckCardCountByTypeAfterAdventurer[m][G->deck[m][i]]++;
+			deckCardCountByTypeAfterCouncil_Room[m][G->deck[m][i]]++;
 		}
 		for(i = 0; i < 27; i++){
-			deckDiffsAfterAdventurer[m][i] =
-				deckCardCountByTypeBeforeAdventurer[m][i] -
-				deckCardCountByTypeAfterAdventurer[m][i];
+			deckDiffsAfterCouncil_Room[m][i] =
+				deckCardCountByTypeBeforeCouncil_Room[m][i] -
+				deckCardCountByTypeAfterCouncil_Room[m][i];
 		}
 	}
 	
 	//Determine how many of each card type have been removed from (or 
 	//erroneously added to) the hand
-	int handCardCountByTypeAfterAdventurer[NUM_PLAYERS][27] = {0};
-	int handDiffsAfterAdventurer[NUM_PLAYERS][27] = {0};
+	int handCardCountByTypeAfterCouncil_Room[NUM_PLAYERS][27] = {0};
+	int handDiffsAfterCouncil_Room[NUM_PLAYERS][27] = {0};
 	for(m = 0; m < NUM_PLAYERS; m++){
 		for(i = 0; i < G->handCount[m]; i++){
-			handCardCountByTypeAfterAdventurer[m][G->hand[m][i]]++;
+			handCardCountByTypeAfterCouncil_Room[m][G->hand[m][i]]++;
 		}
 		for(i = 0; i < 27; i++){
-			handDiffsAfterAdventurer[m][i] =
-				handCardCountByTypeBeforeAdventurer[m][i] -
-				handCardCountByTypeAfterAdventurer[m][i];
+			handDiffsAfterCouncil_Room[m][i] =
+				handCardCountByTypeBeforeCouncil_Room[m][i] -
+				handCardCountByTypeAfterCouncil_Room[m][i];
 		}
 	}
 	
@@ -220,17 +228,161 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	//check to make sure each player's hand contains the same
 	//cards as before the council_room play plus one (and only one)
 	//card for all non-active players. For active player, make
-	//sure hand is the same as before the council_room play plus 4
-	//new cards.
-	for(int i; i < NUM_PLAYERS && !emptyDecks; i++){
-		for(j = 0; j < 27; j++){
-			if( i != activePlayer && 
-			  ((j == copper && handCardCountByTypeBeforeCouncil_Room[i][j] - 1 != 
-			    handCardCountByTypeAfterCouncil_Room[i][j]) ||
-			   ((j < copper || j > copper) && 
-			    handCardCountByTypeBeforeCouncil_Room[i][j] !=
-			    handCardCountByTypeAfterCouncil_Room[i][j])) &&
+	//sure hand is the same as before the council_room play plus 3
+	//new cards (4 are gained from deck but 1 council_room should be
+	//discarded from hand.
+	for(i = 0; i < NUM_PLAYERS && !emptyDecks; i++){
+		//Check counts...
+		if((i != activePlayer && 
+		   handCountBeforeCouncil_Room[i] + 1 != G->handCount[i]) ||
+			(i == activePlayer && handCountBeforeCouncil_Room + 3) &&
+		   ++(*failCt) <= MAX_FAILS){
+				failures[*failCt-1].lineNumber = __LINE__;
+				sprintf(failures[*failCt-1].description,
+				"Hand count not updated properly after Council_Room play\n"
+				"  Expected %d ; Observed %d %s\n"
+				"   (player %d, who %s council_room)\n",
+				" Aborting remaining deck vs. hand comparison checks for player %d...\n",
+				i != activePlayer ? handCountBeforeCouncil_Room[i] + 1 :
+				handCountBeforeCouncil_Room[i] + 3, 
+				G->handCount[i],
+				emptyDecks ? "(Boundary)" : "(Non-Boundary)"),
+				i,
+				i != activePlayer ? "did not play" : "played",
+				i);
+				failures[*failCt-1].testNumber = testNumber;
+				continue;
+		}
+		
+		//Make sure cards added to hand came from top of deck
+		if(i == activePlayer){
+			for(j = deckCountBeforeCouncil_Room[i] - 1, m = 0; 
+				j > deckBeforeCouncil_Room[i] - 5; j--, m++){
+				if(deckBeforeCouncil_Room[j] != 
+					handAfterCouncil_Room[handCountBeforeCouncil_Room + m] &&
+					++(*failCt) <= MAX_FAILS){
+						failures[*failCt-1].lineNumber = __LINE__;
+						sprintf(failures[*failCt-1].description,
+						"Cards not gained from top of deck to top of hand\n"
+						"  for player %d %s\n"
+						"   (player %d, who played council_room)\n",
+						emptyDecks ? "(Boundary)" : "(Non-Boundary)");
+						failures[*failCt-1].testNumber = testNumber;
+						break;
+				}
+			}
+		}
+		else{
+			for(j = deckCountBeforeCouncil_Room[i] - 1, m = 0; 
+				j > deckBeforeCouncil_Room[i] - 2; j--, m++){
+				if(deckBeforeCouncil_Room[j] != 
+					handAfterCouncil_Room[handCountBeforeCouncil_Room + m] &&
+					++(*failCt) <= MAX_FAILS){
+						failures[*failCt-1].lineNumber = __LINE__;
+						sprintf(failures[*failCt-1].description,
+						"Cards not gained from top of deck to top of hand\n"
+						"  for player %d %s\n"
+						"   (player %d, who did not play council_room)\n",
+						emptyDecks ? "(Boundary)" : "(Non-Boundary)");
+						failures[*failCt-1].testNumber = testNumber;
+						break;
+				}
+			}
+		}
+		
+		//Check to make sure that the deck and hand are unchanged
+		//for indexes not affected by council_room play (i.e. below
+		//cards drawn for the deck and below those gained for the hand
+		if(i == activePlayer){
+			for(j = 0; j < deckCountBeforeCouncil_Room - 4; j++){
+				if(deckBeforeCouncil_Room[i][j] != G->deck[i][j] &&
 				++(*failCt) <= MAX_FAILS){
+						failures[*failCt-1].lineNumber = __LINE__;
+						sprintf(failures[*failCt-1].description,
+						"Deck below drawn cards changed unexpectedly\n"
+						"   (player %d, who did not play council_room)\n"
+						"  Expected %d at idx %d ; Observed %d %s\n",
+						i, deckBeforeCouncil_Room[i][j], G->deck[i][j],
+						emptyDecks ? "(Boundary)" : "(Non-Boundary)");
+						failures[*failCt-1].testNumber = testNumber;
+						break;
+				}
+			}
+		}
+		else{
+			for(j = 0; j < deckCountBeforeCouncil_Room - 1; j++){
+				if(deckBeforeCouncil_Room[i][j] != G->deck[i][j] &&
+				++(*failCt) <= MAX_FAILS){
+						failures[*failCt-1].lineNumber = __LINE__;
+						sprintf(failures[*failCt-1].description,
+						"Deck below drawn cards changed unexpectedly\n"
+						"   (player %d, who did not play council_room)\n"
+						"  Expected %d at idx %d ; Observed %d %s\n",
+						i, deckBeforeCouncil_Room[i][j], G->deck[i][j],
+						emptyDecks ? "(Boundary)" : "(Non-Boundary)");
+						failures[*failCt-1].testNumber = testNumber;
+						break;
+				}
+			}
+		}
+		
+		/* Redundant, in that everything above covers the same logic */
+		/*															 */
+		for(j = 0; j < 27; j++){
+			int deckVsHandDiffs = handDiffsAfterCouncil_Room[i][j] - 
+				deckDiffsAfterCouncil_Room[i][j];
+			//If active player gains a council_room, the card type diff total
+		    //is only expected to be 1, (council_room removed from deck and
+			//gained to hand but also discard from hand) but only in this case...
+			if((i == activePlayer && deckVsHandDiffs == 1 &&
+			   j != council_room) || deckVsHandDiffs != 0 &&
+				++(*failCt) <= MAX_FAILS){
+					failures[*failCt-1].lineNumber = __LINE__;
+					sprintf(failures[*failCt-1].description,
+					"Cards gained to hand are not the same as\n"
+					"  those removed from deck after Council_Room play\n"
+					"  Gained %d %ds to hand, but removed %d %ds from deck\n"
+					"   (player %d, who %s council_room)\n",
+					 :
+					handCountBeforeCouncil_Room[i] + 3, 
+					i, G->handCount[i],
+					emptyDecks ? "(Boundary)" : "(Non-Boundary)"),
+					i != activePlayer ? "did not play" : "played";
+					failures[*failCt-1].testNumber = testNumber;
+			}
+		}
+		*/
+	}
+	
+	// NO BOUNDARY CHECKS ...
+	
+	
+	for(i = 0; i < NUM_PLAYERS && !emptyDecks; i++){
+		
+	
+	//For emptyDecks boundary test, make sure no decks change
+		
+		if( deckVsHandDiffs != 0 ||
+		   //If active player gains a council_room, the card type diffs total
+		   //is only expected to be 1, but only in this case...
+		   (i == activePlayer && deckVsHandDiffs == 1 &&
+		   handDiffsAfterCouncil_Room[i][council_room] != 1) &&
+			++(*failCt) <= MAX_FAILS){
+				failures[*failCt-1].lineNumber = __LINE__;
+				sprintf(failures[*failCt-1].description,
+				"Cards gained to hand are not the same as\n"
+				"  those removed from deck after Council_Room play\n"
+				"  Gained %d %ds to hand, but removed %d %ds from deck\n"
+				"   (player %d, who %s council_room)\n",
+				 :
+				handCountBeforeCouncil_Room[i] + 3, 
+				i, G->handCount[i],
+				emptyDecks ? "(Boundary)" : "(Non-Boundary)"),
+				i != activePlayer ? "did not play" : "played";
+				failures[*failCt-1].testNumber = testNumber;
+		}
+			if(handCardCountByTypeAfterCouncil_Room[i][j] < 
+			   handCardCountByTypeAfterCouncil_Room){
 				failures[*failCt-1].lineNumber = __LINE__;
 				sprintf(failures[*failCt-1].description,
 				"Hand cards not updated properly after Council_Room play\n"
@@ -271,7 +423,7 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	//Check to make sure all hand counts are decremented by one.
 	//(Non-active players discard 1 copper, active player discards
 	// 1 council_room.)
-	for(int i; i < NUM_PLAYERS && !noCopper; i++){
+	for(i = 0; i < NUM_PLAYERS && !noCopper; i++){
 		if(handSize[i] - 1 != G->handCount[i] &&
 			++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
@@ -293,7 +445,7 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	//cards as before the council_room play. For active player, make
 	//sure hand is the same as before the council_room play minus one 
 	//council_room only.
-	for(int i; i < NUM_PLAYERS && noCopper; i++){
+	for(i = 0; i < NUM_PLAYERS && noCopper; i++){
 		for(j = 0; j < 27; j++){
 			if(i != activePlayer && 
 			   handCardCountByTypeBeforeCouncil_Room[i][j] != 

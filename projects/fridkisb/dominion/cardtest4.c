@@ -16,8 +16,6 @@
 
 #include "_cardtest4helper.h"
 
-#define NUM_PLAYERS 4
-
 #define COUNCIL_ROOM_CALLS 100
 
 int main (int argc, char** argv) {

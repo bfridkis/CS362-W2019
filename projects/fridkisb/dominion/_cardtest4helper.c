@@ -179,7 +179,7 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	cardEffect(council_room, -1, -1, -1, G, handPos, &coin_bonus);
 	
 	//Store hand card counts after council_room call for each player
-	int handCardCountByTypeAfterCouncil_Room[MAX_PLAYERS][27] = {{0}};
+	int handCardCountByTypeAfterCouncil_Room[NUM_PLAYERS][27] = {{0}};
 	for(i = 0; i < NUM_PLAYERS; i++){
 		for(j = 0; j < G->handCount[i]; j++){
 			handCardCountByTypeAfterCouncil_Room[i][G->hand[i][j]]++;

@@ -164,7 +164,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	//copper for all non-active players. For active player, make
 	//sure hand is the same as before the cutpurse play minus 
 	//one cutpurse only.
-	for(int i; i < NUM_PLAYERS && !noCopper; i++){
+	for(i = 0; i < NUM_PLAYERS && !noCopper; i++){
 		for(j = 0; j < 27; j++){
 			if( i != activePlayer && 
 			  ((j == copper && handCardCountByTypeBeforeCutpurse[i][j] - 1 != 
@@ -213,7 +213,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	//Check to make sure all hand counts are decremented by one.
 	//(Non-active players discard 1 copper, active player discards
 	// 1 cutpurse.)
-	for(int i; i < NUM_PLAYERS && !noCopper; i++){
+	for(i = 0; i < NUM_PLAYERS && !noCopper; i++){
 		if(handSize[i] - 1 != G->handCount[i] &&
 			++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
@@ -235,7 +235,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	//cards as before the cutpurse play. For active player, make
 	//sure hand is the same as before the cutpurse play minus one 
 	//cutpurse only.
-	for(int i; i < NUM_PLAYERS && noCopper; i++){
+	for(i = 0; i < NUM_PLAYERS && noCopper; i++){
 		for(j = 0; j < 27; j++){
 			if(i != activePlayer && 
 			   handCardCountByTypeBeforeCutpurse[i][j] != 

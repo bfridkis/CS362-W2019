@@ -15,8 +15,8 @@ echo "cardtest1.c:" >> unittestresults.out
 echo -e "\tCoverage Report:\n" >> unittestresults.out
 
 line=$(gcov cardEffects.c --function-summaries | grep -n smithyEffect | cut -f1 -d:)
-((line++))
-gcov cardEffects.c --function-summaries | head -n$(echo $line) | tail -n2 >> unittestresults.out
+((line+=3))
+gcov cardEffects.c --function-summaries | head -n$(echo $line) | tail -n4 >> unittestresults.out
 
 echo -e "\n\tThe following functions are called by smithyEffect...\n" >> unittestresults.out
 line=$(gcov dominion.c --function-summaries | grep -n drawCard | cut -f1 -d:)

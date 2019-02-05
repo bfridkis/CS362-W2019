@@ -68,10 +68,8 @@ testAll: dominion.o testSuite.c
 	gcc -o testSuite testSuite.c -g  dominion.o cardEffects.o rngs.o $(CFLAGS)
 	
 unittestresults: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3
-	@chmod +x unittestmakehelper
-	@./unittestmakehelper
-	@chmod +x cardtestmakehelper
-	@./cardtestmakehelper
+	@chmod +x testmakehelper
+	@./testmakehelper
 
 interface.o: interface.h interface.c
 	gcc -c interface.c -g  $(CFLAGS)

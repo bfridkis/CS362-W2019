@@ -53,7 +53,7 @@ int main (int argc, char** argv) {
 		//Play Cutpurse with random kingdom card set with a deck
 		//containing at least 2 treasure cards.
 		//(see _cardtest3helper for more details)
-		_cardtest3helper(k, &G, failures, &failCt, NUM_PLAYERS, 0, i + 1);
+		_cardtest3helper(k, &G, failures, &failCt, 0, i + 1);
 	}
 	
 	printf("\nBOUNDARY: Executing Cutpurse play using hand with random assortment of \n"
@@ -65,7 +65,7 @@ int main (int argc, char** argv) {
 		k[j] = Random() * 19 + 7;
 	}
 	initializeGame(2, k, Random() * INT_MAX, &G);
-	_cardtest3helper(k, &G, failures, &failCt, NUM_PLAYERS, 1, CUTPURSE_CALLS + 1);
+	_cardtest3helper(k, &G, failures, &failCt, 1, CUTPURSE_CALLS + 1);
 	
 	printf("\n\tEach test (that is not marked 'BOUNDARY') verifies proper game state\n"
 		   "\tmodification, reporting a failure if any of the following conditions are NOT met:\n"

@@ -1,0 +1,785 @@
+
+			TEST SUITE RESULTS - CS362-400 - ASSIGNMENT3
+
+ 						  Benjamin Fridkis
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++                                                                  ++
+++          			      UNIT TEST 1					        ++
+++                                                                  ++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Result for running unittest1 (gainCard function test):
+unittest1.c:
+Starting unittest1 - Testing 'gainCard' function
+
+
+Gaining each supply card to each pile for player 0...
+
+*Running Fail Count: 0...
+
+
+Attempting to gain each supply card not in play (player 0)...
+
+*Running Fail Count: 0...
+
+
+Setting each supply card pile count to 0 and
+  attempting to gain each supply pile card (player 0)...
+
+*Running Fail Count: 0...
+
+
+Checking player 1's game state (should be unchanged)...
+
+*Running Fail Count: 0...
+
+
+*****************************
+******ALL TESTS PASSED!******
+*****************************
+
+	Coverage Report:
+
+Function 'gainCard'
+Lines executed:100.00% of 13
+Branches executed:100.00% of 6
+Taken at least once:100.00% of 6
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++                                                                  ++
+++          			      UNIT TEST 2					        ++
+++                                                                  ++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Result for running unittest2 (buyCard function test):
+unittest2.c:
+Starting unittest2 - Testing 'buyCard' function
+
+
+Testing buyCard with sufficient buys and coins for 10 kingdom cards
+**All tests for sufficient coins and sufficient buys passed!**
+
+
+TOTAL FAILED TESTS AFTER T1: 0
+
+
+Testing buyCard with insufficient coins and sufficient buys for 10 kingdom cards
+**All tests for insufficient coins and sufficient buys passed!**
+
+
+TOTAL FAILED TESTS AFTER T2: 0
+
+
+Testing buyCard with sufficient coins and insufficient buys for 10 kingdom cards
+**All tests for sufficient coins and insufficient buys passed!**
+
+
+TOTAL FAILED TESTS AFTER T3: 0
+
+
+*****************************
+******ALL TESTS PASSED!******
+*****************************
+
+	Coverage Report:
+
+Function 'buyCard'
+Lines executed:92.31% of 13
+Branches executed:100.00% of 6
+Taken at least once:83.33% of 6
+
+	The following functions are called by buyCard...
+
+Function 'gainCard'
+Lines executed:100.00% of 13
+Branches executed:100.00% of 6
+Taken at least once:100.00% of 6
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++                                                                  ++
+++          			      UNIT TEST 3					        ++
+++                                                                  ++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Result for running unittest3 (shuffle function test):
+unittest3.c:
+Starting unittest3 - Testing 'shuffle' function
+
+Executing 250 shuffles using deck sizes starting at 5 and incrementing
+	 by multiples of 5 with each successive test number, up to 500 (MAX_DECK).
+	 If the number of tests cause the deck size to equal or exceed 500 when
+	 calculated in this way, the deck size will reset to 1 and begin
+	 incrementing by 1 with each additional successive test.
+		-e.g. deck size for test 1 = 5, test 2 = 10, test 3 = 15...
+		      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2...
+
+	 Kingdom cards are adventurer through great_hall, as enumerated
+	 in dominion.h.
+
+		-Set 'NUM_SHUFFLES' in unittest3.c
+		 to modify number of tests.
+
+		-Random test generator can be turned on
+		 by setting the constant 'RANDOMIZE' to 1
+		 in _unittest3helper.h.
+
+
+Attempting empty deck shuffle...
+
+Attempting max deck size shuffle...
+
+
+*****************************
+******ALL TESTS PASSED!******
+*****************************
+
+
+  ***************************************************************************
+  ** % Variations (Relative to Deck Size) After Shuffles with no Failures **
+  ***************************************************************************
+
+					     0       : 2
+					> 0  - <11%  : 0
+					 11% - <21%  : 0
+					 21% - <31%  : 0
+					 31% - <41%  : 0
+					 41% - <51%  : 2
+					   >51%      : 247
+
+	The above values represent the number of tests for which the MINIMUM
+	number of observed changes divided by the deck size used produced the
+	given percentage. For example, if a deck size of 20 was compared before
+	and after shuffle, and 10 deck indexes contained the same card type both
+	before and after shuffle, while the other 10 deck indexes contained different
+	card types (when comparing the before and after decks), the test generated a
+	variance value of 50%. The above values are the incidence of tests in each
+	percentage range.
+
+	Note that a few tests in the lower ranges may not indicate a faulty shuffle
+	function, as these may be the result of very small deck sizes. However,
+	a large incidence in the lower ranges may indicate that shuffle is not
+	adequately redistributing the cards within the deck, while a large incidence
+	at the '0' range specifically may indicate that shuffle is not redistributing
+	the cards at all.
+
+	Finally, it is important to note that this variance test DOES NOT ACCOUNT FOR
+	CARD EXCHANGES OF THE SAME CARD TYPE. In other words, more shuffling may be
+	(and likely is) occurring than is accounted for by these numbers (and hence
+	the emphasis on 'minimum' above). This is an important consideration to take
+	into account when evaluating these statistics, especially when the low variance
+	ranges have low incidence. (In other words, a relatively low incidence for the
+	low variance ranges may not necessarily indicate an issue with shuffle.)
+
+	(Max number of tests in this breakdown is NUM_SHUFFLES + 1, as the MAX_DECK
+	 deck size shuffle test is included but the empty deck shuffle test is not.)
+
+	Coverage Report:
+
+Function 'shuffle'
+Lines executed:100.00% of 16
+Branches executed:100.00% of 8
+Taken at least once:100.00% of 8
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++                                                                  ++
+++          			      UNIT TEST 4					        ++
+++                                                                  ++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Result for running unittest4 (updateCoins function test):
+unittest4.c:
+Starting unittest4 - Testing 'updateCoins' function
+
+Executing 100 coin updates using hands with equal distribution
+	 of treasure cards (i.e. copper count = silver count = gold count).
+	 Total treasure card count starts and 3 and increments by 3 for each
+	 successive (non-boundary) test. If the treasure card count exceeds
+	 500 (MAX_HAND) when calculated this way, use the next lowest multiple of 3
+	 that is greater than or equal to the current test number % 500, and if this
+	 value exceeds 500 or is 0, use 3.
+
+		-e.g. treasure card count for test 1 = 3, test 2 = 6, test 3 = 9...
+		      treasure card count for test 101 with MAX_HAND @ 75 = 27
+
+	 Bonus value for each update is the current
+	 test number * 2.
+
+		-Set 'NUM_COIN_UPDATES' in unittest4.c
+		 to modify number of tests.
+
+		-Random test generator can be turned on
+		 by setting the constant 'RANDOMIZE' to 1
+		 in _unittest4helper.h.
+
+
+Attempting no treasure cards test...
+
+Attempting no bonus test...
+
+Attempting no treasure cards and no bonus test...
+
+
+*****************************
+******ALL TESTS PASSED!******
+*****************************
+
+	Coverage Report:
+
+Function 'updateCoins'
+Lines executed:100.00% of 11
+Branches executed:100.00% of 8
+Taken at least once:100.00% of 8
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++                                                                  ++
+++          			      CARD TEST 5					        ++
+++                                                                  ++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Result for running cardtest1 (smithy card test):
+cardtest1.c:
+Starting cardtest1 - Testing 'smithy' card
+
+Executing 1 Smithy play using deck and hand sizes starting at 5 and incrementing
+	 by multiples of 5 with each successive test number, up to 500/500 (MAX_DECK/MAX_HAND).
+	 If the number of tests cause the deck/hand size to equal or exceed 500/500 when
+	 calculated in this way, the deck/hand size will reset to 1 and begin
+	 incrementing by 1 with each additional successive test.
+
+		-e.g. deck size for test 1 = 5, test 2 = 10, test 3 = 15...
+		      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2...
+
+	 Kingdom cards are adventurer through great_hall, as enumerated
+	 in dominion.h.
+
+		-Set 'SMITHY_CALLS' in cardtest1.c
+		 to modify number of plays.
+
+		-Random test generator can be turned on
+		 by setting the constant 'RANDOMIZE' to 1
+		 in _cardtest1helper.h.
+
+
+BOUNDARY: Executing Smithy play using hand with only 1 card in deck...
+
+BOUNDARY: Executing Smithy play with only 2 cards in deck...
+
+BOUNDARY: Executing Smithy play using hand with 0 cards in deck...
+
+	Each test (that is not marked 'BOUNDARY') verifies proper game state
+	modification, reporting a failure if any of the following conditions are met:
+		1. Current player variable (whoseTurn) is changed
+		2. Active player's hand does not gain 3 cards from the top of Player's deck
+			a. Active player's deck count is not decremented by 3.
+			b. Active player's hand count is not incremented by 2
+					(A total of 3 cards are gained but the Smithy
+					itself is discarded so the net gain from the previous
+					is 2.)
+			c. Active player's deck contents are not the same before and after the play
+					(Besides the 3 less cards gained therefrom. i.e. The deck order is not changed.)
+			d. Active player's hand order and content are changed
+					(Besides the removal/insertion of the Smithy played/last card drawn
+					 and 2 additional cards gained to the end of the hand
+		4. Active player's discard pile does not gain a Smithy, or count is not 1 (starts at 0)
+		5. Inactive player's discard piles are changed, or count is not 0 (starts at 0)
+		4. Inactive player's deck, hand, deck count, and/or hand count is changed
+		5. Any supply pile count (curses, victory cards, or kingdom cards) is changed
+		6. Any of the following game states are changed:
+			a. coins
+			b. numActions
+			c. numBuys
+			d. embargoTokens[]
+			e. outpostPlayed
+			f. outpostTurn
+		7. Played card count is not 1
+		8. Played cards does not have Smithy @ idx 1 and is unchanged otherwise
+
+		* BOUNDARY tests verify all of the above except for #2a & #2b. #2c verifies    *
+		* that only the number of starting deck cards is decremented (since this value *
+		* is < 3), and #2d verifies that hand only increases by deck starting count in *
+		* likewise.                                                                    *
+
+
+	8 tests failed, as follows:
+
+(Note: See _cardtest1helper.c when referencing line #)
+
+1 - TEST #1 @ LINE 307: Discard card count not updated correctly
+  Expected 1 ; Observed 0
+
+
+2 - TEST #1 @ LINE 319: Discard pile not updated as expected at idx 0
+  Expected smithy ; Observed -1
+
+
+3 - TEST #2 @ LINE 307: Discard card count not updated correctly
+  Expected 1 ; Observed 0
+
+
+4 - TEST #2 @ LINE 319: Discard pile not updated as expected at idx 0
+  Expected smithy ; Observed -1
+
+
+5 - TEST #3 @ LINE 307: Discard card count not updated correctly
+  Expected 1 ; Observed 0
+
+
+6 - TEST #3 @ LINE 319: Discard pile not updated as expected at idx 0
+  Expected smithy ; Observed -1
+
+
+7 - TEST #4 @ LINE 307: Discard card count not updated correctly
+  Expected 1 ; Observed 0
+
+
+8 - TEST #4 @ LINE 319: Discard pile not updated as expected at idx 0
+  Expected smithy ; Observed -1
+
+
+	Coverage Report:
+
+Function 'smithyEffect'
+Lines executed:100.00% of 5
+Branches executed:100.00% of 2
+Taken at least once:100.00% of 2
+
+	The following functions are called by smithyEffect...
+
+Function 'drawCard'
+Lines executed:77.27% of 22
+Branches executed:100.00% of 6
+Taken at least once:66.67% of 6
+
+Function 'discardCard'
+Lines executed:92.31% of 13
+Branches executed:100.00% of 6
+Taken at least once:66.67% of 6
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++                                                                  ++
+++          			      CARD TEST 6					        ++
+++                                                                  ++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Result for running cardtest2 (adventurer card test):
+cardtest2.c:
+Starting cardtest2 - Testing 'adventurer' card
+
+Executing 1 Adventurer play using deck and hand sizes starting at 6 and incrementing
+	 by multiples of 5 with each successive test number, up to 500 (MAX_DECK).
+	 If the number of tests cause the deck size to equal or exceed 500 when
+	 calculated in this way, the deck size will reset to 1 and begin
+	 incrementing by 1 with each additional successive test, but if
+	 hand size < 6, hand size will be set to 6 (see _cardtest2helper.c line 90).
+		-e.g. deck size for test 1 = 6, test 2 = 11, test 3 = 16...
+		      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2...
+
+	 Kingdom cards are adventurer through great_hall, as enumerated
+	 in dominion.h.
+
+		-Set 'ADVENTURER_CALLS' in cardtest2.c
+		 to modify number of plays.
+
+		-Random test generator can be turned on
+		 by setting the constant 'RANDOMIZE' to 1
+		 in _cardtest2helper.h.
+
+
+BOUNDARY: Executing Adventurer play with only 1 treasure card in deck...
+
+BOUNDARY: Executing Adventurer play with 0 treasure cards in deck...
+
+BOUNDARY: Executing Adventurer play with 0 cards in deck
+          (should be same outcome as no treasure cards...)
+
+	Each test (that is not marked 'BOUNDARY') verifies proper game state
+	modification, reporting a failure if any of the following conditions are NOT met:
+		1. Current player variable (whoseTurn) is unchanged
+		2. Player's hand gains only 2 treasure cards from deck
+			a. Same 2 treasure card types are removed from deck and added to hand.
+			b. Deck count and hand counts are updated correctly
+		3. Hand does not gain any non-treasure cards
+		4. Discard does not gain any treasure cards
+		5. All non-treasure cards removed from deck are added to hand
+		6. All of the following game states are unchanged:
+			a. coins
+			b. numActions
+			c. numBuys
+			d. embargoTokens[]
+			e. outpostPlayed
+			f. outpostTurn
+		7. Played card count is unchanged
+		8. Played cards is unchanged
+
+		*  BOUNDARY tests verify all of the above except for #2a, where instead  *
+		*  the boundary case checks for the appropriate number of treasure card  *
+		*  removals and insertions based on the designated treasure card amount  *
+		*  (i.e. as is passed in via the 'treasureCardCountSpecifier' variable.) *
+		
+		********************* NOTE FOR BOUNDARY CASE / BUG REPORT ****************** 
+		**																		   ** 
+		** Technically, the Adventurer card does not explicitly state what should ** 
+		**    be done in the event that the set of the player's deck and discard  ** 
+		**     piles do not contain a total of at least 2 treasure cards. For a   ** 
+		**       'literal minded' machine such as a computer, this creates an     ** 
+		** infinite loop of sorts, that must be handled accordingly. The findings ** 
+		**  of this testing exercise have indicated a bug related to this aspect  ** 
+		**  of adventurer, one which does not result in a stuck loop but rather   ** 
+		** incorrect behavior in some conditions (i.e. when discard and deck do   ** 
+		**  not contain at least 2 treasures, but hand has enough to make up the  ** 
+		** difference) or a segmentation fault in others (i.e. when there are not ** 
+		**   at least 2 treasures between deck, discard, and hand combined). This ** 
+		**   program (cardtest2) has been deliberately set up to avoid a full on  ** 
+		**    crash due to this error, so that all remaining tests and code will  ** 
+		**     be processed to completion. The incorrect behavior (that does not  ** 
+		** result in a full crash) caused by this bug is captured in the BOUNDARY ** 
+		**  test results. Please see cardEffects.c and the assignment write-up    ** 
+		**                  for a complete description of the error.              ** 
+		**                                                                        ** 
+		**  (The bug mentioned above was NOT introduced as part of assignment 2.  ** 
+		**    The test results here should indicate additional findings which     ** 
+		**          ARE the result of bugs introduced for assignment 2.)          ** 
+		**                                                                        ** 
+		**************************************************************************** 
+
+
+	12 tests failed, as follows:
+
+(Note: See _cardtest2helper.c when referencing line #)
+
+1 - TEST #1 @ LINE 401: Discard pile updated incorrectly
+  Expected 1 adventurer in discard pile : Observed 0 (Non-Boundary)
+
+
+2 - TEST #1 @ LINE 455: Discard pile count updated incorrectly
+  Expected 5 cards in discard pile ; Observed  4 (Non-Boundary)
+
+
+3 - TEST #2 @ LINE 401: Discard pile updated incorrectly
+  Expected 1 adventurer in discard pile : Observed 0 (Boundary)
+
+
+4 - TEST #2 @ LINE 455: Discard pile count updated incorrectly
+  Expected 6 cards in discard pile ; Observed  4 (Boundary)
+
+
+5 - TEST #3 @ LINE 217: Hand count not updated properly after Adventurer play
+  Expected: 16 ; Observed 7 (Boundary)
+
+
+6 - TEST #3 @ LINE 313: Non treasure card added to hand pile
+  -6 0(s) added to (or removed from) hand (Boundary)
+    (negative value indicates removal)
+
+
+7 - TEST #3 @ LINE 333: Hand count not as expected
+  Expected: 16 ; Observed 7 (Boundary)
+
+
+8 - TEST #3 @ LINE 373: Different cards or card quantities added to discard pile
+				than removed from deck
+    7 '0' cards added to discard : 1 of these removed from deck (Boundary)
+
+
+9 - TEST #3 @ LINE 455: Discard pile count updated incorrectly
+  Expected 5 cards in discard pile ; Observed  13 (Boundary)
+
+
+10 - TEST #4 @ LINE 313: Non treasure card added to hand pile
+  -8 0(s) added to (or removed from) hand (Boundary)
+    (negative value indicates removal)
+
+
+11 - TEST #4 @ LINE 373: Different cards or card quantities added to discard pile
+				than removed from deck
+    8 '0' cards added to discard : 0 of these removed from deck (Boundary)
+
+
+12 - TEST #4 @ LINE 455: Discard pile count updated incorrectly
+  Expected 1 cards in discard pile ; Observed  14 (Boundary)
+
+
+	Coverage Report:
+
+Function 'adventurerEffect'
+Lines executed:100.00% of 16
+Branches executed:100.00% of 12
+Taken at least once:100.00% of 12
+
+	The following functions are called by adventurerEffect...
+
+Function 'drawCard'
+Lines executed:77.27% of 22
+Branches executed:100.00% of 6
+Taken at least once:66.67% of 6
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++                                                                  ++
+++          			      CARD TEST 7					        ++
+++                                                                  ++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Result for running cardtest3 (cutpurse card test):
+cardtest3.c:
+Starting cardtest3 - Testing 'cutpurse' card
+
+Executing 1 Cutpurse play using hand sizes starting at 5 and incrementing
+	 by multiples of 5 with each successive test number, up to 500 (MAX_HAND).
+	 If the number of tests cause the hand size to exceed 500 when
+	 calculated in this way, the hand size will reset to 1 and begin
+	 incrementing by 1 with each additional successive test.
+
+		-e.g. hand size for test 1 = 5, test 2 = 10, test 3 = 15...
+		      hand size for test 100 with MAX_HAND @ 500 = 1, test 101 = 2...
+
+	 Kingdom cards are adventurer through great_hall, as enumerated
+	 in dominion.h.
+
+		-Set 'CUTPURSE_CALLS' in cardtest3.c
+		 to modify number of plays.
+
+		-Random test generator can be turned on
+		 by setting the constant 'RANDOMIZE' to 1
+		 in _cardtest3helper.h.
+
+
+BOUNDARY: Executing Cutpurse play using hands with no copper (all players)...
+
+	Each test (that is not marked 'BOUNDARY') verifies proper game state
+	modification, reporting a failure if any of the following conditions are NOT met:
+		1.  Current player variable (whoseTurn) is unchanged
+		2.  Player who plays cutpurse has same hand after play less 1 cutpurse
+		3.  Players who did not play cutpurse have same hand after play less 1 copper
+			EXCEPTION: Boundary case of no copper in which players who did not play
+			           copper have same hand after cutpurse is played
+		4.  Hand counts are decremented by 1 for each player
+			(1 cutpurse discarded for active player or 1 copper
+			discarded for inactive players)
+		5.  The game state's 'coins' variable is incremented by 2
+		6.  All of the following game states are unchanged:
+			a. numActions
+			b. numBuys
+			c. embargoTokens[]
+			d. outpostPlayed
+			e. outpostTurn
+			f. All players' decks are unchanged
+		7.  Active player's discard pile gains a cutpurse, and count is updated to 1 (starts at 0)
+		8.  Inactive players' discard piles are unchanged, and counts remain 0 (all start at 0)
+		9.  Played card count is incremented by 1 (for cutpurse played)
+		10. Played cards gains one and only cutpurse
+
+
+	12 tests failed, as follows:
+
+(Note: See _cardtest3helper.c when referencing line #)
+
+1 - TEST #1 @ LINE 366: Discard card count not updated correctly for player 0
+    (player who played cutpurse)
+  Expected 1 ; Observed 0 (Non-Boundary)
+
+
+2 - TEST #1 @ LINE 366: Discard card count not updated correctly for player 1
+    (player who did not play cutpurse)
+  Expected 1 ; Observed 0 (Non-Boundary)
+
+
+3 - TEST #1 @ LINE 366: Discard card count not updated correctly for player 2
+    (player who did not play cutpurse)
+  Expected 1 ; Observed 0 (Non-Boundary)
+
+
+4 - TEST #1 @ LINE 366: Discard card count not updated correctly for player 3
+    (player who did not play cutpurse)
+  Expected 1 ; Observed 0 (Non-Boundary)
+
+
+5 - TEST #1 @ LINE 413: Discard pile not updated as expected at idx 0 for player 0
+    (player who played cutpurse)
+  Expected cutpurse ; Observed -1 (Non-Boundary)
+
+
+6 - TEST #1 @ LINE 446: Discard pile not updated as expected at idx 0 for player 1
+    (player who did not play cutpurse)
+  Expected copper ; Observed -1 (Non-Boundary)
+
+
+7 - TEST #1 @ LINE 446: Discard pile not updated as expected at idx 0 for player 2
+    (player who did not play cutpurse)
+  Expected copper ; Observed -1 (Non-Boundary)
+
+
+8 - TEST #1 @ LINE 446: Discard pile not updated as expected at idx 0 for player 3
+    (player who did not play cutpurse)
+  Expected copper ; Observed -1 (Non-Boundary)
+
+
+9 - TEST #1 @ LINE 578: Played card count not updated correctly
+  Expected 1 ; Observed 4 (Non-Boundary)
+
+
+10 - TEST #1 @ LINE 590: Played cards not updated as expected at idx 0
+  Expected cutpurse ; Observed 4 (Non-Boundary)
+
+
+11 - TEST #2 @ LINE 386: Discard card count not updated correctly
+    (player who played cutpurse)
+  Expected 1 ; Observed 0 (Boundary)
+
+
+12 - TEST #2 @ LINE 413: Discard pile not updated as expected at idx 0 for player 0
+    (player who played cutpurse)
+  Expected cutpurse ; Observed -1 (Boundary)
+
+
+	Coverage Report:
+
+Function 'cutpurseEffect'
+Lines executed:84.62% of 13
+Branches executed:83.33% of 12
+Taken at least once:75.00% of 12
+
+	The following functions are called by cutpurseEffect...
+
+Function 'discardCard'
+Lines executed:92.31% of 13
+Branches executed:100.00% of 6
+Taken at least once:66.67% of 6
+
+Function 'updateCoins'
+Lines executed:100.00% of 11
+Branches executed:100.00% of 8
+Taken at least once:100.00% of 8
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++                                                                  ++
+++          			      CARD TEST 8					        ++
+++                                                                  ++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Result for running cardtest4 (council_room card test):
+cardtest4.c:
+Starting cardtest4 - Testing 'council_room' card
+
+Executing 1 Council_Room play using deck and hand sizes starting at 5 and incrementing
+	 by multiples of 5 with each successive test number, up to 500 (MAX_DECK).
+	 If the number of tests cause the deck size to exceed 500 when
+	 calculated in this way, the deck size will reset to 1 and begin incrementing
+	 by 1 with each additional successive test, but if the active player's
+
+	 deck size < 4, active player's deck size will be set to 6 (to ensure enough draw cards).
+		-e.g. deck size for test 1 = 5, test 2 = 10, test 3 = 15...
+		      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2...
+
+	 Kingdom cards are adventurer through great_hall, as enumerated
+	 in dominion.h.
+
+		-Set 'COUNCIL_ROOM_CALLS' in cardtest1.c
+		 to modify number of plays.
+
+		-Random test generator can be turned on
+		 by setting the constant 'RANDOMIZE' to 1
+		 in _cardtest4helper.h.
+
+
+BOUNDARY: Executing Council_Room play using hands
+	 with empty decks for all players...
+
+	Each test (that is not marked 'BOUNDARY') verifies proper game state
+	modification, reporting a failure if any of the following conditions are met:
+		1. Current player variable (whoseTurn) is changed
+		2. Active player's hand does not gain 4 cards from the top of active player's deck
+			a. Active player's deck count is not decremented by 4.
+			b. Active player's hand count is not incremented by 3
+					(A total of 4 cards are gained from the deck but the Council_Room
+					itself is discarded so the net gain from the hand should be 3.)
+			c. Active player's deck contents are not the same before and after the play
+					(Besides the 4 less cards gained therefrom. i.e. The deck order is not changed.)
+			d. Active player's hand content is changed
+					(Besides the 4 additional cards gained to the end of the hand from the top of the deck
+		3. Inactive players' hands do not gain 1 card from the top of each respective player's own deck
+			a. Inactive players' deck counts are not decremented by 1.
+			b. Inactive players' hand counts are not incremented by 1
+			c. Inactive players' deck contents are not the same before and after the play
+					(Besides the 1 less cards gained therefrom. i.e. The deck order is not changed.)
+			d. Inactive players' hand contents are changed
+					(Besides the additional card gained to the end of the hand from the top of the deck
+		4. Active player's discard pile does not gain a council_room, or count is not 1 (starts at 0)
+		5. Inactive players' discard piles are changed, or counts are not 0 (all start at 0)
+		6. numBuys game state is not incremented by 1 (starts at 0)
+		7. Any supply pile count (curses, victory cards, or kingdom cards) is changed
+		8. Any of the following game states are changed:
+			a. coins
+			b. numActions
+			c. embargoTokens[]
+			d. outpostPlayed
+			e. outpostTurn
+		9. Played card count is not 1
+		10. Played cards does not have Council_Room @ idx 1 and is unchanged otherwise
+
+		* BOUNDARY test verifies all of the above except for #2 & #3. For the empty    *
+		* deck boundary test, no deck or hand count or contents should change for any  *
+		* player, with the one exception of the active player's hand, which should be  *
+		* decremented by exactly 1 council_room.                                       *
+
+
+	6 tests failed, as follows:
+
+(Note: See _cardtest4helper.c when referencing line #)
+
+1 - TEST #1 @ LINE 306: Cards not gained from top of deck to top of hand (Non-Boundary)
+   (player 0, who played council_room)
+
+
+2 - TEST #1 @ LINE 480: Discard pile not updated as expected at idx 0 for player 0
+    (player who played council_room)
+  Expected council_room ; Observed -1 (Non-Boundary)
+
+
+3 - TEST #1 @ LINE 621: Played cards not updated as expected at idx 0
+  Expected council_room ; Observed 3
+
+
+4 - TEST #2 @ LINE 397: Number of buys not updated correctly
+  Expected 2 ; Observed -1 (Boundary)
+
+
+5 - TEST #2 @ LINE 446: Hand changed unexpectedly (empty deck check)
+  Gained 0 8s : Expected gain is -1 (Boundary)
+   (player 0, who played council_room)
+   (negative value indicates removal from hand)
+
+
+6 - TEST #2 @ LINE 480: Discard pile not updated as expected at idx 0 for player 0
+    (player who played council_room)
+  Expected council_room ; Observed -1 (Boundary)
+
+
+	Coverage Report:
+
+Function 'council_roomEffect'
+Lines executed:100.00% of 9
+Branches executed:100.00% of 6
+Taken at least once:100.00% of 6
+
+	The following functions are called by council_roomEffect...
+
+Function 'drawCard'
+Lines executed:77.27% of 22
+Branches executed:100.00% of 6
+Taken at least once:66.67% of 6
+
+Function 'discardCard'
+Lines executed:92.31% of 13
+Branches executed:100.00% of 6
+Taken at least once:66.67% of 6
+
+
+

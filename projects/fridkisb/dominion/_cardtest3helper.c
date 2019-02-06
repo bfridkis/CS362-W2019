@@ -578,8 +578,9 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Played card count not updated correctly\n"
-		"  Expected 1 ; Observed %d\n", 
-		G->playedCardCount);
+		"  Expected 1 ; Observed %d %s\n", 
+		G->playedCardCount,
+		noCopper ? "(Boundary)" : "(Non-Boundary)");
 		failures[*failCt-1].testNumber = testNumber;
 	}
 	//Check playedCards (should have Cutpurse at index 0, -1 all other indexes)
@@ -589,8 +590,9 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Played cards not updated as expected at idx %d\n"
-			"  Expected cutpurse ; Observed %d\n", 
-			i, G->playedCards[0]);
+			"  Expected cutpurse ; Observed %d %s\n", 
+			i, G->playedCards[0],
+			noCopper ? "(Boundary)" : "(Non-Boundary)");
 			failures[*failCt-1].testNumber = testNumber;
 		}
 		else if(i != 0 && G->playedCards[i] != -1 
@@ -598,8 +600,9 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Played cards not updated as expected at idx %d\n"
-			"  Expected -1 ; Observed %d\n", 
-			i, G->playedCards[i]);
+			"  Expected -1 ; Observed %d %s\n", 
+			i, G->playedCards[i],
+			noCopper ? "(Boundary)" : "(Non-Boundary)");
 			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;

@@ -33,7 +33,7 @@ int _unittest4helper(int k[], struct gameState* G, failedTest failures[],
 	SelectStream(2);
 	
 	//Test value variables	   
-	int i, treasureCardCount = 0, bonusValue = 0,
+	int i, j, treasureCardCount = 0, bonusValue = 0,
 		numCopper, numSilver, numGold, expectedCoinValue = 0;
 		
 	if(!isNoTreasureTest){
@@ -137,21 +137,21 @@ int _unittest4helper(int k[], struct gameState* G, failedTest failures[],
 		for(i = 0, j = 0; i < treasureCardCount; i++, j++){
 			if(j % 3 == 0){
 				j = 0;						//(Protect against integer overflow)
-				G-hand[0][i] = copper;
+				G->hand[0][i] = copper;
 				expectedCoinValue++;
 			}
 			else if(j % 3 == 1){
-				G-hand[0][i] = silver;
+				G->hand[0][i] = silver;
 				expectedCoinValue += 2;
 			}
 			else{
-				G-hand[0][i] = gold;
+				G->hand[0][i] = gold;
 				expectedCoinValue += 3;
 			}
+			G->handCount[0]++;
 		}
 	}
 			
-	
 	//Add bonus to expectedCoinValue (or 0 for no bonus test)
 	expectedCoinValue += bonusValue;
 	

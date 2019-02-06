@@ -96,6 +96,7 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 					}
 				}
 			}
+		}
 	}
 	
 	if(RANDOMIZE){
@@ -156,7 +157,7 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	int handPos;
 	if(RANDOMIZE){
 		//Assign a random hand position for Council_Room for active player
-		 = Random() * (G->handCount[activePlayer] - 1);
+		handPos = Random() * (G->handCount[activePlayer] - 1);
 		if(handPos == -1){
 			handPos = 0;
 		}

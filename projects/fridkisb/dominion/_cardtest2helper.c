@@ -70,10 +70,10 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		//6 - MAX_DECK, which will have at minimum one copper and one silver. 
 		deckCountBeforeAdventurer = 6 + (Random() * (MAX_DECK - 6));
 	}
-	else if(treasureCardCountSpecifier >= 2){.
-		deckSize = (testNumber * 5) + 1;
-		if(deckSize >= MAX_DECK){
-			deckSize = (deckSize % MAX_DECK) + 1;
+	else if(treasureCardCountSpecifier >= 2){
+		deckCountBeforeAdventurer = (testNumber * 5) + 1;
+		if(deckCountBeforeAdventurer >= MAX_DECK){
+			deckCountBeforeAdventurer = (deckCountBeforeAdventurer % MAX_DECK) + 1;
 		}
 	}
 	//A deck size of 5 will contain only one treasure card (copper), and 
@@ -102,11 +102,11 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		handCountBeforeAdventurer = 6 + (Random() * (MAX_HAND - 6));
 	}
 	else{
-		handSize = (testNumber * 5) + 1;
-		if(handSize >= MAX_HAND){
-			handSize = (handSize % MAX_HAND) + 1;
-			if(handSize < 6){
-				handSize = 6;
+		handCountBeforeAdventurer = (testNumber * 5) + 1;
+		if(handCountBeforeAdventurer >= MAX_HAND){
+			handCountBeforeAdventurer = (handCountBeforeAdventurer % MAX_HAND) + 1;
+			if(handCountBeforeAdventurer < 6){
+				handCountBeforeAdventurer = 6;
 			}
 		}
 	}
@@ -333,7 +333,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Hand count not as expected\n"
-			"  Expected: %d Added ; Observed %d %s\n", 
+			"  Expected: %d ; Observed %d %s\n", 
 			treasureCardCountSpecifier == 2 ? handCountBeforeAdventurer + 2 : 
 			treasureCardCountSpecifier == 1 ? handCountBeforeAdventurer + 1 : 
 			handCountBeforeAdventurer, 

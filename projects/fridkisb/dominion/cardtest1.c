@@ -38,20 +38,20 @@ int main (int argc, char** argv) {
 	}
 	else{
 		printf("\n" "Executing %d Smithy %s using deck and hand sizes starting at 5 and incrementing\n"
-			   "\t" " by multiples of 5 with each successive test number, up to %d (MAX_DECK).\n"
-			   "\t" " If the number of tests cause the deck size to exceed %d when\n"
-			   "\t" " calculated in this way, the deck size will reset to 1 and begin\n"
+			   "\t" " by multiples of 5 with each successive test number, up to %d/%d (MAX_DECK/MAX_HAND).\n"
+			   "\t" " If the number of tests cause the deck/hand size to equal or exceed %d/%d when\n"
+			   "\t" " calculated in this way, the deck/hand size will reset to 1 and begin\n"
 			   "\t" " incrementing by 1 with each additional successive test.\n\n"
-			   "\t\t" "-e.g. deck size for test 1 = 5, test 2 = 10, test 3 = 15, and so...\n"
-			   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2, and so...\n\n"
+			   "\t\t" "-e.g. deck size for test 1 = 5, test 2 = 10, test 3 = 15...\n"
+			   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2...\n\n"
 			   "\t" " Kingdom cards are adventurer through great_hall, as enumerated\n"
 			   "\t" " in dominion.h.\n\n"
 			   "\t\t" "-Set 'SMITHY_CALLS' in cardtest1.c\n"
-			   "\t\t" " to modify number of plays.\n\n",
+			   "\t\t" " to modify number of plays.\n\n"
 			   "\t\t" "-Random test generator can be turned on\n"
 			   "\t\t" " by setting the constant 'RANDOMIZE' to 1\n"
-			   "\t\t" " in _cardtest1helper.h\n\n", SMITHY_CALLS, 
-			   SMITHY_CALLS > 1 ? "plays" : "play", MAX_DECK, MAX_DECK);
+			   "\t\t" " in _cardtest1helper.h.\n\n", SMITHY_CALLS, 
+			   SMITHY_CALLS > 1 ? "plays" : "play", MAX_DECK, MAX_HAND, MAX_DECK, MAX_HAND);
 	}
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
@@ -60,7 +60,7 @@ int main (int argc, char** argv) {
 	SelectStream(2);
 	PutSeed(-1);
 		   
-	int i, j, k[10], seed = 5000;
+	int i, j, k[10], m, seed = 5000;
 	for(i = 0; i < SMITHY_CALLS; i++){
 		
 		if(RANDOMIZE){

@@ -39,19 +39,19 @@ int main (int argc, char** argv) {
 	else{
 		printf("\n" "Executing %d Adventurer %s using deck and hand sizes starting at 6 and incrementing\n"
 			   "\t" " by multiples of 5 with each successive test number, up to %d (MAX_DECK).\n"
-			   "\t" " If the number of tests cause the deck size to exceed %d when\n"
+			   "\t" " If the number of tests cause the deck size to equal or exceed %d when\n"
 			   "\t" " calculated in this way, the deck size will reset to 1 and begin\n"
-			   "\t" " incrementing by 1 with each additional successive test, but for hand\n"
-			   "\t" " if hand size < 6, hand size will be set to 6 (see _cardtest2helper.c line 90).\n"
-			   "\t\t" "-e.g. deck size for test 1 = 6, test 2 = 11, test 3 = 16, and so...\n"
-			   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2, and so...\n\n"
+			   "\t" " incrementing by 1 with each additional successive test, but if\n"
+			   "\t" " hand size < 6, hand size will be set to 6 (see _cardtest2helper.c line 90).\n"
+			   "\t\t" "-e.g. deck size for test 1 = 6, test 2 = 11, test 3 = 16...\n"
+			   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2...\n\n"
 			   "\t" " Kingdom cards are adventurer through great_hall, as enumerated\n"
 			   "\t" " in dominion.h.\n\n"
 			   "\t\t" "-Set 'ADVENTURER_CALLS' in cardtest2.c\n"
-			   "\t\t" " to modify number of plays.\n\n",
+			   "\t\t" " to modify number of plays.\n\n"
 			   "\t\t" "-Random test generator can be turned on\n"
 			   "\t\t" " by setting the constant 'RANDOMIZE' to 1\n"
-			   "\t\t" " in _cardtest2helper.h\n\n", ADVENTURER_CALLS, 
+			   "\t\t" " in _cardtest2helper.h.\n\n", ADVENTURER_CALLS, 
 			   ADVENTURER_CALLS > 1 ? "plays" : "play", MAX_DECK, MAX_DECK);
 	}
 
@@ -61,7 +61,7 @@ int main (int argc, char** argv) {
 	SelectStream(2);
 	PutSeed(-1);
 		   
-	int i, j, k[10], seed = 5000;
+	int i, j, k[10], m, seed = 5000;
 	for(i = 0; i < ADVENTURER_CALLS; i++){
 		
 		if(RANDOMIZE){
@@ -141,6 +141,7 @@ int main (int argc, char** argv) {
 	else{
 		printf("\nBOUNDARY: Executing Adventurer play with 0 cards in deck\n"
 				 "          (should be same outcome as no treasure cards...)\n");
+	}
 	
 	//Test with only 2 cards in the player's deck
 	if(RANDOMIZE){

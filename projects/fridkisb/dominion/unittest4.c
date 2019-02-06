@@ -16,7 +16,7 @@
 
 #include "_unittest4helper.h"
 
-#define NUM_COIN_UPDATES 250
+#define NUM_COIN_UPDATES 100
 
 int main (int argc, char** argv) {
 	struct gameState G;
@@ -39,16 +39,16 @@ int main (int argc, char** argv) {
 			   "\t" " %d (MAX_HAND) when calculated this way, use the next lowest multiple of 3\n"
 			   "\t" " that is greater than or equal to the current test number %% %d, and if this\n"
 			   "\t" " value exceeds %d or is 0, use 3.\n\n"
-			   "\t\t" "-e.g. treasure card count for test 1 = 3, test 2 = 6, test 3 = 9, and so on...\n"
-			   "\t\t" "      treasure card count for test 101 with MAX_HAND @ 75 = 27\n"
+			   "\t\t" "-e.g. treasure card count for test 1 = 3, test 2 = 6, test 3 = 9...\n"
+			   "\t\t" "      treasure card count for test 101 with MAX_HAND @ 75 = 27\n\n"
 			   "\t" " Bonus value for each update is the current\n"
 			   "\t" " test number * 2.\n\n"
 			   "\t\t" "-Set 'NUM_COIN_UPDATES' in unittest4.c\n"
 			   "\t\t" " to modify number of tests.\n\n"
 			   "\t\t" "-Random test generator can be turned on\n"
 			   "\t\t" " by setting the constant 'RANDOMIZE' to 1\n"
-			   "\t\t" " in _unittest4helper.h\n\n", NUM_COIN_UPDATES, 
-			   MAX_HAND, MAX_HAND, MAX_HAND, MAX_HAND);
+			   "\t\t" " in _unittest4helper.h.\n\n", NUM_COIN_UPDATES, 
+			   MAX_HAND, MAX_HAND, MAX_HAND);
 	}			
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
@@ -57,7 +57,7 @@ int main (int argc, char** argv) {
 	SelectStream(2);
 	PutSeed(-1);
 		   
-	int i, j, k[10];
+	int i, j, k[10], m, seed = 5000;
 	for(i = 0; i < NUM_COIN_UPDATES; i++){
 		
 		if(RANDOMIZE){
@@ -74,7 +74,7 @@ int main (int argc, char** argv) {
 		}
 		
 		//Initializes game for two players
-		initializeGame(2, k, 5000, &G);
+		initializeGame(2, k, seed, &G);
 		
 		//Run updateCoin test on random kingdom card set.
 		//(see _unittest4helper for more details)
@@ -99,7 +99,7 @@ int main (int argc, char** argv) {
 		printf("\nNo bonus test failed\n");
 	}
 	
-	printf("\nAttempting no treasure cards and bonus test...\n");
+	printf("\nAttempting no treasure cards and no bonus test...\n");
 	
 	//Attempting no treasure cards and no bonus test
 	initializeGame(2, k, Random() * INT_MAX, &G);

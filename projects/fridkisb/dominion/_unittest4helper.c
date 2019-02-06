@@ -37,73 +37,122 @@ int _unittest4helper(int k[], struct gameState* G, failedTest failures[],
 		numCopper, numSilver, numGold, expectedCoinValue = 0;
 		
 	if(!isNoTreasureTest){
-		//Determine a random number of treasure cards in range 0 to MAX_HAND, 
-		//and load player 0's hand with a random assortment of treasure cards
-		//in total quantity equal to this value.
-		treasureCardCount = Random() * MAX_HAND;
-
-		//Determine random assortment of treasure cards.
-		numCopper = Random() * treasureCardCount;
-		numSilver = Random() * (treasureCardCount - numCopper);
-		numGold = treasureCardCount - numCopper - numSilver;
-	}	
-	if(!isNoBonusTest){
-		//Determine a random bonus in range 0 to MAX_BONUS, and assign
-		//to bonusValue
-		bonusValue = Random() * MAX_BONUS;
-	}
-	
-	//Load hand with random assortment of treasure cards, as determined above
-	for(i = 0; i < treasureCardCount; i++){
-		if((int)(Random() * INT_MAX) % 3 == 0){
-			if(numCopper-- > 0){
-				G->hand[0][i] = copper;
-				expectedCoinValue++;
-			}
-			else if(numSilver-- > 0){
-				G->hand[0][i] = silver;
-				expectedCoinValue += 2;
-			}
-			else{
-				numGold--;
-				G->hand[0][i] = gold;
-				expectedCoinValue += 3;
-			}
-		}
-		else if((int)(Random() * INT_MAX) % 3 == 1){
-			if(numSilver-- > 0){
-				G->hand[0][i] = silver;
-				expectedCoinValue += 2;
-			}
-			else if(numGold-- > 0){
-				G->hand[0][i] = gold;
-				expectedCoinValue += 3;
-			}
-			else{
-				numCopper--;
-				G->hand[0][i] = copper;
-				expectedCoinValue++;
-			}
+		
+		if(RANDOMIZE){
+			//Determine a random number of treasure cards in range 0 to MAX_HAND, 
+			//and load player 0's hand with a random assortment of treasure cards
+			//in total quantity equal to this value.
+			treasureCardCount = Random() * MAX_HAND;
+			
+			//Determine random assortment of treasure cards.
+			numCopper = Random() * treasureCardCount;
+			numSilver = Random() * (treasureCardCount - numCopper);
+			numGold = treasureCardCount - numCopper - numSilver;
 		}
 		else{
-			if(numGold-- > 0){
-				G->hand[0][i] = gold;
-				expectedCoinValue += 3;
+			//Each successive test has a treasureCardCount 3 more than
+			//the last, starting at 3. If the count exceeds MAX_HAND,
+			//use the next lowest multiple of 3 greater than or equal to
+			//testNumber % MAX_HAND. If this value exceed MAX_HAND, use
+			//3.
+			treasureCardCount = testNumber * 3;
+			if(treasureCardCount > MAX_HAND){
+				treasureCardCount = testNumber % MAX_HAND;
+				while(treasureCardCount % 3 != 0){
+					treasureCardCount++;
+					if(treasureCardCount > MAX_HAND || treasureCardCount == 0){
+						treasureCardCount = 3;
+					}
+				}
 			}
-			else if(numCopper-- > 0){
-				G->hand[0][i] = copper;
-				expectedCoinValue++;
-			}
-			else{
-				numSilver--;
-				G->hand[0][i] = silver;
-				expectedCoinValue += 2;
-			}
+			//Assign equal distribution of treasure cards among
+			//copper, silver, and gold respectively.
+			numCopper = numSilver = numGold = treasureCardCount / 3;
+		}		
+	}	
+	if(!isNoBonusTest){
+		if(RANDOMIZE){	
+			//Determine a random bonus in range 0 to MAX_BONUS, and assign
+			//to bonusValue
+			bonusValue = Random() * MAX_BONUS;
 		}
-		G->handCount[0]++;
+		else{
+			bonusValue = testNumber * 2;
+		}
 	}
 	
-	//Add random bonus to expectedCoinValue (or 0 for no bonus test)
+	if(RANDOMIZE){
+		//Load hand with random assortment of treasure cards, as determined above
+		for(i = 0; i < treasureCardCount; i++){
+			if((int)(Random() * INT_MAX) % 3 == 0){
+				if(numCopper-- > 0){
+					G->hand[0][i] = copper;
+					expectedCoinValue++;
+				}
+				else if(numSilver-- > 0){
+					G->hand[0][i] = silver;
+					expectedCoinValue += 2;
+				}
+				else{
+					numGold--;
+					G->hand[0][i] = gold;
+					expectedCoinValue += 3;
+				}
+			}
+			else if((int)(Random() * INT_MAX) % 3 == 1){
+				if(numSilver-- > 0){
+					G->hand[0][i] = silver;
+					expectedCoinValue += 2;
+				}
+				else if(numGold-- > 0){
+					G->hand[0][i] = gold;
+					expectedCoinValue += 3;
+				}
+				else{
+					numCopper--;
+					G->hand[0][i] = copper;
+					expectedCoinValue++;
+				}
+			}
+			else{
+				if(numGold-- > 0){
+					G->hand[0][i] = gold;
+					expectedCoinValue += 3;
+				}
+				else if(numCopper-- > 0){
+					G->hand[0][i] = copper;
+					expectedCoinValue++;
+				}
+				else{
+					numSilver--;
+					G->hand[0][i] = silver;
+					expectedCoinValue += 2;
+				}
+			}
+			G->handCount[0]++;
+		}
+	}
+	else{
+		//Distribute equal distribution of treasure cards to hand
+		for(i = 0, j = 0; i < treasureCardCount; i++, j++){
+			if(j % 3 == 0){
+				j = 0;						//(Protect against integer overflow)
+				G-hand[0][i] = copper;
+				expectedCoinValue++;
+			}
+			else if(j % 3 == 1){
+				G-hand[0][i] = silver;
+				expectedCoinValue += 2;
+			}
+			else{
+				G-hand[0][i] = gold;
+				expectedCoinValue += 3;
+			}
+		}
+	}
+			
+	
+	//Add bonus to expectedCoinValue (or 0 for no bonus test)
 	expectedCoinValue += bonusValue;
 	
 	/*************************  SET UP ENDS HERE  **************************/

@@ -55,7 +55,7 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//Ensure supply pile counts are of known value before Smithy play
 	//Set each to 10
-	for(i = 0, j = 0; i < 27; i++){
+	for(i = 0; i < 27; i++){
 		G->supplyCount[i] = 10;
 	}
 	
@@ -63,20 +63,50 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 	//stream 1 in parent function (main, see cardtest1.c)
 	SelectStream(2);
 	
-	//Determine random deck size, based on deckCardCountSpecifier
-	//(deckCardCountSpecifier == 3 guarantees a deck size in range
-	//3 - MAX_DECK. Otherwise, deckSize == deckCardCountSpecifier.
-	//This is so "boundary" conditions of decks with less than 3 cards
-	//can be tested.
-	if(deckCardCountSpecifier == 3){
+	
+	if(deckCardCountSpecifier == 3 && RANDOMIZE){
+		//Determine random deck size, based on deckCardCountSpecifier
+		//(deckCardCountSpecifier == 3 guarantees a deck size in range
+		//3 - MAX_DECK. Otherwise, deckSize == deckCardCountSpecifier.
+		//This is so "boundary" conditions of decks with less than 3 cards
+		//can be tested.
 		deckSize = 3 + (Random() * (MAX_DECK - 3));
+		
+		//Determine random hand size, in range 1 - MAX_HAND
+		handSize = 1 + (Random() * (MAX_HAND - 1));
+	}
+	else if(deckCardCountSpecifier == 3){
+		//Each successive test has a deckSize and handSize 5 more than
+		//the last, starting at 5. If the deckSize calculation
+		//above equals or exceeds MAX_DECK/MAX_HAND, start over at 
+		//multiples of 1, beginning with a deck/hand size of 1. 
+		//(Deck size of MAX_HAND is covered by a boundary test.)
+		
+		//For deck...
+		deckSize = testNumber * 5;
+		if(deckSize >= MAX_DECK){
+			deckSize = (deckSize % MAX_DECK) + 1;
+		}
+		//For hand...
+		handSize = testNumber * 5;
+		if(handSize >= MAX_HAND){
+			handSize = (handSize % MAX_HAND) + 1;
+		}
 	}
 	else{
 		deckSize = deckCardCountSpecifier;
+		
+		if(RANDOMIZE){
+			//Determine random hand size, in range 1 - MAX_HAND
+			handSize = 1 + (Random() * (MAX_HAND - 1));
+		}
+		else{
+			handSize = testNumber * 5;
+			if(handSize >= MAX_HAND){
+				handSize = (handSize % MAX_HAND) + 1;
+			}
+		}
 	}
-	
-	//Determine random hand size, in range 1 - MAX_HAND
-	handSize = 1 + (Random() * (MAX_HAND - 1));
 	
 	//Load player 0's deck and hand with an equal number of each card,
 	//plus an extra starting at curse for each remainder after 
@@ -132,9 +162,17 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 	//int for coin bonus (unused by Smithy call)
 	int coin_bonus = 0;
 	
-	//Assign a random hand position for Smithy
-	int handPos = Random() * (G->handCount[0] - 1);
-	if(handPos == -1){
+	//Assign hand position for smithy, either randomly or
+	//according to test number
+	int handPos;
+	if(RANDOMIZE){
+		//Assign a random hand position for Smithy
+		handPos = Random() * (G->handCount[0] - 1);
+		if(handPos == -1){
+			handPos = 0;
+		}
+	}
+	else{
 		handPos = 0;
 	}
 	G->hand[0][handPos] = smithy;

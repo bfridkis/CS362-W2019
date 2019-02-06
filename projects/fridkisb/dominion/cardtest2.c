@@ -29,11 +29,31 @@ int main (int argc, char** argv) {
 	
 	printf("Starting cardtest2 - Testing 'adventurer' card\n");
 	
-	printf("\nExecuting %d Adventurer %s using hands with random assortment of \n"
-		   "\t supply cards, with at least 2 treasures in deck...\n\n"
-			"\t\t" "-Set 'ADVENTURER_CALLS' in cardtest2.c\n"
-		   "\t\t"  " to modify number of plays.\n", ADVENTURER_CALLS,
-		   ADVENTURER_CALLS > 1 ? "plays" : "play");
+	if(RANDOMIZE){
+		printf("\nExecuting %d Adventurer %s using hands with random assortment of \n"
+			   "\t supply cards, with at least 2 treasures in deck...\n\n"
+				"\t\t" "-Set 'ADVENTURER_CALLS' in cardtest2.c\n"
+			   "\t\t"  " to modify number of plays.\n", ADVENTURER_CALLS,
+			   ADVENTURER_CALLS > 1 ? "plays" : "play");
+	}
+	else{
+		printf("\n" "Executing %d Adventurer %s using deck and hand sizes starting at 6 and incrementing\n"
+			   "\t" " by multiples of 5 with each successive test number, up to %d (MAX_DECK).\n"
+			   "\t" " If the number of tests cause the deck size to exceed %d when\n"
+			   "\t" " calculated in this way, the deck size will reset to 1 and begin\n"
+			   "\t" " incrementing by 1 with each additional successive test, but for hand\n"
+			   "\t" " if hand size < 6, hand size will be set to 6 (see _cardtest2helper.c line 90).\n"
+			   "\t\t" "-e.g. deck size for test 1 = 6, test 2 = 11, test 3 = 16, and so...\n"
+			   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2, and so...\n\n"
+			   "\t" " Kingdom cards are adventurer through great_hall, as enumerated\n"
+			   "\t" " in dominion.h.\n\n"
+			   "\t\t" "-Set 'ADVENTURER_CALLS' in cardtest2.c\n"
+			   "\t\t" " to modify number of plays.\n\n",
+			   "\t\t" "-Random test generator can be turned on\n"
+			   "\t\t" " by setting the constant 'RANDOMIZE' to 1\n"
+			   "\t\t" " in _cardtest2helper.h\n\n", ADVENTURER_CALLS, 
+			   ADVENTURER_CALLS > 1 ? "plays" : "play", MAX_DECK, MAX_DECK);
+	}
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
 	//This random number will be used as the game's seed.
@@ -41,16 +61,24 @@ int main (int argc, char** argv) {
 	SelectStream(2);
 	PutSeed(-1);
 		   
-	int i, j, k[10];
+	int i, j, k[10], seed = 5000;
 	for(i = 0; i < ADVENTURER_CALLS; i++){
 		
-		//Generate set of 10 random Kingdom cards
-		for(j = 0; j < 10; j++){		
-			k[j] = Random() * 19 + 7;
+		if(RANDOMIZE){
+			//Generate set of 10 random Kingdom cards
+			for(j = 0; j < 10; j++){		
+				k[j] = Random() * 19 + 7;
+			}
+			seed = Random() * INT_MAX;
+		}
+		else{
+			for(m = 0, j = 7; j < 10; m++, j++){		
+				k[m] = j;
+			}
 		}
 		
 		//Initializes game for two players
-		initializeGame(2, k, Random() * INT_MAX, &G);
+		initializeGame(2, k, seed, &G);
 		
 		//Play Adventurer with random kingdom card set with a deck
 		//containing at least 2 treasure cards.
@@ -58,41 +86,80 @@ int main (int argc, char** argv) {
 		_cardtest2helper(k, &G, failures, &failCt, 2, 0, i + 1);
 	}
 	
-	printf("\nBOUNDARY: Executing Adventurer play using hand with random assortment of \n"
-		   "\t supply cards, with 1 treasure card in deck...\n");
+	if(RANDOMIZE){
+		printf("\nBOUNDARY: Executing Adventurer play using hand with random assortment of \n"
+			   "\t supply cards, with 1 treasure card in deck...\n");
+	}
+	else{
+		printf("\nBOUNDARY: Executing Adventurer play with only 1 treasure card in deck...\n");
+	}
 	
 	//Test with only 1 treasure card in the player's deck
-	//Generate set of 10 random Kingdom cards
-	for(j = 0; j < 10; j++){		
-		k[j] = Random() * 19 + 7;
+	if(RANDOMIZE){
+		//Generate set of 10 random Kingdom cards
+		for(j = 0; j < 10; j++){		
+			k[j] = Random() * 19 + 7;
+		}
+		seed = Random() * INT_MAX;
 	}
-	initializeGame(2, k, Random() * INT_MAX, &G);
+	else{
+		for(m = 0, j = 7; j < 10; m++, j++){		
+			k[m] = j;
+		}
+	}
+	initializeGame(2, k, seed, &G);
 	_cardtest2helper(k, &G, failures, &failCt, 1, 1, ADVENTURER_CALLS + 1);
 	
-	printf("\nBOUNDARY: Executing Adventurer play using hand with random assortment of \n"
-		   "\t supply cards, with 0 treasure cards in deck...\n");
+	if(RANDOMIZE){
+		printf("\nBOUNDARY: Executing Adventurer play using hand with random assortment of \n"
+			   "\t supply cards, with 0 treasure cards in deck...\n");
+	}
+	else{
+		printf("\nBOUNDARY: Executing Adventurer play with 0 treasure cards in deck...\n");
+	}
 	
 	//Test with only 2 cards in the player's deck
-	//Generate set of 10 random Kingdom cards
-	for(j = 0; j < 10; j++){		
-		k[j] = Random() * 19 + 7;
+	if(RANDOMIZE){
+		//Generate set of 10 random Kingdom cards
+		for(j = 0; j < 10; j++){		
+			k[j] = Random() * 19 + 7;
+		}
+		seed = Random() * INT_MAX;
 	}
-	initializeGame(2, k, Random() * INT_MAX, &G);
+	else{
+		for(m = 0, j = 7; j < 10; m++, j++){		
+			k[m] = j;
+		}
+	}
+	initializeGame(2, k, seed, &G);
 	_cardtest2helper(k, &G, failures, &failCt, 0, 1, ADVENTURER_CALLS + 2);
 	
-	printf("\nBOUNDARY: Executing Adventurer play using hand with random assortment of \n"
-		   "\t supply cards, with 0 cards in deck (should be same outcome as no treasure cards...)\n");
+	if(RANDOMIZE){
+		printf("\nBOUNDARY: Executing Adventurer play using hand with random assortment of \n"
+			   "\t supply cards, with 0 cards in deck (should be same outcome as no treasure cards...)\n");
+	}
+	else{
+		printf("\nBOUNDARY: Executing Adventurer play with 0 cards in deck\n"
+				 "          (should be same outcome as no treasure cards...)\n");
 	
 	//Test with only 2 cards in the player's deck
-	//Generate set of 10 random Kingdom cards
-	for(j = 0; j < 10; j++){		
-		k[j] = Random() * 19 + 7;
+	if(RANDOMIZE){
+		//Generate set of 10 random Kingdom cards
+		for(j = 0; j < 10; j++){		
+			k[j] = Random() * 19 + 7;
+		}
+		seed = Random() * INT_MAX;
 	}
-	initializeGame(2, k, Random() * INT_MAX, &G);
+	else{
+		for(m = 0, j = 7; j < 10; m++, j++){		
+			k[m] = j;
+		}
+	}
+	initializeGame(2, k, seed, &G);
 	_cardtest2helper(k, &G, failures, &failCt, -1, 1, ADVENTURER_CALLS + 3);
 	
-	printf("\n\tEach test (that is not marked 'BOUNDARY') verifies proper game state\n"
-		   "\tmodification, reporting a failure if any of the following conditions are NOT met:\n"
+	printf("\n\t" "Each test (that is not marked 'BOUNDARY') verifies proper game state\n"
+		   "\t"   "modification, reporting a failure if any of the following conditions are NOT met:\n"
 		   "\t\t"       "1. Current player variable (whoseTurn) is unchanged\n"
 		   "\t\t"       "2. Player's hand gains only 2 treasure cards from deck\n"
 		   "\t\t\t"         "a. Same 2 treasure card types are removed from deck and added to hand.\n"

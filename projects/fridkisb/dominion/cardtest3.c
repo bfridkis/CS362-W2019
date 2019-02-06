@@ -27,11 +27,30 @@ int main (int argc, char** argv) {
 	
 	printf("Starting cardtest3 - Testing 'cutpurse' card\n");
 	
-	printf("\nExecuting %d Cutpurse %s using hands with random assortment of \n"
-		   "\t hand cards for each player, with at least 1 copper in each hand...\n\n"
-		   "\t\t" "-Set 'CUTPURSE_CALLS' in cardtest3.c\n"
-		   "\t\t" " to modify number of plays.\n", CUTPURSE_CALLS,
-		   CUTPURSE_CALLS > 1 ? "plays" : "play");
+	if(RANDOMIZE){
+		printf("\nExecuting %d Cutpurse %s using hands with random assortment of \n"
+			   "\t hand cards for each player, with at least 1 copper in each hand...\n\n"
+			   "\t\t" "-Set 'CUTPURSE_CALLS' in cardtest3.c\n"
+			   "\t\t" " to modify number of plays.\n", CUTPURSE_CALLS,
+			   CUTPURSE_CALLS > 1 ? "plays" : "play");
+	}
+	else{
+		printf("\n" "Executing %d Cutpurse %s using deck and hand sizes starting at 5 and incrementing\n"
+			   "\t" " by multiples of 5 with each successive test number, up to %d (MAX_DECK).\n"
+			   "\t" " If the number of tests cause the deck size to exceed %d when\n"
+			   "\t" " calculated in this way, the deck size will reset to 1 and begin\n"
+			   "\t" " incrementing by 1 with each additional successive test.\n\n"
+			   "\t\t" "-e.g. deck size for test 1 = 5, test 2 = 10, test 3 = 15, and so...\n"
+			   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2, and so...\n\n"
+			   "\t" " Kingdom cards are adventurer through great_hall, as enumerated\n"
+			   "\t" " in dominion.h.\n\n"
+			   "\t\t" "-Set 'CUTPURSE_CALLS' in cardtest3.c\n"
+			   "\t\t" " to modify number of plays.\n\n",
+			   "\t\t" "-Random test generator can be turned on\n"
+			   "\t\t" " by setting the constant 'RANDOMIZE' to 1\n"
+			   "\t\t" " in _cardtest3helper.h\n\n", CUTPURSE_CALLS, 
+			   CUTPURSE_CALLS > 1 ? "plays" : "play", MAX_DECK, MAX_DECK);
+	}
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
 	//This random number will be used as the game's seed.
@@ -39,16 +58,24 @@ int main (int argc, char** argv) {
 	SelectStream(2);
 	PutSeed(-1);
 		   
-	int i, j, k[10];
+	int i, j, k[10], seed = 5000;
 	for(i = 0; i < CUTPURSE_CALLS; i++){
 		
-		//Generate set of 10 random Kingdom cards
-		for(j = 0; j < 10; j++){		
-			k[j] = Random() * 19 + 7;
+		if(RANDOMIZE){
+			//Generate set of 10 random Kingdom cards
+			for(j = 0; j < 10; j++){		
+				k[j] = Random() * 19 + 7;
+			}
+			seed = Random() * INT_MAX;
+		}
+		else{
+			for(m = 0, j = 7; j < 10; m++, j++){		
+				k[m] = j;
+			}
 		}
 		
-		//Initializes game for two players
-		initializeGame(NUM_PLAYERS, k, Random() * INT_MAX, &G);
+		//Initializes game for two players with random seed value.
+		initializeGame(NUM_PLAYERS, k, seed, &G);
 		
 		//Play Cutpurse with random kingdom card set with a deck
 		//containing at least 2 treasure cards.
@@ -56,37 +83,52 @@ int main (int argc, char** argv) {
 		_cardtest3helper(k, &G, failures, &failCt, 0, i + 1);
 	}
 	
-	printf("\nBOUNDARY: Executing Cutpurse play using hand with random assortment of \n"
-		   "\t hand cards for each player but with no copper cards...\n");
+	if(RANDOMIZE){
+		printf("\nBOUNDARY: Executing Cutpurse play using hand with random assortment of \n"
+			   "\t hand cards for each player but with no copper cards...\n");
+	}
+	else{
+		printf("\nBOUNDARY: Executing Cutpurse play using hands with no copper (all players)...\n");
+	}
 	
 	//Test with no copper cards in each player's hand
-	//Generate set of 10 random Kingdom cards
-	for(j = 0; j < 10; j++){		
-		k[j] = Random() * 19 + 7;
+	if(RANDOMIZE){
+		//Generate set of 10 random Kingdom cards
+		for(j = 0; j < 10; j++){		
+			k[j] = Random() * 19 + 7;
+		}
+		seed = Random() * INT_MAX;
 	}
-	initializeGame(2, k, Random() * INT_MAX, &G);
+	else{
+		for(m = 0, j = 7; j < 10; m++, j++){		
+			k[m] = j;
+		}
+	}
+	initializeGame(NUM_PLAYERS, k, seed, &G);
 	_cardtest3helper(k, &G, failures, &failCt, 1, CUTPURSE_CALLS + 1);
 	
 	printf("\n\tEach test (that is not marked 'BOUNDARY') verifies proper game state\n"
 		   "\tmodification, reporting a failure if any of the following conditions are NOT met:\n"
-		   "\t\t"       "1. Current player variable (whoseTurn) is unchanged\n"
-		   "\t\t"       "2. Player who plays cutpurse has same hand after play less 1 cutpurse\n"
-		   "\t\t"       "3. Players who did not play cutpurse have same hand after play less 1 copper\n"
-		   "\t\t\t"          "EXCEPTION: Boundary case of no copper in which players who did not play\n"
-		   "\t\t\t"          "           copper have same hand after cutpurse is played\n"
-		   "\t\t"       "4. Hand counts are decremented by 1 for each player\n"
-		   "\t\t\t"         "(1 cutpurse discarded for active player or 1 copper\n" 
-		   "\t\t\t"          "discarded for inactive players)\n"
-		   "\t\t"       "5. The game state's 'coins' variable is incremented by 2\n"
-		   "\t\t"       "6. All of the following game states are unchanged:\n"
-		   "\t\t\t"          "a. numActions\n"
-		   "\t\t\t"          "b. numBuys\n"
-		   "\t\t\t"          "c. embargoTokens[]\n"
-		   "\t\t\t"          "d. outpostPlayed\n"
-		   "\t\t\t"          "e. outpostTurn\n"
-		   "\t\t\t"          "f. All players' decks are unchanged\n"
-		   "\t\t"       "7. Played card count is incremented by 1 (for cutpurse played)\n"
-		   "\t\t"       "8. Played cards gains one and only cutpurse\n");
+		   "\t\t"       "1.  Current player variable (whoseTurn) is unchanged\n"
+		   "\t\t"       "2.  Player who plays cutpurse has same hand after play less 1 cutpurse\n"
+		   "\t\t"       "3.  Players who did not play cutpurse have same hand after play less 1 copper\n"
+		   "\t\t\t"           "EXCEPTION: Boundary case of no copper in which players who did not play\n"
+		   "\t\t\t"           "           copper have same hand after cutpurse is played\n"
+		   "\t\t"       "4.  Hand counts are decremented by 1 for each player\n"
+		   "\t\t\t"          "(1 cutpurse discarded for active player or 1 copper\n" 
+		   "\t\t\t"           "discarded for inactive players)\n"
+		   "\t\t"       "5.  The game state's 'coins' variable is incremented by 2\n"
+		   "\t\t"       "6.  All of the following game states are unchanged:\n"
+		   "\t\t\t"           "a. numActions\n"
+		   "\t\t\t"           "b. numBuys\n"
+		   "\t\t\t"           "c. embargoTokens[]\n"
+		   "\t\t\t"           "d. outpostPlayed\n"
+		   "\t\t\t"           "e. outpostTurn\n"
+		   "\t\t\t"           "f. All players' decks are unchanged\n"
+		   "\t\t"       "7.  Active player's discard pile gains a cutpurse, and count is updated to 1 (starts at 0)\n"
+		   "\t\t"       "8.  Inactive players' discard piles are unchanged, and counts remain 0 (all start at 0)\n"
+		   "\t\t"       "9.  Played card count is incremented by 1 (for cutpurse played)\n"
+		   "\t\t"       "10. Played cards gains one and only cutpurse\n");
 	
 	if(!failCt){
 		printf("\n\n*****************************\n"

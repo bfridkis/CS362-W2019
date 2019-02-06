@@ -18,7 +18,7 @@
 
 #define NUM_PLAYERS 2
 
-#define SMITHY_CALLS 100
+#define SMITHY_CALLS 1
 
 int main (int argc, char** argv) {
 	struct gameState G;
@@ -29,11 +29,30 @@ int main (int argc, char** argv) {
 	
 	printf("Starting cardtest1 - Testing 'smithy' card\n");
 	
-	printf("\nExecuting %d Smithy %s using hands with random assortment of \n"
-		   "\t supply cards, with at least 3 in deck...\n\n"
-		   "\t\t" "-Set 'SMITHY_CALLS' in cardtest1.c\n"
-		   "\t\t" " to modify number of plays.\n", SMITHY_CALLS,
-		   SMITHY_CALLS > 1 ? "plays" : "play");
+	if(RANDOMIZE){
+		printf("\nExecuting %d Smithy %s using decks and hands with random assortment of \n"
+			   "\t supply cards, with at least 3 cards active player's in deck...\n\n"
+			   "\t\t" "-Set 'SMITHY_CALLS' in cardtest1.c\n"
+			   "\t\t" " to modify number of plays.\n", SMITHY_CALLS,
+			   SMITHY_CALLS > 1 ? "plays" : "play");
+	}
+	else{
+		printf("\n" "Executing %d Smithy %s using deck and hand sizes starting at 5 and incrementing\n"
+			   "\t" " by multiples of 5 with each successive test number, up to %d (MAX_DECK).\n"
+			   "\t" " If the number of tests cause the deck size to exceed %d when\n"
+			   "\t" " calculated in this way, the deck size will reset to 1 and begin\n"
+			   "\t" " incrementing by 1 with each additional successive test.\n\n"
+			   "\t\t" "-e.g. deck size for test 1 = 5, test 2 = 10, test 3 = 15, and so...\n"
+			   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2, and so...\n\n"
+			   "\t" " Kingdom cards are adventurer through great_hall, as enumerated\n"
+			   "\t" " in dominion.h.\n\n"
+			   "\t\t" "-Set 'SMITHY_CALLS' in cardtest1.c\n"
+			   "\t\t" " to modify number of plays.\n\n",
+			   "\t\t" "-Random test generator can be turned on\n"
+			   "\t\t" " by setting the constant 'RANDOMIZE' to 1\n"
+			   "\t\t" " in _cardtest1helper.h\n\n", SMITHY_CALLS, 
+			   SMITHY_CALLS > 1 ? "plays" : "play", MAX_DECK, MAX_DECK);
+	}
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
 	//This random number will be used as the game's seed.
@@ -41,71 +60,120 @@ int main (int argc, char** argv) {
 	SelectStream(2);
 	PutSeed(-1);
 		   
-	int i, j, k[10];
+	int i, j, k[10], seed = 5000;
 	for(i = 0; i < SMITHY_CALLS; i++){
 		
-		//Generate set of 10 random Kingdom cards
-		for(j = 0; j < 10; j++){		
-			k[j] = Random() * 19 + 7;
+		if(RANDOMIZE){
+			//Generate set of 10 random Kingdom cards
+			for(j = 0; j < 10; j++){		
+				k[j] = Random() * 19 + 7;
+			}
+			seed = Random() * INT_MAX;
+		}
+		else{
+			for(m = 0, j = 7; j < 10; m++, j++){		
+				k[m] = j;
+			}
 		}
 		
-		//Initializes game for two players
-		initializeGame(2, k, Random() * INT_MAX, &G);
+		//Initializes game for two players with random seed value.
+		initializeGame(2, k, seed, &G);
 		
 		//Play Smithy with random kingdom card set.
 		//(see _cardtest1helper for more details)
 		_cardtest1helper(k, &G, failures, &failCt, 3, i + 1);
 	}
 	
-	printf("\nBOUNDARY: Executing Smithy play using hand with random assortment of \n"
-		   "\t supply cards, with 1 card in deck...\n");
+	if(RANDOMIZE){
+		printf("\nBOUNDARY: Executing Smithy play using hand with random assortment of \n"
+			   "\t supply cards, with 1 card in deck...\n");
+	}
+	else{
+		printf("\nBOUNDARY: Executing Smithy play using hand with only 1 card in deck...\n");
+	}
 	
 	//Test with only 1 card in the player's deck
-	//Generate set of 10 random Kingdom cards
-	for(j = 0; j < 10; j++){		
-		k[j] = Random() * 19 + 7;
+	if(RANDOMIZE){
+		//Generate set of 10 random Kingdom cards
+		for(j = 0; j < 10; j++){		
+			k[j] = Random() * 19 + 7;
+		}
+		seed = Random() * INT_MAX;
 	}
-	initializeGame(2, k, Random() * INT_MAX, &G);
+	else{
+		for(m = 0, j = 7; j < 10; m++, j++){		
+			k[m] = j;
+		}
+	}
+	initializeGame(2, k, seed, &G);
 	_cardtest1helper(k, &G, failures, &failCt, 1, SMITHY_CALLS + 1);
 	
-	printf("\nBOUNDARY: Executing Smithy play using hand with random assortment of \n"
-		   "\t supply cards, with 2 cards in deck...\n");
+	if(RANDOMIZE){
+		printf("\nBOUNDARY: Executing Smithy play using hand with random assortment of \n"
+			   "\t supply cards, with 2 cards in deck...\n");
+	}
+	else{
+		printf("\nBOUNDARY: Executing Smithy play with only 2 cards in deck...\n");
+	}
 	
 	//Test with only 2 cards in the player's deck
-	//Generate set of 10 random Kingdom cards
-	for(j = 0; j < 10; j++){		
-		k[j] = Random() * 19 + 7;
+	if(RANDOMIZE){
+		//Generate set of 10 random Kingdom cards
+		for(j = 0; j < 10; j++){		
+			k[j] = Random() * 19 + 7;
+		}
+		seed = Random() * INT_MAX;
 	}
-	initializeGame(2, k, Random() * INT_MAX, &G);
+	else{
+		for(m = 0, j = 7; j < 10; m++, j++){		
+			k[m] = j;
+		}
+	}
+	initializeGame(2, k, seed, &G);
 	_cardtest1helper(k, &G, failures, &failCt, 2, SMITHY_CALLS + 2);
 	
-	printf("\nBOUNDARY: Executing Smithy play using hand with random assortment of \n"
-		   "\t supply cards, with 0 cards in deck...\n");
+	if(RANDOMIZE){
+		printf("\nBOUNDARY: Executing Smithy play using hand with random assortment of \n"
+			   "\t supply cards, with 0 cards in deck...\n");
+	}
+	else{
+		printf("\nBOUNDARY: Executing Smithy play using hand with 0 cards in deck...\n");
+	}
 	
 	//Test with 0 cards in the player's deck
 	//Generate set of 10 random Kingdom cards
-	for(j = 0; j < 10; j++){		
-		k[j] = Random() * 19 + 7;
+	if(RANDOMIZE){
+		//Generate set of 10 random Kingdom cards
+		for(j = 0; j < 10; j++){		
+			k[j] = Random() * 19 + 7;
+		}
+		seed = Random() * INT_MAX;
 	}
-	initializeGame(2, k, Random() * INT_MAX, &G);
+	else{
+		for(m = 0, j = 7; j < 10; m++, j++){		
+			k[m] = j;
+		}
+	}
+	initializeGame(2, k, seed, &G);
 	_cardtest1helper(k, &G, failures, &failCt, 0, SMITHY_CALLS + 3);
 	
-	printf("\n\tEach test (that is not marked 'BOUNDARY') verifies proper game state\n"
-		   "\tmodification, reporting a failure if any of the following conditions are met:\n"
+	printf("\n\t" "Each test (that is not marked 'BOUNDARY') verifies proper game state\n"
+		   "\t"   "modification, reporting a failure if any of the following conditions are met:\n"
 		   "\t\t"       "1. Current player variable (whoseTurn) is changed\n"
-		   "\t\t"       "2. Player's hand does not gain 3 cards from the top of Player's deck\n"
-		   "\t\t\t"         "a. Player's deck count is not decremented by 3.\n"
-		   "\t\t\t"         "b. Player's hand count is not incremented by 2\n"
+		   "\t\t"       "2. Active player's hand does not gain 3 cards from the top of Player's deck\n"
+		   "\t\t\t"         "a. Active player's deck count is not decremented by 3.\n"
+		   "\t\t\t"         "b. Active player's hand count is not incremented by 2\n"
 		   "\t\t\t\t\t"          "(A total of 3 cards are gained but the Smithy\n"
 		   "\t\t\t\t\t"          "itself is discarded so the net gain from the previous\n"
 		   "\t\t\t\t\t"          "is 2.)\n"
-		   "\t\t\t"         "c. Player's deck contents are not the same before and after the play\n"
-		   "\t\t\t\t\t"          "(Besides the 3 less cards gained therefrom)\n"
-		   "\t\t\t"         "d. Player's hand order and content are changed\n"
+		   "\t\t\t"         "c. Active player's deck contents are not the same before and after the play\n"
+		   "\t\t\t\t\t"          "(Besides the 3 less cards gained therefrom. i.e. The deck order is not changed.)\n"
+		   "\t\t\t"         "d. Active player's hand order and content are changed\n"
 		   "\t\t\t\t\t"          "(Besides the removal/insertion of the Smithy played/last card drawn\n"
 		   "\t\t\t\t\t"          " and 2 additional cards gained to the end of the hand\n"
-		   "\t\t"       "3. Player 1's or 2's discard pile or count is changed\n"
-		   "\t\t"       "4. Player 2's deck, hand, deck count, and/or hand count is changed\n"
+		   "\t\t"       "4. Active player's discard pile does not gain a Smithy, or count is not 1 (starts at 0)\n"
+		   "\t\t"       "5. Inactive player's discard piles are changed, or count is not 0 (starts at 0)\n"
+		   "\t\t"       "4. Inactive player's deck, hand, deck count, and/or hand count is changed\n"
 		   "\t\t"       "5. Any supply pile count (curses, victory cards, or kingdom cards) is changed\n"
 		   "\t\t"       "6. Any of the following game states are changed:\n"
 		   "\t\t\t"          "a. coins\n"

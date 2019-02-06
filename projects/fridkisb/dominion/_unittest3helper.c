@@ -34,8 +34,21 @@ int _unittest3helper(int k[], struct gameState* G, failedTest failures[],
 	int i, j, rv, minNumExchanges = 0, deckSize;
 	
 	if(!isEmptyDeckTest && !isMaxDeckTest){
-		//Determine a random deck size in range 2 to MAX_DECK 
-		deckSize = 2 + (Random() * (MAX_DECK - 2));
+		if(RANDOMIZE){
+			//Determine a random deck size in range 2 to MAX_DECK 
+			deckSize = 2 + (Random() * (MAX_DECK - 2));
+		}
+		else{
+			//Each successive test has a deckSize 5 more than
+			//the last, starting at 5. If the deckSize calculation
+			//above equals or exceeds MAX_DECK, start over at 
+			//multiples of 1, beginning with a deck size of 1. 
+			//(Deck size of MAX_HAND is covered by a boundary test.)
+			deckSize = testNumber * 5;
+			if(deckSize >= MAX_DECK){
+				deckSize = deckSize % MAX_DECK + 1;
+			}
+		}
 	}
 	else if(isEmptyDeckTest){
 		deckSize = 0;

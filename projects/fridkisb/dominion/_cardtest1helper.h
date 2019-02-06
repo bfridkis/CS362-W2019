@@ -13,7 +13,9 @@
 
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
-#define MAX_FAILS 10
+#define MAX_FAILS 20
+
+#define RANDOMIZE 0
 
 #include "dominion.h"
 #include "dominion_helpers.h"

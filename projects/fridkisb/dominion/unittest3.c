@@ -30,8 +30,26 @@ int main (int argc, char** argv) {
 	
 	printf("Starting unittest3 - Testing 'shuffle' function\n");
 	
-	printf("\nExecuting %d shuffles using random deck sizes in range 2 - %d (MAX_DECK),\n"
-		   "\teach with a random set of kingdom cards...\n", NUM_SHUFFLES, MAX_DECK);
+	if(RANDOMIZE){
+		printf("\nExecuting %d shuffles using random deck sizes in range 2 - %d (MAX_DECK),\n"
+			   "\teach with a random set of kingdom cards...\n", NUM_SHUFFLES, MAX_DECK);
+	}
+	else{
+		printf("\n" "Executing %d shuffles using deck sizes starting at 5 and incrementing\n"
+			   "\t" " by multiples of 5 with each successive test number, up to %d (MAX_DECK).\n"
+			   "\t" " If the number of tests cause the deck size to exceed %d when\n"
+			   "\t" " calculated in this way, the deck size will reset to 1 and begin\n"
+			   "\t" " incrementing by 1 with each additional successive test.\n"
+			   "\t\t" "-e.g. deck size for test 1 = 5, test 2 = 10, test 3 = 15, and so...\n"
+			   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2, and so...\n\n"
+			   "\t" " Kingdom cards are adventurer through great_hall, as enumerated\n"
+			   "\t" " in dominion.h.\n\n"
+			   "\t\t" "-Set 'NUM_SHUFFLES' in unittest3.c\n"
+			   "\t\t" " to modify number of tests.\n\n"
+			   "\t\t" "-Random test generator can be turned on\n"
+			   "\t\t" " by setting the constant 'RANDOMIZE' to 1\n"
+			   "\t\t" " in _unittest3helper.h\n\n", NUM_SHUFFLES, MAX_DECK, MAX_DECK);
+	}
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
 	//This random number will be used as the game's seed.
@@ -39,16 +57,24 @@ int main (int argc, char** argv) {
 	SelectStream(2);
 	PutSeed(-1);
 		   
-	int i, j, k[10];
+	int i, j, k[10], seed = 5000;
 	for(i = 0; i < NUM_SHUFFLES; i++){
 		
-		//Generate set of 10 random Kingdom cards
-		for(j = 0; j < 10; j++){		
-			k[j] = Random() * 19 + 7;
+		if(RANDOMIZE){
+			//Generate set of 10 random Kingdom cards
+			for(j = 0; j < 10; j++){		
+				k[j] = Random() * 19 + 7;
+			}
+			seed = Random() * INT_MAX;
+		}
+		else{
+			for(m = 0, j = 7; j < 10; m++, j++){		
+				k[m] = j;
+			}
 		}
 		
 		//Initializes game for two players with random seed value.
-		initializeGame(2, k, Random() * INT_MAX, &G);
+		initializeGame(2, k, seed, &G);
 		
 		//Run shuffle test on random kingdom card set.
 		//(see _unittest3helper for more details)

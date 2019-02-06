@@ -1,4 +1,4 @@
-CFLAGS= -Wall -Wfatal-errors -fpic -coverage -lm -std=c99
+CFLAGS= -Wall -Werror -Wfatal-errors -fpic -coverage -lm -std=c99
 
 rngs.o: rngs.h rngs.c
 	gcc -c rngs.c -g  $(CFLAGS)
@@ -29,6 +29,9 @@ _cardtest2helper.o: _cardtest2helper.c _cardtest2helper.h dominion.o
 	
 _cardtest3helper.o: _cardtest3helper.c _cardtest3helper.h dominion.o
 	gcc -c _cardtest3helper.c -g  $(CFLAGS)
+	
+_cardtest4helper.o: _cardtest4helper.c _cardtest4helper.h dominion.o
+	gcc -c _cardtest4helper.c -g  $(CFLAGS)
 	
 playdom: dominion.o playdom.c
 	gcc -o playdom playdom.c -g dominion.o cardEffects.o rngs.o $(CFLAGS)
@@ -64,10 +67,14 @@ cardtest2: cardtest2.c _cardtest2helper.o dominion.o cardEffects.o rngs.o
 cardtest3: cardtest3.c _cardtest3helper.o dominion.o cardEffects.o rngs.o
 	gcc -o cardtest3 cardtest3.c -g dominion.o cardEffects.o _cardtest3helper.o rngs.o $(CFLAGS)
 	
+cardtest4: cardtest4.c _cardtest4helper.o dominion.o cardEffects.o rngs.o
+	gcc -o cardtest4 cardtest4.c -g dominion.o cardEffects.o _cardtest4helper.o rngs.o $(CFLAGS)	
+	
 testAll: dominion.o testSuite.c 
 	gcc -o testSuite testSuite.c -g  dominion.o cardEffects.o rngs.o $(CFLAGS)
 	
-unittestresults: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3
+unittestresults: unittest1 unittest2 unittest3 unittest4 \
+				 cardtest1 cardtest2 cardtest3 cardtest4			 
 	@chmod +x testmakehelper
 	@./testmakehelper
 

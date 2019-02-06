@@ -49,7 +49,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//Ensure supply pile counts are of known value before Cutpurse play
 	//Set each to 10
-	for(i = 0, j = 0; i < 27; i++){
+	for(i = 0; i < 27; i++){
 		G->supplyCount[i] = 10;
 	}
 	
@@ -57,12 +57,23 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	//stream 1 in parent function (main, see cardtest3.c)
 	SelectStream(2);
 	
-	
-	//Determine random hand size for each player in 
-	//range 1 - MAX_HAND
+	//Assign hand size, either randomly if indicated, or according
+	//to test number
 	int handSize[NUM_PLAYERS];
-	for(i = 0; i < NUM_PLAYERS; i++){
-		handSize[i] = 1 + (Random() * (MAX_HAND - 1));
+	if(RANDOMIZE){
+		//Determine random hand size for each player in 
+		//range 1 - MAX_HAND
+		for(i = 0; i < NUM_PLAYERS; i++){
+			handSize[i] = 1 + (Random() * (MAX_HAND - 1));
+		}
+	}
+	else{
+		for(i = 0; i < NUM_PLAYERS; i++){
+			handSize[i] = testNumber * 5;
+			if(handSize[i] >= MAX_HAND){
+				handSize[i] = (handSize[i] % MAX_HAND) + 1;
+			}
+		}
 	}
 	
 	//Load each player's hand with an equal number of each card,
@@ -85,13 +96,26 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 		G->handCount[m] = handSize[m];
 	}
 	
-	//Determine random player to play cutpurse
-	int activePlayer = Random() * (NUM_PLAYERS - 1);
-	G->whoseTurn = activePlayer;
+	//Determine active player, randomly if indicated
+	int activePlayer;
+	if(RANDOMIZE){
+		//Determine random player to play cutpurse
+		activePlayer = Random() * (NUM_PLAYERS - 1);
+		G->whoseTurn = activePlayer;
+	}
+	else{
+		activePlayer = 0;
+	}
 	
-	//Assign a random hand position for Cutpurse for active player
-	int handPos = Random() * (G->handCount[activePlayer] - 1);
-	if(handPos == -1){
+	//Assign a hand position for Cutpurse for active player
+	int handPos;
+	if(RANDOMIZE){
+		handPos = Random() * (G->handCount[activePlayer] - 1);
+		if(handPos == -1){
+			handPos = 0;
+		}
+	}
+	else{
 		handPos = 0;
 	}
 	G->hand[activePlayer][handPos] = cutpurse;
@@ -412,7 +436,10 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	//If this is not the no copper boundary test,
 	//make sure a copper is placed into each non-active player's
 	//discard pile
-	for(m = 0; m < NUM_PLAYERS && !noCopper; m++){	
+	for(m = 0; m < NUM_PLAYERS && !noCopper; m++){
+		if(m == activePlayer){
+			continue;
+		}
 		for(i = 0; i < MAX_DECK; i++){
 			if(i == 0 && G->discard[m][i] != copper 
 				&& ++(*failCt) <= MAX_FAILS){
@@ -442,7 +469,10 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//If this is the no copper boundary test,
 	//make sure each non-active player's discard pile does not change
-	for(m = 0; m < NUM_PLAYERS && noCopper; m++){	
+	for(m = 0; m < NUM_PLAYERS && noCopper; m++){
+		if(m == activePlayer){
+			continue;
+		}
 		for(i = 0; i < MAX_DECK; i++){
 			if(G->discard[m][i] != -1 
 				&& ++(*failCt) <= MAX_FAILS){
@@ -531,11 +561,11 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	
 	//NOTE: I initially wrote this test assuming the discardCard
-	//		function was functioning properly (i.e. the Smithy
+	//		function was functioning properly (i.e. the Cutpurse
 	//		was supposed to end up in playedCard after its use.
 	//		Upon further investigation and consideration, I 
 	//		realize that the test here should be to make sure
-	//		Smithy gets to the proper discard pile, as this is
+	//		Cutpurse gets to the proper discard pile, as this is
 	//		its final destination per the game specifications.
 	//		There appears to be a bug in discardCard accordingly,
 	//		which I discuss in more detail in the assignment writeup.
@@ -552,7 +582,7 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 		G->playedCardCount);
 		failures[*failCt-1].testNumber = testNumber;
 	}
-	//Check playedCards (should have Smithy at index 0, -1 all other indexes)
+	//Check playedCards (should have Cutpurse at index 0, -1 all other indexes)
 	for(i = 0; i < MAX_DECK; i++){
 		if(i == 0 && G->playedCards[i] != cutpurse 
 			&& ++(*failCt) <= MAX_FAILS){

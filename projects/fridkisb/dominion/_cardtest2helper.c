@@ -22,7 +22,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	int* failCt, int treasureCardCountSpecifier, int isBoundary, int testNumber){
 		
 	//Test value variables	   
-	int i, j, deckSize, handSize;
+	int i, j, deckCountBeforeAdventurer, handCountBeforeAdventurer;
 	 
 	//Ensure discard, deck, and hand are cleared for players 0 and 1
 	memset(G->discard[0], -1, sizeof(int) * MAX_DECK);
@@ -55,7 +55,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//Ensure supply pile counts are of known value before Adventurer play
 	//Set each to 10
-	for(i = 0, j = 0; i < 27; i++){
+	for(i = 0; i < 27; i++){
 		G->supplyCount[i] = 10;
 	}
 	
@@ -63,24 +63,31 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	//stream 1 in parent function (main, see cardtest2.c)
 	SelectStream(2);
 	
-	//Determine random deck size, based on treasureCardCountSpecifier
-	//(treasureCardCountSpecifier == 2 guarantees a deck size in range
-	//6 - MAX_DECK, which will have at minimum one copper and one silver.
-	//Otherwise, deckSize == treasureCardCountSpecifier + 4. A deck size of
-	//5 will contain only one treasure card (copper), and a deck size of
-	//4 or less will contain no treasure cards. (This is so "boundary" conditions 
-	//of decks with less than 2 treasure cards can be tested.)
-	if(treasureCardCountSpecifier >= 2){
-		deckSize = 6 + (Random() * (MAX_DECK - 6));
+	//   Determine Deck Size
+	if(RANDOMIZE && treasureCardCountSpecifier >= 2){
+		//Determine random deck sizes, based on treasureCardCountSpecifier
+		//(treasureCardCountSpecifier == 2 guarantees a deck size in range
+		//6 - MAX_DECK, which will have at minimum one copper and one silver. 
+		deckCountBeforeAdventurer = 6 + (Random() * (MAX_DECK - 6));
 	}
+	else if(treasureCardCountSpecifier >= 2){.
+		deckSize = (testNumber * 5) + 1;
+		if(deckSize >= MAX_DECK){
+			deckSize = (deckSize % MAX_DECK) + 1;
+		}
+	}
+	//A deck size of 5 will contain only one treasure card (copper), and 
+	//a deck size of 4 or less will contain no treasure cards. (This is so 
+	//"boundary" conditions of decks with less than 2 treasure cards can be 
+	//tested.)
 	else if(treasureCardCountSpecifier >= 0) {
-		deckSize = treasureCardCountSpecifier + 4;
+		deckCountBeforeAdventurer = treasureCardCountSpecifier + 4;
 	}
 	else{
-		deckSize = 0;
+		deckCountBeforeAdventurer = 0;
 	}
 	
-	//Determine random hand size, in range 6 - MAX_HAND
+	//   Determine Hand Size
 	//A hand size with a minimum of 6 guarantees at least 2 treasures 
 	//in the hand, so that the boundary test cases (i.e. decks with less 
 	//than 2 treasures) will not crash the program if the hand also ends 
@@ -88,23 +95,36 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	//the 2... i.e. there must be at least 2 treasures in the set of total 
 	//player cards [deck, discard, hand] to avoid a segmentation fault
 	//due to a bug present in the adventurer function [adventurerEffect]).
-	//(This is bug is detailed in a note above the implementation of 
+	//(This bug is detailed in a note above the implementation of 
 	//adventurerEffect in cardEffects.c, and in the assignment write-up.)
-	handSize = 6 + (Random() * (MAX_HAND - 6));
+	if(RANDOMIZE){
+		//Determine random hand size, in range 6 - MAX_HAND
+		handCountBeforeAdventurer = 6 + (Random() * (MAX_HAND - 6));
+	}
+	else{
+		handSize = (testNumber * 5) + 1;
+		if(handSize >= MAX_HAND){
+			handSize = (handSize % MAX_HAND) + 1;
+			if(handSize < 6){
+				handSize = 6;
+			}
+		}
+	}
 	
-	//handSize = 0; <- Testing with handSize 0 fails with Seg Fault or Bus Error!
-	//				<-- -- At latest this occurs when the BOUNDARY test for a deck 
-	//				<-- -- with no treasure cards is executed.
+	
+	//handCountBeforeAdventurer = 0; <- Testing with handCountBeforeAdventurer 0 fails with Seg Fault or Bus Error!
+	//								   <-- -- At latest this occurs when the BOUNDARY test for a deck 
+	//								   <-- -- with no treasure cards is executed.
 	
 	//Load player 0's deck and hand with an equal number of each card,
 	//plus an extra starting at curse for each remainder after 
 	//final multiple of 17, for each respective random card count 
-	//(i.e. deckSize & handSize) as determined above 
+	//(i.e. deckCountBeforeAdventurer & handCountBeforeAdventurer) as determined above 
 	//(e.g. a 20 card deck will have 1 of each card plus 1 extra 
 	//curse, estate, and duchy.)
 	
 	//For deck...
-	for(i = 0, j = 0; i < deckSize; i++){
+	for(i = 0, j = 0; i < deckCountBeforeAdventurer; i++){
 		if(j < 7){
 			G->deck[0][i] = j++;
 		}
@@ -115,10 +135,10 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			j = 0;
 		}
 	}
-	G->deckCount[0] = deckSize;
+	G->deckCount[0] = deckCountBeforeAdventurer;
 	
 	//For hand...
-	for(i = 0, j = 0; i < handSize; i++){
+	for(i = 0, j = 0; i < handCountBeforeAdventurer; i++){
 		if(j < 7){
 			G->hand[0][i] = j++;
 		}
@@ -129,7 +149,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			j = 0;
 		}
 	}
-	G->handCount[0] = handSize;
+	G->handCount[0] = handCountBeforeAdventurer;
 	
 	//Shuffle player 0's hand 
 	//--(shuffle has been tested via unittest3.
@@ -137,9 +157,17 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	//-- for additional details.)
 	shuffle(0, G);
 	
-	//Assign a random hand position for Adventurer
-	int handPos = Random() * (G->handCount[0] - 1);
-	if(handPos == -1){
+	//Assign hand position for adventurer, either randomly or
+	//according to test number
+	int handPos;
+	if(RANDOMIZE){
+		//Assign a random hand position for Adventurer
+		handPos = Random() * (G->handCount[0] - 1);
+		if(handPos == -1){
+			handPos = 0;
+		}
+	}
+	else{
 		handPos = 0;
 	}
 	G->hand[0][handPos] = adventurer;
@@ -148,7 +176,6 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//For deck...
 	int deckCardCountByTypeBeforeAdventurer[27] = {0};
-	int deckCountBeforeAdventurer = G->deckCount[0];	//Just to use different variable name, could use deckSize
 	int deckBeforeAdventurer[MAX_DECK];
 	for(i = 0; i < G->deckCount[0]; i++){
 		deckBeforeAdventurer[i] = G->deck[0][i];
@@ -157,7 +184,6 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//For hand...
 	int handCardCountByTypeBeforeAdventurer[27] = {0};
-	int handCountBeforeAdventurer = G->handCount[0];	//Just to use different variable name, could use handSize
 	//int handBeforeAdventurer[MAX_HAND];				//Not needed, since order of hand doesn't matter
 	for(i = 0; i < G->handCount[0]; i++){
 		//handBeforeAdventurer[i] = G->hand[0][i];
@@ -214,7 +240,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	
 	//Determine how many of each card type have been added to (or erroneously
-	//removed from) the deck
+	//removed from) the hand
 	int handCardCountByTypeAfterAdventurer[27] = {0};
 	for(i = 0; i < G->handCount[0]; i++){
 		handCardCountByTypeAfterAdventurer[G->hand[0][i]]++;

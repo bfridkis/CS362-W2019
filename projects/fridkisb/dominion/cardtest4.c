@@ -16,7 +16,7 @@
 
 #include "_cardtest4helper.h"
 
-#define COUNCIL_ROOM_CALLS 100
+#define COUNCIL_ROOM_CALLS 1
 
 int main (int argc, char** argv) {
 	struct gameState G;
@@ -27,11 +27,32 @@ int main (int argc, char** argv) {
 	
 	printf("Starting cardtest4 - Testing 'council_room' card\n");
 	
-	printf("\nExecuting %d Council_Room %s using hands with random assortment of \n"
-		   "\t supply cards, with at least 3 in deck...\n\n"
-		   "\t\t" "-Set 'COUNCIL_ROOM_CALLS' in cardtest4.c\n"
-		   "\t\t" " to modify number of plays.\n", COUNCIL_ROOM_CALLS,
-		   COUNCIL_ROOM_CALLS > 1 ? "plays" : "play");
+	if(RANDOMIZE){
+		printf("\nExecuting %d Council_Room %s using hands with random assortment of \n"
+			   "\t supply cards, with at least 1 in deck for non-active players,\n"
+			   "\t and 4 in deck for active players.\n\n"
+			   "\t\t" "-Set 'COUNCIL_ROOM_CALLS' in cardtest4.c\n"
+			   "\t\t" " to modify number of plays.\n", COUNCIL_ROOM_CALLS,
+			   COUNCIL_ROOM_CALLS > 1 ? "plays" : "play");
+	}
+	else{
+		else{
+		printf("\n" "Executing %d Council_Room %s using deck and hand sizes starting at 5 and incrementing\n"
+			   "\t" " by multiples of 5 with each successive test number, up to %d (MAX_DECK).\n"
+			   "\t" " If the number of tests cause the deck size to exceed %d when\n"
+			   "\t" " calculated in this way, the deck size will reset to 1 and begin\n"
+			   "\t" " incrementing by 1 with each additional successive test.\n\n"
+			   "\t\t" "-e.g. deck size for test 1 = 5, test 2 = 10, test 3 = 15, and so...\n"
+			   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2, and so...\n\n"
+			   "\t" " Kingdom cards are adventurer through great_hall, as enumerated\n"
+			   "\t" " in dominion.h.\n\n"
+			   "\t\t" "-Set 'COUNCIL_ROOM_CALLS' in cardtest1.c\n"
+			   "\t\t" " to modify number of plays.\n\n",
+			   "\t\t" "-Random test generator can be turned on\n"
+			   "\t\t" " by setting the constant 'RANDOMIZE' to 1\n"
+			   "\t\t" " in _cardtest4helper.h\n\n", COUNCIL_ROOM_CALLS, 
+			   COUNCIL_ROOM_CALLS > 1 ? "plays" : "play", MAX_DECK, MAX_DECK);
+	}
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
 	//This random number will be used as the game's seed.
@@ -39,86 +60,90 @@ int main (int argc, char** argv) {
 	SelectStream(2);
 	PutSeed(-1);
 		   
-	int i, j, k[10];
+	int i, j, k[10], seed = 5000;
 	for(i = 0; i < COUNCIL_ROOM_CALLS; i++){
 		
+		if(RANDOMIZE){
+			//Generate set of 10 random Kingdom cards
+			for(j = 0; j < 10; j++){		
+				k[j] = Random() * 19 + 7;
+			}
+			seed = Random() * INT_MAX;
+		}
+		else{
+			for(m = 0, j = 7; j < 10; m++, j++){		
+				k[m] = j;
+			}
+		}
+		
+		//Initializes game for two players with random seed value.
+		initializeGame(NUM_PLAYERS, k, seed, &G);
+		
+		//Play Council_Room with random kingdom card set.
+		//(see _cardtest4helper for more details)
+		_cardtest4helper(k, &G, failures, &failCt, 0, i + 1);
+	}
+	
+	if(RANDOMIZE){
+		printf("\nBOUNDARY: Executing Council_Room play using hand with random assortment of\n"
+			   "\t supply cards, with empty decks for all players...\n");
+	}
+	else{
+		printf("\nBOUNDARY: Executing Council_Room play using hands\n"
+				 "\t with empty decks for all players...\n");
+	
+	//Test with empty decks (all players)
+	if(RANDOMIZE){
 		//Generate set of 10 random Kingdom cards
 		for(j = 0; j < 10; j++){		
 			k[j] = Random() * 19 + 7;
 		}
-		
-		//Initializes game for two players
-		initializeGame(2, k, Random() * INT_MAX, &G);
-		
-		//Play Council_Room with random kingdom card set.
-		//(see _cardtest4helper for more details)
-		_cardtest4helper(k, &G, failures, &failCt, 3, i + 1);
+		seed = Random() * INT_MAX;
 	}
-	
-	printf("\nBOUNDARY: Executing Council_Room play using hand with random assortment of \n"
-		   "\t supply cards, with 1 card in deck...\n");
-	
-	//Test with only 1 card in the player's deck
-	//Generate set of 10 random Kingdom cards
-	for(j = 0; j < 10; j++){		
-		k[j] = Random() * 19 + 7;
+	else{
+		for(m = 0, j = 7; j < 10; m++, j++){		
+			k[m] = j;
+		}
 	}
-	initializeGame(2, k, Random() * INT_MAX, &G);
+	initializeGame(NUM_PLAYERS, k, seed, &G);
 	_cardtest4helper(k, &G, failures, &failCt, 1, COUNCIL_ROOM_CALLS + 1);
-	
-	printf("\nBOUNDARY: Executing Council_Room play using hand with random assortment of \n"
-		   "\t supply cards, with 2 cards in deck...\n");
-	
-	//Test with only 2 cards in the player's deck
-	//Generate set of 10 random Kingdom cards
-	for(j = 0; j < 10; j++){		
-		k[j] = Random() * 19 + 7;
-	}
-	initializeGame(2, k, Random() * INT_MAX, &G);
-	_cardtest4helper(k, &G, failures, &failCt, 2, COUNCIL_ROOM_CALLS + 2);
-	
-	printf("\nBOUNDARY: Executing Council_Room play using hand with random assortment of \n"
-		   "\t supply cards, with 0 cards in deck...\n");
-	
-	//Test with 0 cards in the player's deck
-	//Generate set of 10 random Kingdom cards
-	for(j = 0; j < 10; j++){		
-		k[j] = Random() * 19 + 7;
-	}
-	initializeGame(2, k, Random() * INT_MAX, &G);
-	_cardtest4helper(k, &G, failures, &failCt, 0, COUNCIL_ROOM_CALLS + 3);
 	
 	printf("\n\tEach test (that is not marked 'BOUNDARY') verifies proper game state\n"
 		   "\tmodification, reporting a failure if any of the following conditions are met:\n"
 		   "\t\t"       "1. Current player variable (whoseTurn) is changed\n"
-		   "\t\t"       "2. Player's hand does not gain 3 cards from the top of Player's deck\n"
-		   "\t\t\t"         "a. Player's deck count is not decremented by 3.\n"
-		   "\t\t\t"         "b. Player's hand count is not incremented by 2\n"
-		   "\t\t\t\t\t"          "(A total of 3 cards are gained but the Council_Room\n"
-		   "\t\t\t\t\t"          "itself is discarded so the net gain from the previous\n"
-		   "\t\t\t\t\t"          "is 2.)\n"
-		   "\t\t\t"         "c. Player's deck contents are not the same before and after the play\n"
-		   "\t\t\t\t\t"          "(Besides the 3 less cards gained therefrom)\n"
-		   "\t\t\t"         "d. Player's hand order and content are changed\n"
-		   "\t\t\t\t\t"          "(Besides the removal/insertion of the Council_Room played/last card drawn\n"
-		   "\t\t\t\t\t"          " and 2 additional cards gained to the end of the hand\n"
-		   "\t\t"       "3. Player 1's or 2's discard pile or count is changed\n"
-		   "\t\t"       "4. Player 2's deck, hand, deck count, and/or hand count is changed\n"
-		   "\t\t"       "5. Any supply pile count (curses, victory cards, or kingdom cards) is changed\n"
-		   "\t\t"       "6. Any of the following game states are changed:\n"
+		   "\t\t"       "2. Active player's hand does not gain 4 cards from the top of active player's deck\n"
+		   "\t\t\t"         "a. Active player's deck count is not decremented by 4.\n"
+		   "\t\t\t"         "b. Active player's hand count is not incremented by 3\n"
+		   "\t\t\t\t\t"          "(A total of 4 cards are gained from the deck but the Council_Room\n"
+		   "\t\t\t\t\t"          "itself is discarded so the net gain from the hand should be 3.)\n"
+		   "\t\t\t"         "c. Active player's deck contents are not the same before and after the play\n"
+		   "\t\t\t\t\t"          "(Besides the 4 less cards gained therefrom. i.e. The deck order is not changed.)\n"
+		   "\t\t\t"         "d. Active player's hand content is changed\n"
+		   "\t\t\t\t\t"          "(Besides the 4 additional cards gained to the end of the hand from the top of the deck\n"
+		   "\t\t"       "3. Inactive players' hands do not gain 1 card from the top of each respective player's own deck\n"
+		   "\t\t\t"         "a. Inactive players' deck counts are not decremented by 1.\n"
+		   "\t\t\t"         "b. Inactive players' hand counts are not incremented by 1\n"
+		   "\t\t\t"         "c. Inactive players' deck contents are not the same before and after the play\n"
+		   "\t\t\t\t\t"          "(Besides the 1 less cards gained therefrom. i.e. The deck order is not changed.)\n"
+		   "\t\t\t"         "d. Inactive players' hand contents are changed\n"
+		   "\t\t\t\t\t"          "(Besides the additional card gained to the end of the hand from the top of the deck\n"
+		   "\t\t"       "4. Active player's discard pile does not gain a council_room, or count is not 1 (starts at 0)\n"
+		   "\t\t"       "5. Inactive players' discard piles are changed, or counts are not 0 (all start at 0)\n"
+		   "\t\t"       "6. numBuys game state is not incremented by 1 (starts at 0)\n"
+		   "\t\t"       "7. Any supply pile count (curses, victory cards, or kingdom cards) is changed\n"
+		   "\t\t"       "8. Any of the following game states are changed:\n"
 		   "\t\t\t"          "a. coins\n"
 		   "\t\t\t"          "b. numActions\n"
-		   "\t\t\t"          "c. numBuys\n"
-		   "\t\t\t"          "d. embargoTokens[]\n"
-		   "\t\t\t"          "e. outpostPlayed\n"
-		   "\t\t\t"          "f. outpostTurn\n"
-		   "\t\t"       "7. Played card count is not 1\n"
-		   "\t\t"       "8. Played cards does not have Council_Room @ idx 1 and is unchanged otherwise\n"
+		   "\t\t\t"          "c. embargoTokens[]\n"
+		   "\t\t\t"          "d. outpostPlayed\n"
+		   "\t\t\t"          "e. outpostTurn\n"
+		   "\t\t"       "9. Played card count is not 1\n"
+		   "\t\t"       "10. Played cards does not have Council_Room @ idx 1 and is unchanged otherwise\n"
 		   "\n"
-		   "\t\t"       "* BOUNDARY tests verify all of the above except for #2a & #2b. #2c verifies    *\n"
-		   "\t\t"       "* that only the number of starting deck cards is decremented (since this value *\n"
-		   "\t\t"       "* is < 3), and #2d verifies that hand only increases by deck starting count in *\n"
-		   "\t\t"		"* likewise.                                                                    *\n");
+		   "\t\t"       "* BOUNDARY test verifies all of the above except for #2 & #3. For the empty    *\n"
+		   "\t\t"       "* deck boundary test, no deck or hand count or contents should change for any  *\n"
+		   "\t\t"		"* player, with the one exception of the active player's hand, which should be  *\n"
+		   "\t\t"       "* decremented by exactly 1 council_room.                                       *\n");
 
 	
 	

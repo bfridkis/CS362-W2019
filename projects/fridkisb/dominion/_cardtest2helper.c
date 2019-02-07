@@ -181,7 +181,6 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	int deckBeforeAdventurer[MAX_DECK];
 	for(i = 0; i < G->deckCount[0]; i++){
 		deckBeforeAdventurer[i] = G->deck[0][i];
-		printf("\ndbeforead: %d", deckBeforeAdventurer[i]);//********
 		deckCardCountByTypeBeforeAdventurer[G->deck[0][i]]++;
 	}
 	
@@ -241,8 +240,6 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			deckCardCountByTypeBeforeAdventurer[i] -
 			deckCardCountByTypeAfterAdventurer[i];
 	}
-	printf("\n\nddc: %d, dds: %d, ddg: %d\n\n", deckDiffsAfterAdventurer[copper],
-	deckDiffsAfterAdventurer[silver], deckDiffsAfterAdventurer[gold]);
 	
 	//Determine how many of each card type have been added to (or erroneously
 	//removed from) the hand
@@ -371,11 +368,9 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		discardCardCountByTypeAfterAdventurer[G->discard[0][i]]++;
 	}
 	for(i = 0; i < 27; i++){
-		if(((i != copper && i != silver && i != gold && i != adventurer &&
+		if(i != copper && i != silver && i != gold && i != adventurer &&
 		   discardCardCountByTypeAfterAdventurer[i] !=
-		   deckDiffsAfterAdventurer[i]) ||
-		   (i == adventurer && discardCardCountByTypeAfterAdventurer[i] !=
-		    deckDiffsAfterAdventurer[i] + 1)) &&
+		   deckDiffsAfterAdventurer[i] &&
 		    ++(*failCt) <= MAX_FAILS){
 				failures[*failCt-1].lineNumber = __LINE__;
 				sprintf(failures[*failCt-1].description,

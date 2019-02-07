@@ -25,29 +25,30 @@ int main (int argc, char** argv) {
 	failedTest failures[MAX_FAILS];
 	int failCt = 0;
 	
-	printf("Starting unittest4 - Testing 'updateCoins' function\n");
+	printf("\t\t\t\t\t" "Starting unittest4 - Testing 'updateCoins' function\n");
 	
 	if(RANDOMIZE){
-		printf("\nExecuting %d coin updates using hands with random assortment of treasure\n"
-			   "\tcards and bonus values for each update...\n", NUM_COIN_UPDATES);
+		printf("\n  Executing %d coin updates using hands with random assortment of treasure\n"
+			   "\t cards and bonus values for each update...\n", NUM_COIN_UPDATES);
 	}
 	else{	   
-		printf("\n" "Executing %d coin updates using hands with equal distribution\n"
-			   "\t" " of treasure cards (i.e. copper count = silver count = gold count).\n"
-			   "\t" " Total treasure card count starts and 3 and increments by 3 for each\n"
-			   "\t" " successive (non-boundary) test. If the treasure card count exceeds\n"
-			   "\t" " %d (MAX_HAND) when calculated this way, use the next lowest multiple of 3\n"
-			   "\t" " that is greater than or equal to the current test number %% %d, and if this\n"
-			   "\t" " value exceeds %d or is 0, use 3.\n\n"
-			   "\t\t" "-e.g. treasure card count for test 1 = 3, test 2 = 6, test 3 = 9...\n"
-			   "\t\t" "      treasure card count for test 101 with MAX_HAND @ 75 = 27\n\n"
-			   "\t" " Bonus value for each update is the current\n"
-			   "\t" " test number * 2.\n\n"
-			   "\t\t" "-Set 'NUM_COIN_UPDATES' in unittest4.c\n"
-			   "\t\t" " to modify number of tests.\n\n"
-			   "\t\t" "-Random test generator can be turned on\n"
-			   "\t\t" " by setting the constant 'RANDOMIZE' to 1\n"
-			   "\t\t" " in _unittest4helper.h.\n\n", NUM_COIN_UPDATES, 
+		printf("\n" "  Executing %d coin updates using hands with equal distribution\n"
+			   "\t"  " of treasure cards (i.e. copper count = silver count = gold count).\n"
+			   "\t"  " Total treasure card count starts at 3 and increments by 3 for each\n"
+			   "\t"  " successive (non-boundary) test. If the treasure card count exceeds\n"
+			   "\t"  " %d (MAX_HAND) when calculated this way, use the next lowest multiple of 3\n"
+			   "\t"  " that is greater than or equal to the current test number %% %d, and if this\n"
+			   "\t"  " value exceeds %d or is 0, use 3.\n\n"
+			   "\t\t"  "-e.g. treasure card count for test 1 = 3, test 2 = 6, test 3 = 9...\n"
+			   "\t\t"  "      treasure card count for test 101 with MAX_HAND @ 75 = 27\n\n"
+			   "  Kingdom cards are adventurer through great_hall, as enumerated in dominion.h.\n\n"
+			   "\t" "  Bonus value for each update is the current\n"
+			   "\t" "  test number * 2.\n\n"
+			   "\t\t"  "-Set 'NUM_COIN_UPDATES' in unittest4.c\n"
+			   "\t\t"  " to modify number of tests.\n\n"
+			   "\t\t"  "-Random test generator can be turned on\n"
+			   "\t\t"  " by setting the constant 'RANDOMIZE' to 1\n"
+			   "\t\t"  " in _unittest4helper.h.\n\n", NUM_COIN_UPDATES, 
 			   MAX_HAND, MAX_HAND, MAX_HAND);
 	}			
 
@@ -68,7 +69,7 @@ int main (int argc, char** argv) {
 			seed = Random() * INT_MAX;
 		}
 		else{
-			for(m = 0, j = 7; j < 10; m++, j++){		
+			for(m = 0, j = 7; j < 17; m++, j++){		
 				k[m] = j;
 			}
 		}
@@ -81,51 +82,52 @@ int main (int argc, char** argv) {
 		_unittest4helper(k, &G, failures, &failCt, 0, 0, i + 1);
 	}
 	
-	printf("\nAttempting no treasure cards test...\n");
+	printf("\n  Attempting no treasure cards test...\n");
 	
 	//Attempting shuffle on empty deck
 	initializeGame(2, k, 5000, &G);
 	if(_unittest4helper(k, &G, failures, &failCt, 1, 
 			0, NUM_COIN_UPDATES + 1) != 0){
-		printf("\nNo treasure card test failed\n");
+		printf("\n\tNo treasure card test failed\n");
 	}
 	
-	printf("\nAttempting no bonus test...\n");
+	printf("\n  Attempting no bonus test...\n");
 	
 	//Attempting shuffle on max deck
 	initializeGame(2, k, Random() * INT_MAX, &G);
 	if(_unittest4helper(k, &G, failures, &failCt, 0, 
 			1, NUM_COIN_UPDATES + 2) != 0){
-		printf("\nNo bonus test failed\n");
+		printf("\n\tNo bonus test failed\n");
 	}
 	
-	printf("\nAttempting no treasure cards and no bonus test...\n");
+	printf("\n  Attempting no treasure cards and no bonus test...\n");
 	
 	//Attempting no treasure cards and no bonus test
 	initializeGame(2, k, Random() * INT_MAX, &G);
 	if(_unittest4helper(k, &G, failures, &failCt, 1, 
 			1, NUM_COIN_UPDATES + 3) != 0){
-		printf("\nNo treasure cards and no bonus test failed\n");
+		printf("\n\tNo treasure cards and no bonus test failed\n");
 	}
 	
 	if(!failCt){
-		printf("\n\n*****************************\n"
-				   "******ALL TESTS PASSED!******\n"
-				   "*****************************\n\n");
+		printf("\n\n\t\t\t\t\t\t*****************************\n"
+				   "\t\t\t\t\t\t******ALL TESTS PASSED!******\n"
+				   "\t\t\t\t\t\t*****************************\n\n");
 	}
 	
 	//Print summary of all failed tests (up to MAX_FAILS)
 	else{
 		if(failCt < MAX_FAILS + 1){
-			printf("\n\n\t%d tests failed, as follows:\n\n", failCt);
+			printf("\n\n\t%d test%s failed, as follows:\n\n", failCt, 
+				failCt > 0 ? "s" : "");
 		}
 		else{
-			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n"
+			printf("\n\n\t%d test%s failed.\n\n\tFirst %d failures documented below:\n\n"
 				   "\t\t-Set MAX_FAILS in _unittest4helper.h\n"
 				   "\t\t to print more errors.\n\n",
-						failCt, MAX_FAILS);
+						failCt, failCt > 0 ? "s" : "", MAX_FAILS);
 		}
-		printf("(Note: See _unittest4helper.c when referencing line #)\n\n");
+		printf("  (Note: See _unittest4helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
 			printf("%d - TEST #%d @ LINE %d: %s\n\n", 

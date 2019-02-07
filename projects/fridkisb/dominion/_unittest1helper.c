@@ -46,7 +46,7 @@ int _unittest1helper(int k[], struct gameState* G, failedTest failures[]){
 	//Test gain each supply card (curse, estate, duchy, province, copper
 	//silver, gold, and all kingdom cards) to each pile (i == 0 for discard,
 	//i == 1 for deck, and i == 2 for hand).
-	printf("\n\nGaining each supply card to each pile for player 0...\n");
+	printf("\n\n  Gaining each supply card to each pile for player 0...\n");
 	for(i = 0; i < 3; i++){
 		for(j = 0; j < 17; j++){
 			ut2h2s.expectedPile = i;
@@ -165,11 +165,11 @@ int _unittest1helper(int k[], struct gameState* G, failedTest failures[]){
 		"Expected %d ; Observed %d", ut2h2s.expectedIdx + 1, G->handCount[0]);
 	}
 	
-	printf("\n*Running Fail Count: %d...\n", failCt);
+	printf("\n  *Running Fail Count: %d...\n", failCt);
 	
 	//Try to gain all cards which are
 	//not in the game (return value should == -1)
-	printf("\n\nAttempting to gain each supply card not in play (player 0)...\n");
+	printf("\n\n  Attempting to gain each supply card not in play (player 0)...\n");
 	for(i = 7; i < 27; i++){
 		
 		//To discard...
@@ -244,11 +244,11 @@ int _unittest1helper(int k[], struct gameState* G, failedTest failures[]){
 		"Expected 17 ; Observed %d", G->handCount[0]);
 	}
 	
-	printf("\n*Running Fail Count: %d...\n", failCt);
+	printf("\n  *Running Fail Count: %d...\n", failCt);
 	
 	//Empty all supply piles and try to gain each card
-	printf("\n\nSetting each supply card pile count to 0 and\n"
-		   "  attempting to gain each supply pile card (player 0)...\n");
+	printf("\n\n  Setting each supply card pile count to 0 and\n"
+		   "    attempting to gain each supply pile card (player 0)...\n");
 	G->discardCount[0] = 0;
 	G->deckCount[0] = 0;
 	G->handCount[0] = 0;	   
@@ -312,10 +312,10 @@ int _unittest1helper(int k[], struct gameState* G, failedTest failures[]){
 		"Expected 0 ; Observed %d", G->handCount[0]);
 	}
 	
-	printf("\n*Running Fail Count: %d...\n", failCt);
+	printf("\n  *Running Fail Count: %d...\n", failCt);
 	
 	//Check player 1's pile states (nothing should have changed!)
-	printf("\n\nChecking player 1's game state (should be unchanged)...\n\n");
+	printf("\n\n  Checking player 1's game state (should be unchanged)...\n\n");
 	//Check player 1's discard...
 	for(i = 0; i < MAX_DECK; i++){
 		if(G->discard[1][i] != -1){
@@ -355,7 +355,7 @@ int _unittest1helper(int k[], struct gameState* G, failedTest failures[]){
 		}
 	}
 	
-	printf("*Running Fail Count: %d...\n", failCt);
+	printf("  *Running Fail Count: %d...\n", failCt);
 	
 	return failCt;
 }

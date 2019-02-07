@@ -27,30 +27,29 @@ int main (int argc, char** argv) {
 	failedTest failures[MAX_FAILS];
 	int failCt = 0;
 	
-	printf("Starting cardtest1 - Testing 'smithy' card\n");
+	printf("\t\t\t\t\t" "Starting cardtest1 - Testing 'smithy' card\n");
 	
 	if(RANDOMIZE){
-		printf("\nExecuting %d Smithy %s using decks and hands with random assortment of \n"
-			   "\t supply cards, with at least 3 cards active player's in deck...\n\n"
-			   "\t\t" "-Set 'SMITHY_CALLS' in cardtest1.c\n"
-			   "\t\t" " to modify number of plays.\n", SMITHY_CALLS,
+		printf("\n  Executing %d Smithy %s using decks and hands with random assortment of \n"
+			   "\t  supply cards, with at least 3 cards active player's in deck...\n\n"
+			   "\t\t" " -Set 'SMITHY_CALLS' in cardtest1.c\n"
+			   "\t\t" "  to modify number of plays.\n", SMITHY_CALLS,
 			   SMITHY_CALLS > 1 ? "plays" : "play");
 	}
 	else{
-		printf("\n" "Executing %d Smithy %s using deck and hand sizes starting at 5 and incrementing\n"
-			   "\t" " by multiples of 5 with each successive test number, up to %d/%d (MAX_DECK/MAX_HAND).\n"
-			   "\t" " If the number of tests cause the deck/hand size to equal or exceed %d/%d when\n"
-			   "\t" " calculated in this way, the deck/hand size will reset to 1 and begin\n"
-			   "\t" " incrementing by 1 with each additional successive test.\n\n"
+		printf("\n" "  Executing %d Smithy %s using deck and hand sizes starting at 5 and incrementing\n"
+			   "\t" "  by multiples of 5 with each successive test number, up to %d/%d (MAX_DECK/MAX_HAND).\n"
+			   "\t" "  If the number of tests cause the deck/hand size to equal or exceed %d/%d when\n"
+			   "\t" "  calculated in this way, the deck/hand size will reset to 1 and begin\n"
+			   "\t" "  incrementing by 1 with each additional successive test.\n\n"
 			   "\t\t" "-e.g. deck size for test 1 = 5, test 2 = 10, test 3 = 15...\n"
 			   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2...\n\n"
-			   "\t" " Kingdom cards are adventurer through great_hall, as enumerated\n"
-			   "\t" " in dominion.h.\n\n"
-			   "\t\t" "-Set 'SMITHY_CALLS' in cardtest1.c\n"
-			   "\t\t" " to modify number of plays.\n\n"
-			   "\t\t" "-Random test generator can be turned on\n"
-			   "\t\t" " by setting the constant 'RANDOMIZE' to 1\n"
-			   "\t\t" " in _cardtest1helper.h.\n\n", SMITHY_CALLS, 
+			   "  Kingdom cards are adventurer through great_hall, as enumerated in dominion.h.\n\n"
+			   "\t\t" " -Set 'SMITHY_CALLS' in cardtest1.c\n"
+			   "\t\t" "   to modify number of plays.\n\n"
+			   "\t\t" " -Random test generator can be turned on\n"
+			   "\t\t" "  by setting the constant 'RANDOMIZE' to 1\n"
+			   "\t\t" "  in _cardtest1helper.h.\n\n", SMITHY_CALLS, 
 			   SMITHY_CALLS > 1 ? "plays" : "play", MAX_DECK, MAX_HAND, MAX_DECK, MAX_HAND);
 	}
 
@@ -71,7 +70,7 @@ int main (int argc, char** argv) {
 			seed = Random() * INT_MAX;
 		}
 		else{
-			for(m = 0, j = 7; j < 10; m++, j++){		
+			for(m = 0, j = 7; j < 17; m++, j++){		
 				k[m] = j;
 			}
 		}
@@ -85,11 +84,11 @@ int main (int argc, char** argv) {
 	}
 	
 	if(RANDOMIZE){
-		printf("\nBOUNDARY: Executing Smithy play using hand with random assortment of \n"
+		printf("\n  BOUNDARY: Executing Smithy play using hand with random assortment of \n"
 			   "\t supply cards, with 1 card in deck...\n");
 	}
 	else{
-		printf("\nBOUNDARY: Executing Smithy play using hand with only 1 card in deck...\n");
+		printf("\n  BOUNDARY: Executing Smithy play using hand with only 1 card in deck...\n");
 	}
 	
 	//Test with only 1 card in the player's deck
@@ -101,7 +100,7 @@ int main (int argc, char** argv) {
 		seed = Random() * INT_MAX;
 	}
 	else{
-		for(m = 0, j = 7; j < 10; m++, j++){		
+		for(m = 0, j = 7; j < 17; m++, j++){		
 			k[m] = j;
 		}
 	}
@@ -109,11 +108,11 @@ int main (int argc, char** argv) {
 	_cardtest1helper(k, &G, failures, &failCt, 1, SMITHY_CALLS + 1);
 	
 	if(RANDOMIZE){
-		printf("\nBOUNDARY: Executing Smithy play using hand with random assortment of \n"
-			   "\t supply cards, with 2 cards in deck...\n");
+		printf("\n  BOUNDARY: Executing Smithy play using hand with random assortment of \n"
+			   "\t            supply cards, with 2 cards in deck...\n");
 	}
 	else{
-		printf("\nBOUNDARY: Executing Smithy play with only 2 cards in deck...\n");
+		printf("\n  BOUNDARY: Executing Smithy play with only 2 cards in deck...\n");
 	}
 	
 	//Test with only 2 cards in the player's deck
@@ -125,7 +124,7 @@ int main (int argc, char** argv) {
 		seed = Random() * INT_MAX;
 	}
 	else{
-		for(m = 0, j = 7; j < 10; m++, j++){		
+		for(m = 0, j = 7; j < 17; m++, j++){		
 			k[m] = j;
 		}
 	}
@@ -133,11 +132,11 @@ int main (int argc, char** argv) {
 	_cardtest1helper(k, &G, failures, &failCt, 2, SMITHY_CALLS + 2);
 	
 	if(RANDOMIZE){
-		printf("\nBOUNDARY: Executing Smithy play using hand with random assortment of \n"
-			   "\t supply cards, with 0 cards in deck...\n");
+		printf("\n  BOUNDARY: Executing Smithy play using hand with random assortment of \n"
+			   "\t            supply cards, with 0 cards in deck...\n");
 	}
 	else{
-		printf("\nBOUNDARY: Executing Smithy play using hand with 0 cards in deck...\n");
+		printf("\n  BOUNDARY: Executing Smithy play using hand with 0 cards in deck...\n");
 	}
 	
 	//Test with 0 cards in the player's deck
@@ -150,7 +149,7 @@ int main (int argc, char** argv) {
 		seed = Random() * INT_MAX;
 	}
 	else{
-		for(m = 0, j = 7; j < 10; m++, j++){		
+		for(m = 0, j = 7; j < 17; m++, j++){		
 			k[m] = j;
 		}
 	}
@@ -193,23 +192,24 @@ int main (int argc, char** argv) {
 	
 	
 	if(!failCt){
-		printf("\n\n*****************************\n"
-				   "******ALL TESTS PASSED!******\n"
-				   "*****************************\n\n");
+		printf("\n\n\t\t\t\t\t\t*****************************\n"
+				   "\t\t\t\t\t\t******ALL TESTS PASSED!******\n"
+				   "\t\t\t\t\t\t*****************************\n\n");
 	}
 	
 	//Print summary of all failed tests (up to MAX_FAILS)
 	else{
 		if(failCt < MAX_FAILS + 1){
-			printf("\n\n\t%d tests failed, as follows:\n\n", failCt);
+			printf("\n\n\t%d test%s failed, as follows:\n\n", failCt, 
+				failCt > 0 ? "s" : "");
 		}
 		else{
-			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n"
-				   "\t\t-Set MAX_FAILS in _cardtest1helper.h\n"
+			printf("\n\n\t%d test%s failed.\n\n\tFirst %d failures documented below:\n\n"
+				   "\t\t-Set MAX_FAILS in _unittest4helper.h\n"
 				   "\t\t to print more errors.\n\n",
-						failCt, MAX_FAILS);
+						failCt, failCt > 0 ? "s" : "", MAX_FAILS);
 		}
-		printf("(Note: See _cardtest1helper.c when referencing line #)\n\n");
+		printf("  (Note: See _cardtest1helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
 			printf("%d - TEST #%d @ LINE %d: %s\n\n", 

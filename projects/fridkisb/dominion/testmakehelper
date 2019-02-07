@@ -2,18 +2,18 @@
 
 coverage() {
 
-	echo    "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> unittestresults.out
-	echo    "++                                                                  ++" >> unittestresults.out
-	echo -e "++          \t\t\t      ${testTypeCaps} ${testNum}\t\t\t\t\t        ++" >> unittestresults.out
-	echo    "++                                                                  ++" >> unittestresults.out
-	echo    "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> unittestresults.out
+	echo -e "\t\t++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> unittestresults.out
+	echo -e "\t\t++                                                                  ++" >> unittestresults.out
+	echo -e "\t\t++          \t\t\t      ${testTypeCaps} ${testNum}\t\t\t\t\t        ++" >> unittestresults.out
+	echo -e "\t\t++                                                                  ++" >> unittestresults.out
+	echo -e "\t\t++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> unittestresults.out
 
-	echo "Result for running ${programName:0:9} (${test}):" >> unittestresults.out
-	echo "${programName}:" >> unittestresults.out 
+	echo -e "\t\t\t\tResult for running ${programName:0:9} (${test}):" >> unittestresults.out
+	echo -e "\t\t\t\t\t\t\t\t\t${programName}:" >> unittestresults.out 
 	./"${programName:0:9}" >> unittestresults.out
 
-	echo -e "\tCoverage Report:\n" >> unittestresults.out
-
+	echo -e "\t  Coverage Report:\n" >> unittestresults.out
+	printf "\t" >> unittestresults.out
 	line=$(gcov ${gcovProg} --function-summaries -b | grep -n ${funcName} | cut -f1 -d:)
 	((line+=3))
 	gcov ${gcovProg} --function-summaries -b | head -n${line} | tail -n4 >> unittestresults.out
@@ -21,8 +21,9 @@ coverage() {
 	for i in "${!ancillary_functs[@]}" ; do
 		echo >> unittestresults.out
 		if [[ ${i} = 0 ]] ; then
-			echo -e "\tThe following functions are called by ${funcName}...\n" >> unittestresults.out
+			echo -e "The following functions are called by ${funcName}...\n" >> unittestresults.out
 		fi
+		printf "\t" >> unittestresults.out
 		line=$(gcov dominion.c --function-summaries -b | grep -n ${ancillary_functs[$i]} | cut -f1 -d:)
 		((line+=3))
 		gcov dominion.c --function-summaries -b | head -n${line} | tail -n4 >> unittestresults.out
@@ -33,8 +34,8 @@ coverage() {
 	echo -e "\n\n" >> unittestresults.out
 }
 
-echo -e "\n\t\t\tTEST SUITE RESULTS - CS362-400 - ASSIGNMENT3\n\n" \
-		"\t\t\t\t\t\t  Benjamin Fridkis\n\n" > unittestresults.out
+echo -e "\n\t\t\t\t\t\tTEST SUITE RESULTS - CS362-400 - ASSIGNMENT3\n\n" \
+		"\t\t\t\t\t\t\t\t\t  Benjamin Fridkis\n\n" > unittestresults.out
 
 testNum=1
 
@@ -73,7 +74,7 @@ funcName="updateCoins"
 
 coverage
 
-
+testNum=1
 
 ## CARD TESTS ##
 

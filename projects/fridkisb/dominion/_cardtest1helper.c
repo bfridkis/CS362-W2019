@@ -272,9 +272,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 				failures[*failCt-1].lineNumber = __LINE__;
 				sprintf(failures[*failCt-1].description,
 				"Incorrect card types gained to hand from deck,\n"
-				"\t\t\t\tor placed incorrectly in hand\n"
-				"\tExpected #%d card gained from deck to be %d, and to be\n"
-				"\tplaced to %d idx of hand : Observed %d at idx %d\n", 
+				"\t\t\t\t\t\t" "or placed incorrectly in hand\n\n"
+				"   Expected #%d card gained from deck to be %d, and to be\n"
+				"   placed to %d idx of hand : Observed %d at idx %d\n", 
 				i, deckBeforeSmithy[deckCountBeforeSmithy - 1 - (i - 1)],
 				i == 3 ? handPos :
 				handCountBeforeSmithy + (i - 1),

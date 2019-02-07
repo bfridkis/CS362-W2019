@@ -28,27 +28,26 @@ int main (int argc, char** argv) {
 	//Unit test 3 'stats' struct (see _unittest3helper.h)
 	unittest3stats ut3s = {0};
 	
-	printf("Starting unittest3 - Testing 'shuffle' function\n");
+	printf("\t\t\t\t\t" "Starting unittest3 - Testing 'shuffle' function\n");
 	
 	if(RANDOMIZE){
-		printf("\nExecuting %d shuffles using random deck sizes in range 2 - %d (MAX_DECK),\n"
-			   "\teach with a random set of kingdom cards...\n", NUM_SHUFFLES, MAX_DECK);
+		printf("\n  Executing %d shuffles using random deck sizes in range 2 - %d (MAX_DECK),\n"
+			   "\t each with a random set of kingdom cards...\n", NUM_SHUFFLES, MAX_DECK);
 	}
 	else{
-		printf("\n" "Executing %d shuffles using deck sizes starting at 5 and incrementing\n"
-			   "\t" " by multiples of 5 with each successive test number, up to %d (MAX_DECK).\n"
-			   "\t" " If the number of tests cause the deck size to equal or exceed %d when\n"
-			   "\t" " calculated in this way, the deck size will reset to 1 and begin\n"
-			   "\t" " incrementing by 1 with each additional successive test.\n"
+		printf("\n" "  Executing %d shuffles using deck sizes starting at 5 and incrementing\n"
+			   "\t"  " by multiples of 5 with each successive test number, up to %d (MAX_DECK).\n"
+			   "\t"  " If the number of tests cause the deck size to equal or exceed %d when\n"
+			   "\t"  " calculated in this way, the deck size will reset to 1 and begin\n"
+			   "\t"  " incrementing by 1 with each additional successive test.\n"
 			   "\t\t" "-e.g. deck size for test 1 = 5, test 2 = 10, test 3 = 15...\n"
 			   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2...\n\n"
-			   "\t" " Kingdom cards are adventurer through great_hall, as enumerated\n"
-			   "\t" " in dominion.h.\n\n"
-			   "\t\t" "-Set 'NUM_SHUFFLES' in unittest3.c\n"
-			   "\t\t" " to modify number of tests.\n\n"
-			   "\t\t" "-Random test generator can be turned on\n"
-			   "\t\t" " by setting the constant 'RANDOMIZE' to 1\n"
-			   "\t\t" " in _unittest3helper.h.\n\n", NUM_SHUFFLES, MAX_DECK, MAX_DECK);
+			   "  Kingdom cards are adventurer through great_hall, as enumerated in dominion.h.\n\n"
+			   "\t\t"  "-Set 'NUM_SHUFFLES' in unittest3.c\n"
+			   "\t\t"  " to modify number of tests.\n\n"
+			   "\t\t"  "-Random test generator can be turned on\n"
+			   "\t\t"  " by setting the constant 'RANDOMIZE' to 1\n"
+			   "\t\t"  " in _unittest3helper.h.\n\n", NUM_SHUFFLES, MAX_DECK, MAX_DECK);
 	}
 
 	//Use stream 2 to generate random number based on system time. (See rngs.c)
@@ -68,7 +67,7 @@ int main (int argc, char** argv) {
 			seed = Random() * INT_MAX;
 		}
 		else{
-			for(m = 0, j = 7; j < 10; m++, j++){		
+			for(m = 0, j = 7; j < 17; m++, j++){		
 				k[m] = j;
 			}
 		}
@@ -81,16 +80,16 @@ int main (int argc, char** argv) {
 		_unittest3helper(k, &G, failures, &failCt, &ut3s, 0, 0, i + 1);
 	}
 	
-	printf("\nAttempting empty deck shuffle...\n");
+	printf("\n  Attempting empty deck shuffle...\n");
 	
 	//Attempting shuffle on empty deck
 	initializeGame(2, k, Random() * INT_MAX, &G);
 	if(_unittest3helper(k, &G, failures, &failCt, &ut3s, 1, 
 			0, NUM_SHUFFLES + 1) != 0){
-		printf("\nEmpty deck test failed\n");
+		printf("\n  Empty deck test failed\n");
 	}
 	
-	printf("\nAttempting max deck size shuffle...\n");
+	printf("\n  Attempting max deck size shuffle...\n");
 	
 	//Attempting shuffle on max deck
 	initializeGame(2, k, Random() * INT_MAX, &G);
@@ -100,23 +99,24 @@ int main (int argc, char** argv) {
 	}
 	
 	if(!failCt){
-		printf("\n\n*****************************\n"
-				   "******ALL TESTS PASSED!******\n"
-				   "*****************************\n\n");
+		printf("\n\n\t\t\t\t\t\t*****************************\n"
+				   "\t\t\t\t\t\t******ALL TESTS PASSED!******\n"
+				   "\t\t\t\t\t\t*****************************\n\n");
 	}
 	
 	//Print summary of all failed tests (up to MAX_FAILS)
 	else{
 		if(failCt < MAX_FAILS + 1){
-			printf("\n\n\t%d tests failed, as follows:\n\n", failCt);
+			printf("\n\n\t%d test%s failed, as follows:\n\n", failCt, 
+				failCt > 0 ? "s" : "");
 		}
 		else{
-			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n"
-				   "\t\t-Set MAX_FAILS in _unittest3helper.h\n"
+			printf("\n\n\t%d test%s failed.\n\n\tFirst %d failures documented below:\n\n"
+				   "\t\t-Set MAX_FAILS in _unittest4helper.h\n"
 				   "\t\t to print more errors.\n\n",
-						failCt, MAX_FAILS);
+						failCt, failCt > 0 ? "s" : "", MAX_FAILS);
 		}
-		printf("(Note: See _unittest3helper.c when referencing line #)\n\n");
+		printf("  (Note: See _unittest3helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
 			printf("%d - TEST #%d @ LINE %d: %s\n\n", 

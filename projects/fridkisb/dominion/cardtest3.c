@@ -25,30 +25,29 @@ int main (int argc, char** argv) {
 	failedTest failures[MAX_FAILS];
 	int failCt = 0;
 	
-	printf("Starting cardtest3 - Testing 'cutpurse' card\n");
+	printf("\t\t\t\t\t" "Starting cardtest3 - Testing 'cutpurse' card\n");
 	
 	if(RANDOMIZE){
-		printf("\nExecuting %d Cutpurse %s using hands with random assortment of \n"
-			   "\t hand cards for each player, with at least 1 copper in each hand...\n\n"
-			   "\t\t" "-Set 'CUTPURSE_CALLS' in cardtest3.c\n"
-			   "\t\t" " to modify number of plays.\n", CUTPURSE_CALLS,
+		printf("\n  Executing %d Cutpurse %s using hands with random assortment of \n"
+			   "\t  hand cards for each player, with at least 1 copper in each hand...\n\n"
+			   "\t\t" " -Set 'CUTPURSE_CALLS' in cardtest3.c\n"
+			   "\t\t" "  to modify number of plays.\n", CUTPURSE_CALLS,
 			   CUTPURSE_CALLS > 1 ? "plays" : "play");
 	}
 	else{
-		printf("\n" "Executing %d Cutpurse %s using hand sizes starting at 5 and incrementing\n"
-			   "\t" " by multiples of 5 with each successive test number, up to %d (MAX_HAND).\n"
-			   "\t" " If the number of tests cause the hand size to exceed %d when\n"
-			   "\t" " calculated in this way, the hand size will reset to 1 and begin\n"
-			   "\t" " incrementing by 1 with each additional successive test.\n\n"
+		printf("\n" "  Executing %d Cutpurse %s using hand sizes starting at 5 and incrementing\n"
+			   "\t" "  by multiples of 5 with each successive test number, up to %d (MAX_HAND).\n"
+			   "\t" "  If the number of tests cause the hand size to exceed %d when\n"
+			   "\t" "  calculated in this way, the hand size will reset to 1 and begin\n"
+			   "\t" "  incrementing by 1 with each additional successive test.\n\n"
 			   "\t\t" "-e.g. hand size for test 1 = 5, test 2 = 10, test 3 = 15...\n"
 			   "\t\t" "      hand size for test 100 with MAX_HAND @ 500 = 1, test 101 = 2...\n\n"
-			   "\t" " Kingdom cards are adventurer through great_hall, as enumerated\n"
-			   "\t" " in dominion.h.\n\n"
-			   "\t\t" "-Set 'CUTPURSE_CALLS' in cardtest3.c\n"
-			   "\t\t" " to modify number of plays.\n\n"
-			   "\t\t" "-Random test generator can be turned on\n"
-			   "\t\t" " by setting the constant 'RANDOMIZE' to 1\n"
-			   "\t\t" " in _cardtest3helper.h.\n\n", CUTPURSE_CALLS, 
+			   "  Kingdom cards are adventurer through great_hall, as enumerated in dominion.h.\n\n"
+			   "\t\t" " -Set 'CUTPURSE_CALLS' in cardtest3.c\n"
+			   "\t\t" "  to modify number of plays.\n\n"
+			   "\t\t" " -Random test generator can be turned on\n"
+			   "\t\t" "  by setting the constant 'RANDOMIZE' to 1\n"
+			   "\t\t" "  in _cardtest3helper.h.\n\n", CUTPURSE_CALLS, 
 			   CUTPURSE_CALLS > 1 ? "plays" : "play", MAX_HAND, MAX_HAND);
 	}
 
@@ -69,7 +68,7 @@ int main (int argc, char** argv) {
 			seed = Random() * INT_MAX;
 		}
 		else{
-			for(m = 0, j = 7; j < 10; m++, j++){		
+			for(m = 0, j = 7; j < 17; m++, j++){		
 				k[m] = j;
 			}
 		}
@@ -84,11 +83,11 @@ int main (int argc, char** argv) {
 	}
 	
 	if(RANDOMIZE){
-		printf("\nBOUNDARY: Executing Cutpurse play using hand with random assortment of \n"
-			   "\t hand cards for each player but with no copper cards...\n");
+		printf("\n  BOUNDARY: Executing Cutpurse play using hand with random assortment of \n"
+			   "\t            hand cards for each player but with no copper cards...\n");
 	}
 	else{
-		printf("\nBOUNDARY: Executing Cutpurse play using hands with no copper (all players)...\n");
+		printf("\n  BOUNDARY: Executing Cutpurse play using hands with no copper (all players)...\n");
 	}
 	
 	//Test with no copper cards in each player's hand
@@ -100,7 +99,7 @@ int main (int argc, char** argv) {
 		seed = Random() * INT_MAX;
 	}
 	else{
-		for(m = 0, j = 7; j < 10; m++, j++){		
+		for(m = 0, j = 7; j < 17; m++, j++){		
 			k[m] = j;
 		}
 	}
@@ -131,23 +130,24 @@ int main (int argc, char** argv) {
 		   "\t\t"       "10. Played cards gains one and only cutpurse\n");
 	
 	if(!failCt){
-		printf("\n\n*****************************\n"
-				   "******ALL TESTS PASSED!******\n"
-				   "*****************************\n\n");
+		printf("\n\n\t\t\t\t\t\t*****************************\n"
+				   "\t\t\t\t\t\t******ALL TESTS PASSED!******\n"
+				   "\t\t\t\t\t\t*****************************\n\n");
 	}
 	
 	//Print summary of all failed tests (up to MAX_FAILS)
 	else{
 		if(failCt < MAX_FAILS + 1){
-			printf("\n\n\t%d tests failed, as follows:\n\n", failCt);
+			printf("\n\n\t%d test%s failed, as follows:\n\n", failCt, 
+				failCt > 0 ? "s" : "");
 		}
 		else{
-			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n"
-				   "\t\t-Set MAX_FAILS in _cardtest3helper.h\n"
+			printf("\n\n\t%d test%s failed.\n\n\tFirst %d failures documented below:\n\n"
+				   "\t\t-Set MAX_FAILS in _unittest4helper.h\n"
 				   "\t\t to print more errors.\n\n",
-						failCt, MAX_FAILS);
+						failCt, failCt > 0 ? "s" : "", MAX_FAILS);
 		}
-		printf("(Note: See _cardtest3helper.c when referencing line #)\n\n");
+		printf("  (Note: See _cardtest3helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
 			printf("%d - TEST #%d @ LINE %d: %s\n\n", 

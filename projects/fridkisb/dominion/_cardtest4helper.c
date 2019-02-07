@@ -59,14 +59,13 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	SelectStream(2);
 	
 	//Determine active player, randomly if indicated
-	int activePlayer;
+	int activePlayer = 0;
 	if(RANDOMIZE){
 		//Determine random player to play council_room
-		int activePlayer = Random() * (NUM_PLAYERS - 1);
+		activePlayer = Random() * (NUM_PLAYERS - 1);
 		G->whoseTurn = activePlayer;
 	}
 	else{
-		activePlayer = 0;
 		G->whoseTurn = 0;
 	}
 	
@@ -107,13 +106,14 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 		}
 	}
 	else{
-		handCountBeforeCouncil_Room[i] = (testNumber * 5) + 1;
-		if(handCountBeforeCouncil_Room[i] >= MAX_HAND){
-			handCountBeforeCouncil_Room[i] = 
-			(handCountBeforeCouncil_Room[i] % MAX_HAND) + 1;
+		for(i = 0; i < NUM_PLAYERS; i++){
+			handCountBeforeCouncil_Room[i] = (testNumber * 5) + 1;
+			if(handCountBeforeCouncil_Room[i] >= MAX_HAND){
+				handCountBeforeCouncil_Room[i] = 
+				(handCountBeforeCouncil_Room[i] % MAX_HAND) + 1;
+			}
 		}
 	}
-	
 	//Load each player's deck with an equal number of each card,
 	//plus an extra starting at curse for each remainder after 
 	//final multiple of 17, for deckCountBeforeCouncil_Room as determined above 
@@ -153,7 +153,6 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 		}
 		G->handCount[m] = handCountBeforeCouncil_Room[m];
 	}
-	
 	int handPos;
 	if(RANDOMIZE){
 		//Assign a random hand position for Council_Room for active player
@@ -166,11 +165,13 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 		handPos = 0;
 	}
 	G->hand[activePlayer][handPos] = council_room;
-	
 	//Shuffle each player's deck 
 	//--(shuffle has been tested via unittest3.
 	//-- see unittest3.c and _unittest3helper.c
 	//-- for additional details.)
+	//-- (Deterministic if seed is RANDOMIZE is disabled
+	//-- as seed for initializeGame will remain constant
+	//-- with each run.)
 	for(i = 0; i < NUM_PLAYERS; i++){
 		shuffle(i, G);
 	}
@@ -198,7 +199,7 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 		}
 		handCountBeforeCouncil_Room[i] = G->handCount[i];
 	}
-	
+		
 	//int for coin bonus (unused by Council_Room call)
 	int coin_bonus = 0;
 	
@@ -610,8 +611,9 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Played card count not updated correctly\n"
-		"  Expected 1 ; Observed %d\n", 
-		G->playedCardCount);
+		"  Expected 1 ; Observed %d %s\n", 
+		G->playedCardCount,
+		emptyDecks ? "(Boundary)" : "(Non-Boundary)");
 		failures[*failCt-1].testNumber = testNumber;
 	}
 	//Check playedCards (should have Council_Room at index 0, -1 all other indexes)
@@ -621,8 +623,9 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Played cards not updated as expected at idx %d\n"
-			"  Expected council_room ; Observed %d\n", 
-			i, G->playedCards[0]);
+			"  Expected council_room ; Observed %d %s\n", 
+			i, G->playedCards[0],
+			emptyDecks ? "(Boundary)" : "(Non-Boundary)");
 			failures[*failCt-1].testNumber = testNumber;
 		}
 		else if(i != 0 && G->playedCards[i] != -1 
@@ -630,8 +633,9 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Played cards not updated as expected at idx %d\n"
-			"  Expected -1 ; Observed %d\n", 
-			i, G->playedCards[i]);
+			"  Expected -1 ; Observed %d %s\n", 
+			i, G->playedCards[i],
+			emptyDecks ? "(Boundary)" : "(Non-Boundary)");
 			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;

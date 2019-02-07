@@ -6,26 +6,26 @@
 //                        Main bug in adventurer function :
 //			(Before the introduction of additional bugs for assignment 2) 
 //		
-//		If there are not at least 2 treasure cards in
-//		the set of cards making up the deck and discard piles, the function will
-//		start "consuming" the hand itself in search of treasures. These will be
-//		used erroneously if found. If there are not at least 2 treasures in the
+//		If there are not at least 2 treasure cards in the set of cards making up the 
+//		deck and discard piles, the function will start "consuming" the hand itself in 
+//		search of treasures. These treasures found in the existing hand will be used 
+//		erroneously if found. If there are not at least 2 treasures in the
 //		set of cards making up the deck, discard, and hand (i.e. the set of all
 //		cards for the given player), the function will eventually fault the program
-//		by attempting to access memory representing the player's hand array
-// 		(state->hand[player]) in continuous search of treasures. The faulty mechanism
+//		by attempting to access the player's hand array using an invalid index (-1)
+// 		(state->hand[player][-1]) in continuous search of treasures. The faulty mechanism
 //		lies in the fact that drawCard will simply return a -1 once it has placed
 //		all cards in the temp hand after depleting both the deck and discard piles,
-//		whereafter adventurerEffect still erroneously assumes drawCard is still adding 
+//		whereafter adventurerEffect erroneously assumes drawCard is still adding 
 //		to the hand. The hand itself is then added to the temp hand until no cards are
-//		remaining (i.e. handCount has reached. Finally it (handCount) will reach -1,
+//		remaining (i.e. handCount has reached 0. Finally it (handCount) will reach -1,
 //		and the attempt on line 33 to access state->hand[currentPlayer][-1] will crash
 //		the program.
 
 int adventurerEffect(int currentPlayer, struct gameState *state){
 	int temphand[MAX_HAND];
-	int drawntreasure = 0, z = 0;
-	while(drawntreasure<2){
+	int drawntreasure = 0, z = 1;
+	while(drawntreasure<3){
 	if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
 	  shuffle(currentPlayer, state);
 	}
@@ -49,20 +49,20 @@ int adventurerEffect(int currentPlayer, struct gameState *state){
 int smithyEffect(int currentPlayer, struct gameState *state, int handPos){
 	int i;
 	//+3 Cards
-      for (i = 0; i < 3; i++)
+      for (i = 0; i < 4; i++)
 	{
 	  drawCard(currentPlayer, state);
 	}
 			
       //discard card from hand
-      discardCard(handPos, currentPlayer, state, 0);
+      discardCard(handPos+1, currentPlayer, state, 0);
       return 0;
 }
 
 int cutpurseEffect(int currentPlayer, struct gameState *state, int handPos){
-	updateCoins(currentPlayer, state, 2);
+	updateCoins(currentPlayer, state, 3);
       int i, j, k;
-	  for (i = 0; i < state->numPlayers; i++)
+	  for (i = 0; i < state->numPlayers-1; i++)
 	{
 	  if (i != currentPlayer)
 	    {
@@ -73,7 +73,6 @@ int cutpurseEffect(int currentPlayer, struct gameState *state, int handPos){
 		      discardCard(j, i, state, 0);
 		      break;
 		    }
-			//The if statement below can never be true...
 		  if (j == state->handCount[i])
 		    {
 		      for (k = 0; k < state->handCount[i]; k++)

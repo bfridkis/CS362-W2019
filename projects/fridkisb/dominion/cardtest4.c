@@ -25,32 +25,31 @@ int main (int argc, char** argv) {
 	failedTest failures[MAX_FAILS];
 	int failCt = 0;
 	
-	printf("Starting cardtest4 - Testing 'council_room' card\n");
+	printf("\t\t\t\t\t" "Starting cardtest4 - Testing 'council_room' card\n");
 	
 	if(RANDOMIZE){
-		printf("\nExecuting %d Council_Room %s using hands with random assortment of \n"
-			   "\t supply cards, with at least 1 in deck for non-active players,\n"
-			   "\t and 4 in deck for active players.\n\n"
-			   "\t\t" "-Set 'COUNCIL_ROOM_CALLS' in cardtest4.c\n"
-			   "\t\t" " to modify number of plays.\n", COUNCIL_ROOM_CALLS,
+		printf("\n  Executing %d Council_Room %s using hands with random assortment of \n"
+			   "\t  supply cards, with at least 1 in deck for non-active players,\n"
+			   "\t  and 4 in deck for active players.\n\n"
+			   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in cardtest4.c\n"
+			   "\t\t" "  to modify number of plays.\n", COUNCIL_ROOM_CALLS,
 			   COUNCIL_ROOM_CALLS > 1 ? "plays" : "play");
 	}
 	else{
-	printf("\n" "Executing %d Council_Room %s using deck and hand sizes starting at 5 and incrementing\n"
-		   "\t" " by multiples of 5 with each successive test number, up to %d (MAX_DECK).\n"
-		   "\t" " If the number of tests cause the deck size to exceed %d when\n"
-		   "\t" " calculated in this way, the deck size will reset to 1 and begin incrementing\n"
-		   "\t" " by 1 with each additional successive test, but if the active player's\n\n"
-		    "\t" " deck size < 4, active player's deck size will be set to 6 (to ensure enough draw cards).\n"
+	printf("\n" "  Executing %d Council_Room %s using deck and hand sizes starting at 5 and incrementing\n"
+		   "\t" "  by multiples of 5 with each successive test number, up to %d (MAX_DECK).\n"
+		   "\t" "  If the number of tests cause the deck size to exceed %d when\n"
+		   "\t" "  calculated in this way, the deck size will reset to 1 and begin incrementing\n"
+		   "\t" "  by 1 with each additional successive test, but if the active player's\n\n"
+		    "\t" "  deck size < 4, active player's deck size will be set to 6 (to ensure enough draw cards).\n"
 		   "\t\t" "-e.g. deck size for test 1 = 5, test 2 = 10, test 3 = 15...\n"
 		   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2...\n\n"
-		   "\t" " Kingdom cards are adventurer through great_hall, as enumerated\n"
-		   "\t" " in dominion.h.\n\n"
-		   "\t\t" "-Set 'COUNCIL_ROOM_CALLS' in cardtest1.c\n"
-		   "\t\t" " to modify number of plays.\n\n"
-		   "\t\t" "-Random test generator can be turned on\n"
-		   "\t\t" " by setting the constant 'RANDOMIZE' to 1\n"
-		   "\t\t" " in _cardtest4helper.h.\n\n", COUNCIL_ROOM_CALLS, 
+		   "  Kingdom cards are adventurer through great_hall, as enumerated in dominion.h.\n\n"
+		   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in cardtest1.c\n"
+		   "\t\t" "  to modify number of plays.\n\n"
+		   "\t\t" " -Random test generator can be turned on\n"
+		   "\t\t" "  by setting the constant 'RANDOMIZE' to 1\n"
+		   "\t\t" "  in _cardtest4helper.h.\n\n", COUNCIL_ROOM_CALLS, 
 		   COUNCIL_ROOM_CALLS > 1 ? "plays" : "play", MAX_DECK, MAX_DECK);
 	}
 
@@ -71,7 +70,7 @@ int main (int argc, char** argv) {
 			seed = Random() * INT_MAX;
 		}
 		else{
-			for(m = 0, j = 7; j < 10; m++, j++){		
+			for(m = 0, j = 7; j < 17; m++, j++){		
 				k[m] = j;
 			}
 		}
@@ -85,12 +84,12 @@ int main (int argc, char** argv) {
 	}
 	
 	if(RANDOMIZE){
-		printf("\nBOUNDARY: Executing Council_Room play using hand with random assortment of\n"
-			   "\t supply cards, with empty decks for all players...\n");
+		printf("\n  BOUNDARY: Executing Council_Room play using hand with random assortment of\n"
+			   "\t            supply cards, with empty decks for all players...\n");
 	}
 	else{
-		printf("\nBOUNDARY: Executing Council_Room play using hands\n"
-				 "\t with empty decks for all players...\n");
+		printf("\n  BOUNDARY: Executing Council_Room play using hands\n"
+			   "\t          with empty decks for all players...\n");
 	}
 	
 	//Test with empty decks (all players)
@@ -102,7 +101,7 @@ int main (int argc, char** argv) {
 		seed = Random() * INT_MAX;
 	}
 	else{
-		for(m = 0, j = 7; j < 10; m++, j++){		
+		for(m = 0, j = 7; j < 17; m++, j++){		
 			k[m] = j;
 		}
 	}
@@ -149,23 +148,24 @@ int main (int argc, char** argv) {
 	
 	
 	if(!failCt){
-		printf("\n\n*****************************\n"
-				   "******ALL TESTS PASSED!******\n"
-				   "*****************************\n\n");
+		printf("\n\n\t\t\t\t\t\t*****************************\n"
+				   "\t\t\t\t\t\t******ALL TESTS PASSED!******\n"
+				   "\t\t\t\t\t\t*****************************\n\n");
 	}
 	
 	//Print summary of all failed tests (up to MAX_FAILS)
 	else{
 		if(failCt < MAX_FAILS + 1){
-			printf("\n\n\t%d tests failed, as follows:\n\n", failCt);
+			printf("\n\n\t%d test%s failed, as follows:\n\n", failCt, 
+				failCt > 0 ? "s" : "");
 		}
 		else{
-			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n"
-				   "\t\t-Set MAX_FAILS in _cardtest4helper.h\n"
+			printf("\n\n\t%d test%s failed.\n\n\tFirst %d failures documented below:\n\n"
+				   "\t\t-Set MAX_FAILS in _unittest4helper.h\n"
 				   "\t\t to print more errors.\n\n",
-						failCt, MAX_FAILS);
+						failCt, failCt > 0 ? "s" : "", MAX_FAILS);
 		}
-		printf("(Note: See _cardtest4helper.c when referencing line #)\n\n");
+		printf("  (Note: See _cardtest4helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
 			printf("%d - TEST #%d @ LINE %d: %s\n\n", 

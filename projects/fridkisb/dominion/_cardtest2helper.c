@@ -155,7 +155,9 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	//--(shuffle has been tested via unittest3.
 	//-- see unittest3.c and _unittest3helper.c
 	//-- for additional details.)
-	shuffle(0, G);
+	//-- (This is deterministic if RANDOMIZE is not enabled,
+	//-- since the same seed value is used with each run.)
+	//shuffle(0, G);
 	
 	//Assign hand position for adventurer, either randomly or
 	//according to test number
@@ -179,6 +181,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	int deckBeforeAdventurer[MAX_DECK];
 	for(i = 0; i < G->deckCount[0]; i++){
 		deckBeforeAdventurer[i] = G->deck[0][i];
+		printf("\ndbeforead: %d", deckBeforeAdventurer[i]);//********
 		deckCardCountByTypeBeforeAdventurer[G->deck[0][i]]++;
 	}
 	
@@ -238,6 +241,8 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			deckCardCountByTypeBeforeAdventurer[i] -
 			deckCardCountByTypeAfterAdventurer[i];
 	}
+	printf("\n\nddc: %d, dds: %d, ddg: %d\n\n", deckDiffsAfterAdventurer[copper],
+	deckDiffsAfterAdventurer[silver], deckDiffsAfterAdventurer[gold]);
 	
 	//Determine how many of each card type have been added to (or erroneously
 	//removed from) the hand
@@ -312,7 +317,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			++(*failCt) <= MAX_FAILS){
 				failures[*failCt-1].lineNumber = __LINE__;
 				sprintf(failures[*failCt-1].description,
-				"Non treasure card added to hand pile\n"
+				"Non treasure card added to (or removed from) hand \n"
 				"  %d %d(s) added to (or removed from) hand %s\n"
 				"    (negative value indicates removal)\n", 
 				handDiffsAfterAdventurer[i], i,
@@ -366,16 +371,19 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		discardCardCountByTypeAfterAdventurer[G->discard[0][i]]++;
 	}
 	for(i = 0; i < 27; i++){
-		if(i != copper && i != silver && i != gold && 
+		if(((i != copper && i != silver && i != gold && i != adventurer &&
 		   discardCardCountByTypeAfterAdventurer[i] !=
-		   deckDiffsAfterAdventurer[i] &&
+		   deckDiffsAfterAdventurer[i]) ||
+		   (i == adventurer && discardCardCountByTypeAfterAdventurer[i] !=
+		    deckDiffsAfterAdventurer[i] + 1)) &&
 		    ++(*failCt) <= MAX_FAILS){
 				failures[*failCt-1].lineNumber = __LINE__;
 				sprintf(failures[*failCt-1].description,
 				"Different cards or card quantities added to discard pile\n"
 				"\t\t\t\t" "than removed from deck\n"
 				"    %d '%d' cards added to discard : %d of these removed from deck %s\n", 
-				discardCardCountByTypeAfterAdventurer[i], i, deckDiffsAfterAdventurer[i],
+				discardCardCountByTypeAfterAdventurer[i], i, 
+				deckDiffsAfterAdventurer[i],
 				isBoundary ? "(Boundary)" : "(Non-Boundary)");
 				failures[*failCt-1].testNumber = testNumber;
 				break;

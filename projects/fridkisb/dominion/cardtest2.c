@@ -27,31 +27,30 @@ int main (int argc, char** argv) {
 	failedTest failures[MAX_FAILS];
 	int failCt = 0;
 	
-	printf("Starting cardtest2 - Testing 'adventurer' card\n");
+	printf("\t\t\t\t\t" "Starting cardtest2 - Testing 'adventurer' card\n");
 	
 	if(RANDOMIZE){
-		printf("\nExecuting %d Adventurer %s using hands with random assortment of \n"
-			   "\t supply cards, with at least 2 treasures in deck...\n\n"
-				"\t\t" "-Set 'ADVENTURER_CALLS' in cardtest2.c\n"
-			   "\t\t"  " to modify number of plays.\n", ADVENTURER_CALLS,
+		printf("\n  Executing %d Adventurer %s using hands with random assortment of \n"
+			   "\t  supply cards, with at least 2 treasures in deck...\n\n"
+				"\t\t" " -Set 'ADVENTURER_CALLS' in cardtest2.c\n"
+			   "\t\t"  "  to modify number of plays.\n", ADVENTURER_CALLS,
 			   ADVENTURER_CALLS > 1 ? "plays" : "play");
 	}
 	else{
-		printf("\n" "Executing %d Adventurer %s using deck and hand sizes starting at 6 and incrementing\n"
-			   "\t" " by multiples of 5 with each successive test number, up to %d (MAX_DECK).\n"
-			   "\t" " If the number of tests cause the deck size to equal or exceed %d when\n"
-			   "\t" " calculated in this way, the deck size will reset to 1 and begin\n"
-			   "\t" " incrementing by 1 with each additional successive test, but if\n"
-			   "\t" " hand size < 6, hand size will be set to 6 (see _cardtest2helper.c line 90).\n"
+		printf("\n" "  Executing %d Adventurer %s using deck and hand sizes starting at 6 and incrementing\n"
+			   "\t" "  by multiples of 5 with each successive test number, up to %d (MAX_DECK).\n"
+			   "\t" "  If the number of tests cause the deck size to equal or exceed %d when\n"
+			   "\t" "  calculated in this way, the deck size will reset to 1 and begin\n"
+			   "\t" "  incrementing by 1 with each additional successive test, but if\n"
+			   "\t" "  hand size < 6, hand size will be set to 6 (see _cardtest2helper.c line 90).\n"
 			   "\t\t" "-e.g. deck size for test 1 = 6, test 2 = 11, test 3 = 16...\n"
 			   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2...\n\n"
-			   "\t" " Kingdom cards are adventurer through great_hall, as enumerated\n"
-			   "\t" " in dominion.h.\n\n"
-			   "\t\t" "-Set 'ADVENTURER_CALLS' in cardtest2.c\n"
-			   "\t\t" " to modify number of plays.\n\n"
-			   "\t\t" "-Random test generator can be turned on\n"
-			   "\t\t" " by setting the constant 'RANDOMIZE' to 1\n"
-			   "\t\t" " in _cardtest2helper.h.\n\n", ADVENTURER_CALLS, 
+			   "  Kingdom cards are adventurer through great_hall, as enumerated in dominion.h.\n\n"
+			   "\t\t" " -Set 'ADVENTURER_CALLS' in cardtest2.c\n"
+			   "\t\t" "  to modify number of plays.\n\n"
+			   "\t\t" " -Random test generator can be turned on\n"
+			   "\t\t" "  by setting the constant 'RANDOMIZE' to 1\n"
+			   "\t\t" "  in _cardtest2helper.h.\n\n", ADVENTURER_CALLS, 
 			   ADVENTURER_CALLS > 1 ? "plays" : "play", MAX_DECK, MAX_DECK);
 	}
 
@@ -72,7 +71,7 @@ int main (int argc, char** argv) {
 			seed = Random() * INT_MAX;
 		}
 		else{
-			for(m = 0, j = 7; j < 10; m++, j++){		
+			for(m = 0, j = 7; j < 17; m++, j++){		
 				k[m] = j;
 			}
 		}
@@ -87,11 +86,11 @@ int main (int argc, char** argv) {
 	}
 	
 	if(RANDOMIZE){
-		printf("\nBOUNDARY: Executing Adventurer play using hand with random assortment of \n"
-			   "\t supply cards, with 1 treasure card in deck...\n");
+		printf("\n  BOUNDARY: Executing Adventurer play using hand with random assortment of \n"
+			   "\t            supply cards, with 1 treasure card in deck...\n");
 	}
 	else{
-		printf("\nBOUNDARY: Executing Adventurer play with only 1 treasure card in deck...\n");
+		printf("\n  BOUNDARY: Executing Adventurer play with only 1 treasure card in deck...\n");
 	}
 	
 	//Test with only 1 treasure card in the player's deck
@@ -103,7 +102,7 @@ int main (int argc, char** argv) {
 		seed = Random() * INT_MAX;
 	}
 	else{
-		for(m = 0, j = 7; j < 10; m++, j++){		
+		for(m = 0, j = 7; j < 17; m++, j++){		
 			k[m] = j;
 		}
 	}
@@ -111,14 +110,14 @@ int main (int argc, char** argv) {
 	_cardtest2helper(k, &G, failures, &failCt, 1, 1, ADVENTURER_CALLS + 1);
 	
 	if(RANDOMIZE){
-		printf("\nBOUNDARY: Executing Adventurer play using hand with random assortment of \n"
-			   "\t supply cards, with 0 treasure cards in deck...\n");
+		printf("\n  BOUNDARY: Executing Adventurer play using hand with random assortment of \n"
+			   "\t            supply cards, with 0 treasure cards in deck...\n");
 	}
 	else{
-		printf("\nBOUNDARY: Executing Adventurer play with 0 treasure cards in deck...\n");
+		printf("\n  BOUNDARY: Executing Adventurer play with 0 treasure cards in deck...\n");
 	}
 	
-	//Test with only 2 cards in the player's deck
+	//Test with only 0 treasure cards in the player's deck
 	if(RANDOMIZE){
 		//Generate set of 10 random Kingdom cards
 		for(j = 0; j < 10; j++){		
@@ -127,7 +126,7 @@ int main (int argc, char** argv) {
 		seed = Random() * INT_MAX;
 	}
 	else{
-		for(m = 0, j = 7; j < 10; m++, j++){		
+		for(m = 0, j = 7; j < 17; m++, j++){		
 			k[m] = j;
 		}
 	}
@@ -135,15 +134,16 @@ int main (int argc, char** argv) {
 	_cardtest2helper(k, &G, failures, &failCt, 0, 1, ADVENTURER_CALLS + 2);
 	
 	if(RANDOMIZE){
-		printf("\nBOUNDARY: Executing Adventurer play using hand with random assortment of \n"
-			   "\t supply cards, with 0 cards in deck (should be same outcome as no treasure cards...)\n");
+		printf("\n  BOUNDARY: Executing Adventurer play using hand with random assortment of \n"
+			   "\t            supply cards, with 0 cards in deck (should be same outcome as no\n"
+			   "\t			  treasure cards...)\n");
 	}
 	else{
-		printf("\nBOUNDARY: Executing Adventurer play with 0 cards in deck\n"
-				 "          (should be same outcome as no treasure cards...)\n");
+		printf("\n  BOUNDARY: Executing Adventurer play with 0 cards in deck\n"
+				 "            (should be same outcome as no treasure cards...)\n");
 	}
 	
-	//Test with only 2 cards in the player's deck
+	//Test with 0 cards in the player's deck
 	if(RANDOMIZE){
 		//Generate set of 10 random Kingdom cards
 		for(j = 0; j < 10; j++){		
@@ -152,7 +152,7 @@ int main (int argc, char** argv) {
 		seed = Random() * INT_MAX;
 	}
 	else{
-		for(m = 0, j = 7; j < 10; m++, j++){		
+		for(m = 0, j = 7; j < 17; m++, j++){		
 			k[m] = j;
 		}
 	}
@@ -211,23 +211,24 @@ int main (int argc, char** argv) {
 		   "\t\t" 		"**************************************************************************** \n");
 	
 	if(!failCt){
-		printf("\n\n*****************************\n"
-				   "******ALL TESTS PASSED!******\n"
-				   "*****************************\n\n");
+		printf("\n\n\t\t\t\t\t\t*****************************\n"
+				   "\t\t\t\t\t\t******ALL TESTS PASSED!******\n"
+				   "\t\t\t\t\t\t*****************************\n\n");
 	}
 	
 	//Print summary of all failed tests (up to MAX_FAILS)
 	else{
 		if(failCt < MAX_FAILS + 1){
-			printf("\n\n\t%d tests failed, as follows:\n\n", failCt);
+			printf("\n\n\t%d test%s failed, as follows:\n\n", failCt, 
+				failCt > 0 ? "s" : "");
 		}
 		else{
-			printf("\n\n\t%d tests failed.\n\n\tFirst %d failures documented below:\n\n"
-				   "\t\t-Set MAX_FAILS in _cardtest2helper.h\n\n"
-				   "\t\t to print more errors.\n",
-						failCt, MAX_FAILS);
+			printf("\n\n\t%d test%s failed.\n\n\tFirst %d failures documented below:\n\n"
+				   "\t\t-Set MAX_FAILS in _unittest4helper.h\n"
+				   "\t\t to print more errors.\n\n",
+						failCt, failCt > 0 ? "s" : "", MAX_FAILS);
 		}
-		printf("(Note: See _cardtest2helper.c when referencing line #)\n\n");
+		printf("  (Note: See _cardtest2helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
 			printf("%d - TEST #%d @ LINE %d: %s\n\n", 

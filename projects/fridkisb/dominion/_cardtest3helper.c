@@ -333,13 +333,13 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 		}
 	}
 	
-	//Check coins (expectedCoins + 2)...
+	//Check coins...
 	if(G->coins != expectedCoins + 2 && ++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
-		"coins value not updated correctly\n"
-		"  Expected 2 ; Observed %d %s\n", 
-		G->coins,
+		"Coins value not updated correctly\n"
+		"  Expected %d ; Observed %d %s\n", 
+		expectedCoins + 2, G->coins,
 		noCopper ? "(Boundary)" : "(Non-Boundary)");
 		failures[*failCt-1].testNumber = testNumber;
 	}

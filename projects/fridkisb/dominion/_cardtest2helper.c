@@ -157,7 +157,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	//-- for additional details.)
 	//-- (This is deterministic if RANDOMIZE is not enabled,
 	//-- since the same seed value is used with each run.)
-	//shuffle(0, G);
+	shuffle(0, G);
 	
 	//Assign hand position for adventurer, either randomly or
 	//according to test number

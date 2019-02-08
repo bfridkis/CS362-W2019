@@ -159,6 +159,8 @@ int main (int argc, char** argv) {
 	initializeGame(2, k, seed, &G);
 	_cardtest2helper(k, &G, failures, &failCt, -1, 1, ADVENTURER_CALLS + 3);
 	
+	printf("\n\n\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULTS SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+	
 	printf("\n\t" "Each test (that is not marked 'BOUNDARY') verifies proper game state\n"
 		   "\t"   "modification, reporting a failure if any of the following conditions are NOT met:\n"
 		   "\t\t"       "1. Current player variable (whoseTurn) is unchanged\n"
@@ -211,9 +213,9 @@ int main (int argc, char** argv) {
 		   "\t\t" 		"**************************************************************************** \n");
 	
 	if(!failCt){
-		printf("\n\n\t\t\t\t\t\t*****************************\n"
-				   "\t\t\t\t\t\t******ALL TESTS PASSED!******\n"
-				   "\t\t\t\t\t\t*****************************\n\n");
+		printf("\n\n\t\t\t\t\t\t\t*****************************\n"
+				   "\t\t\t\t\t\t\t***** ALL TESTS PASSED! *****\n"
+				   "\t\t\t\t\t\t\t*****************************\n\n");
 	}
 	
 	//Print summary of all failed tests (up to MAX_FAILS)

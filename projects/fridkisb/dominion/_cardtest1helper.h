@@ -34,7 +34,7 @@ struct failedTest {
 typedef struct failedTest failedTest;
 
 int _cardtest1helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int deckCardCountSpecifier, int testNumber);
+	int* failCt, int deckCardCountSpecifier, int isBoundary, int testNumber);
 
 
 #endif

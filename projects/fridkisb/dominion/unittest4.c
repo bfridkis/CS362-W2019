@@ -109,10 +109,12 @@ int main (int argc, char** argv) {
 		printf("\n\tNo treasure cards and no bonus test failed\n");
 	}
 	
+	printf("\n\n\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULTS SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+	
 	if(!failCt){
-		printf("\n\n\t\t\t\t\t\t*****************************\n"
-				   "\t\t\t\t\t\t******ALL TESTS PASSED!******\n"
-				   "\t\t\t\t\t\t*****************************\n\n");
+		printf("\n\n\t\t\t\t\t\t\t*****************************\n"
+				   "\t\t\t\t\t\t\t***** ALL TESTS PASSED! *****\n"
+				   "\t\t\t\t\t\t\t*****************************\n\n");
 	}
 	
 	//Print summary of all failed tests (up to MAX_FAILS)

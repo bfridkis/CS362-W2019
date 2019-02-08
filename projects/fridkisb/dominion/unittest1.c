@@ -33,10 +33,12 @@ int main (int argc, char** argv) {
 	
 	int failCt = _unittest1helper(k, &G, failures);
 	
+	printf("\n\n\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULTS SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+	
 	if(!failCt){
-		printf("\n\n\t\t\t\t\t\t*****************************\n"
-				   "\t\t\t\t\t\t******ALL TESTS PASSED!******\n"
-				   "\t\t\t\t\t\t*****************************\n\n");
+		printf("\n\n\t\t\t\t\t\t\t*****************************\n"
+				   "\t\t\t\t\t\t\t***** ALL TESTS PASSED! *****\n"
+				   "\t\t\t\t\t\t\t*****************************\n\n");
 	}
 	
 	//Print summary of all failed tests (up to MAX_FAILS)

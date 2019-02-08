@@ -80,7 +80,7 @@ int main (int argc, char** argv) {
 		
 		//Play Smithy with random kingdom card set.
 		//(see _cardtest1helper for more details)
-		_cardtest1helper(k, &G, failures, &failCt, 3, i + 1);
+		_cardtest1helper(k, &G, failures, &failCt, 3, 0, i + 1);
 	}
 	
 	if(RANDOMIZE){
@@ -105,7 +105,7 @@ int main (int argc, char** argv) {
 		}
 	}
 	initializeGame(2, k, seed, &G);
-	_cardtest1helper(k, &G, failures, &failCt, 1, SMITHY_CALLS + 1);
+	_cardtest1helper(k, &G, failures, &failCt, 1, 1, SMITHY_CALLS + 1);
 	
 	if(RANDOMIZE){
 		printf("\n  BOUNDARY: Executing Smithy play using hand with random assortment of \n"
@@ -129,7 +129,7 @@ int main (int argc, char** argv) {
 		}
 	}
 	initializeGame(2, k, seed, &G);
-	_cardtest1helper(k, &G, failures, &failCt, 2, SMITHY_CALLS + 2);
+	_cardtest1helper(k, &G, failures, &failCt, 2, 1, SMITHY_CALLS + 2);
 	
 	if(RANDOMIZE){
 		printf("\n  BOUNDARY: Executing Smithy play using hand with random assortment of \n"
@@ -154,7 +154,9 @@ int main (int argc, char** argv) {
 		}
 	}
 	initializeGame(2, k, seed, &G);
-	_cardtest1helper(k, &G, failures, &failCt, 0, SMITHY_CALLS + 3);
+	_cardtest1helper(k, &G, failures, &failCt, 0, 1, SMITHY_CALLS + 3);
+	
+	printf("\n\n\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULTS SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	
 	printf("\n\t" "Each test (that is not marked 'BOUNDARY') verifies proper game state\n"
 		   "\t"   "modification, reporting a failure if any of the following conditions are met:\n"
@@ -192,9 +194,9 @@ int main (int argc, char** argv) {
 	
 	
 	if(!failCt){
-		printf("\n\n\t\t\t\t\t\t*****************************\n"
-				   "\t\t\t\t\t\t******ALL TESTS PASSED!******\n"
-				   "\t\t\t\t\t\t*****************************\n\n");
+		printf("\n\n\t\t\t\t\t\t\t*****************************\n"
+				   "\t\t\t\t\t\t\t***** ALL TESTS PASSED! *****\n"
+				   "\t\t\t\t\t\t\t*****************************\n\n");
 	}
 	
 	//Print summary of all failed tests (up to MAX_FAILS)

@@ -8,19 +8,22 @@
 //		
 //		If there are not at least 2 treasure cards in the set of cards making up the 
 //		deck and discard piles, the function will start "consuming" the hand itself in 
-//		search of treasures. These treasures found in the existing hand will be used 
-//		erroneously if found. If there are not at least 2 treasures in the
-//		set of cards making up the deck, discard, and hand (i.e. the set of all
-//		cards for the given player), the function will eventually fault the program
-//		by attempting to access the player's hand array using an invalid index (-1)
-// 		(state->hand[player][-1]) in continuous search of treasures. The faulty mechanism
+//		search of treasures. If treasures are found in the hand, they will be used
+//		erroneously, as if they'd been gained from the deck. If there are not at least 
+//		2 treasures in the set of cards making up the deck, discard, and hand (i.e. the 
+//		set of all cards for the given player), the function will eventually fault the 
+//		program by attempting to access the player's hand array using an invalid index 
+//		(state->hand[player][-1]) in continuous search of treasures. The faulty mechanism
 //		lies in the fact that drawCard will simply return a -1 once it has placed
 //		all cards in the temp hand after depleting both the deck and discard piles,
-//		whereafter adventurerEffect erroneously assumes drawCard is still adding 
+//		where after adventurerEffect erroneously assumes drawCard is still adding 
 //		to the hand. The hand itself is then added to the temp hand until no cards are
 //		remaining (i.e. handCount has reached 0. Finally it (handCount) will reach -1,
-//		and the attempt on line 33 to access state->hand[currentPlayer][-1] will crash
-//		the program.
+//		and the attempt to access state->hand[currentPlayer][-1] will crash
+//		the program. This logic has obvious ramifications, even when the deck is lacking
+//		at least 2 treasures but the hand can make up the difference. In this instance,
+//		the program will not crash outright, but the hand will be erroneously depleted
+//		as non-treasure cards are removed until sufficient treasure is found.
 
 int adventurerEffect(int currentPlayer, struct gameState *state){
 	int temphand[MAX_HAND];

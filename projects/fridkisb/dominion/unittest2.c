@@ -79,10 +79,12 @@ int main (int argc, char** argv) {
 	
 	printf("\n\n  TOTAL FAILED TESTS AFTER T3: %d\n", failedTestCount);
 	
+	printf("\n\n\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULTS SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+	
 	if(failedTestCount == 0){
-		printf("\n\n\t\t\t\t\t\t*****************************\n"
-				   "\t\t\t\t\t\t******ALL TESTS PASSED!******\n"
-				   "\t\t\t\t\t\t*****************************\n\n");
+		printf("\n\n\t\t\t\t\t\t\t*****************************\n"
+				   "\t\t\t\t\t\t\t***** ALL TESTS PASSED! *****\n"
+				   "\t\t\t\t\t\t\t*****************************\n\n");
 	}
 	
 	//Print summary of all failed tests (up to MAX_FAILS)

@@ -171,6 +171,12 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	else{
 		handPos = 0;
+		
+		//For test #1, replace province with gold so there is
+		//a third treasure card in the deck.
+		if(testNumber == 1){
+			G->deck[0][province] = gold;
+		}
 	}
 	G->hand[0][handPos] = adventurer;
 	
@@ -270,7 +276,8 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
-			"Incorrect number of treasure cards removed from deck after Adventurer play\n"
+			"Incorrect number of treasure cards removed from deck\n"
+			"\tafter Adventurer play\n"
 			"  Expected: %d Removed ; Observed %d %s\n", 
 			treasureCardCountSpecifier == 2 ? 2 : 
 			treasureCardCountSpecifier == 1 ? 1 : 0, 
@@ -308,13 +315,17 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].testNumber = testNumber;
 	}
 	
-	//Make sure no non-treasure cards have been added to the hand
+	//Make sure no non-treasure cards have been added to or removed from the hand,
+	//besides a single adventurer (card being played)
 	for(i = 0; i < 27; i++){
-		if((i < copper || i > gold) && handDiffsAfterAdventurer[i] != 0 &&
+		if((((i < copper || i > gold) && i != adventurer &&
+			handDiffsAfterAdventurer[i] != 0) ||
+		   (i == adventurer && handDiffsAfterAdventurer[i] != -1)) &&
 			++(*failCt) <= MAX_FAILS){
 				failures[*failCt-1].lineNumber = __LINE__;
 				sprintf(failures[*failCt-1].description,
-				"Non treasure card added to (or removed from) hand \n"
+				"Non treasure card added to (or removed from) hand,\n"
+				"\tOr number of adventurers removed from hand does not equal 1\n\n"
 				"  %d %d(s) added to (or removed from) hand %s\n"
 				"    (negative value indicates removal)\n", 
 				handDiffsAfterAdventurer[i], i,
@@ -362,7 +373,8 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	
 	//Make sure the discard pile has only copies of non-treasure cards 
-	//that have been removed from deck + 1 adventurer
+	//that have been removed from deck (besides adventurer, to be 
+	//tested below)
 	int discardCardCountByTypeAfterAdventurer[27] = {0};
 	for(i = 0; i < G->discardCount[0]; i++){
 		discardCardCountByTypeAfterAdventurer[G->discard[0][i]]++;
@@ -384,8 +396,7 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 				break;
 		}
 		else if((i >= copper && i <= gold) && 
-				deckDiffsAfterAdventurer[i] != 
-				handDiffsAfterAdventurer[i] && 
+				discardCardCountByTypeAfterAdventurer[i] != 0 && 
 				++(*failCt) <= MAX_FAILS){
 					failures[*failCt-1].lineNumber = __LINE__;
 					sprintf(failures[*failCt-1].description,
@@ -398,13 +409,17 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		}
 	}
 	
-	//Make sure discard has 1 (and only 1) adventurer card
-	if(discardCardCountByTypeAfterAdventurer[adventurer] != 1 &&
+	//Make sure discard has adventurer cards numbering
+	//1 + the number of adventurers drawn from the deck
+	//(1 should come from the hand since it is being played).
+	if(discardCardCountByTypeAfterAdventurer[adventurer] != 
+		1 + deckDiffsAfterAdventurer[adventurer] &&
 		++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Discard pile updated incorrectly\n"
-			"  Expected 1 adventurer in discard pile : Observed %d %s\n",
+			"  Expected %d adventurer in discard pile : Observed %d %s\n",
+			1 + deckDiffsAfterAdventurer[adventurer],
 			discardCardCountByTypeAfterAdventurer[adventurer],
 			isBoundary ? "(Boundary)" : "(Non-Boundary)");
 			failures[*failCt-1].testNumber = testNumber;

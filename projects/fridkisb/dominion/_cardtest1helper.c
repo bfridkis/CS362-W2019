@@ -19,7 +19,7 @@
 #include "_cardtest1helper.h"
  
 int _cardtest1helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int deckCardCountSpecifier, int testNumber){
+	int* failCt, int deckCardCountSpecifier, int isBoundary, int testNumber){
 		
 	//Test value variables	   
 	int i, j, deckSize, handSize;
@@ -200,10 +200,11 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Hand count not updated properly after Smithy play\n"
-		"  Expected: %d ; Observed %d\n", 
+		"  Expected: %d ; Observed %d %s\n", 
 		deckCardCountSpecifier == 0 ? handCountBeforeSmithy - 1 : 
 		handCountBeforeSmithy + deckCardCountSpecifier - 1, 
-		G->handCount[0]); 
+		G->handCount[0],
+		isBoundary ? "(Boundary)" : "(Non-Boundary)");		
 		failures[*failCt-1].testNumber = testNumber;
 	}
 
@@ -217,9 +218,10 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Deck count not updated properly after Smithy play\n"
-		"  Expected: %d ; Observed %d\n", 
+		"  Expected: %d ; Observed %d %s\n", 
 		deckCountBeforeSmithy < 3 ? 0 :
-		deckCountBeforeSmithy - 3, G->deckCount[0]);
+		deckCountBeforeSmithy - 3, G->deckCount[0],
+		isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 		failures[*failCt-1].testNumber = testNumber;
 	}	
 	
@@ -238,9 +240,10 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 				failures[*failCt-1].lineNumber = __LINE__;
 				sprintf(failures[*failCt-1].description,
 				"Hand contents not updated properly after Smithy play\n"
-				"  Incorrect card at idx %d ; Expected %d : Observed %d\n", i,
+				"  Incorrect card at idx %d ; Expected %d : Observed %d %s\n", i,
 				i != handPos && j < 7 ? i : k[j-7],
-				G->hand[0][i]);
+				G->hand[0][i],
+				isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 				failures[*failCt-1].testNumber = testNumber;
 				break;
 		}
@@ -274,14 +277,15 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 				"Incorrect card types gained to hand from deck,\n"
 				"\t\t\t\t\t\t" "or placed incorrectly in hand\n\n"
 				"   Expected #%d card gained from deck to be %d, and to be\n"
-				"   placed to %d idx of hand : Observed %d at idx %d\n", 
+				"   placed to %d idx of hand : Observed %d at idx %d %s\n", 
 				i, deckBeforeSmithy[deckCountBeforeSmithy - 1 - (i - 1)],
 				i == 3 ? handPos :
 				handCountBeforeSmithy + (i - 1),
 				i == 3 ? G->hand[0][handPos] :
 				G->hand[0][handBeforeSmithy[handCountBeforeSmithy - 1 - (i - 1)]],
 				i == 3 ? handPos :
-				handCountBeforeSmithy + (i - 1));
+				handCountBeforeSmithy + (i - 1),
+				isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 				failures[*failCt-1].testNumber = testNumber;
 				break;
 		}
@@ -295,8 +299,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Deck changed unexpectedly at index %d\n"
-			"  Expected %d ; Observed %d\n", 
-			i, deckBeforeSmithy[i], G->hand[0][i]);
+			"  Expected %d ; Observed %d %s\n", 
+			i, deckBeforeSmithy[i], G->hand[0][i],
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 			failures[*failCt-1].testNumber = testNumber;
 			break;
 		}
@@ -307,8 +312,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Discard card count not updated correctly\n"
-		"  Expected 1 ; Observed %d\n", 
-		G->discardCount[0]);
+		"  Expected 1 ; Observed %d %s\n", 
+		G->discardCount[0],
+		isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 		failures[*failCt-1].testNumber = testNumber;
 	}
 	//Check player 0 discard (should have Smithy at index 0, 
@@ -319,8 +325,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Discard pile not updated as expected at idx %d\n"
-			"  Expected smithy ; Observed %d\n", 
-			i, G->discard[0][i]);
+			"  Expected smithy ; Observed %d %s\n", 
+			i, G->discard[0][i],
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 			failures[*failCt-1].testNumber = testNumber;
 		}
 		else if(i != 0 && G->discard[0][i] != -1 
@@ -328,8 +335,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Discard pile not updated as expected at idx %d\n"
-			"  Expected -1 ; Observed %d\n", 
-			i, G->discard[0][i]);
+			"  Expected -1 ; Observed %d %s\n", 
+			i, G->discard[0][i],
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;
@@ -341,8 +349,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Supply pile count changed unexpectedly at pile %d\n"
-			"  Expected 10 ; Observed %d\n", 
-			i, G->supplyCount[i]);
+			"  Expected 10 ; Observed %d %s\n", 
+			i, G->supplyCount[i],
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 			failures[*failCt-1].testNumber = testNumber;
 			break;
 		}
@@ -356,8 +365,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Number of actions not updated correctly\n"
-		"  Expected 1 ; Observed %d\n", 
-		G->numActions);
+		"  Expected 1 ; Observed %d %s\n", 
+		G->numActions,
+		isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 		failures[*failCt-1].testNumber = testNumber;
 	}
 	
@@ -366,8 +376,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Whose turn changed unexpectedly\n"
-		"  Expected 0 ; Observed %d\n", 
-		G->whoseTurn);
+		"  Expected 0 ; Observed %d %s\n", 
+		G->whoseTurn,
+		isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 		failures[*failCt-1].testNumber = testNumber;
 	}
 	
@@ -376,8 +387,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"coins value changed unexpectedly\n"
-		"  Expected 0 ; Observed %d\n", 
-		G->coins);
+		"  Expected 0 ; Observed %d %s\n", 
+		G->coins,
+		isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 		failures[*failCt-1].testNumber = testNumber;
 	}
 	
@@ -386,8 +398,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Number of buys changed unexpectedly\n"
-		"  Expected 1 ; Observed %d\n", 
-		G->numBuys);
+		"  Expected 1 ; Observed %d %s\n", 
+		G->numBuys,
+		isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 		failures[*failCt-1].testNumber = testNumber;
 	}
 	
@@ -397,8 +410,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Number of embargo tokens changed unexpectedly for card %d\n"
-			"  Expected 0 ; Observed %d\n", 
-			i, G->embargoTokens[i]);
+			"  Expected 0 ; Observed %d %s\n", 
+			i, G->embargoTokens[i],
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 			failures[*failCt-1].testNumber = testNumber;
 		}
 	}
@@ -408,8 +422,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Outpost played changed unexpectedly\n"
-		"  Expected 0 ; Observed %d\n", 
-		G->outpostPlayed);
+		"  Expected 0 ; Observed %d %s\n", 
+		G->outpostPlayed,
+		isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 		failures[*failCt-1].testNumber = testNumber;
 	}
 	
@@ -418,8 +433,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Outpost turn changed unexpectedly\n"
-		"  Expected 0 ; Observed %d\n", 
-		G->outpostTurn);
+		"  Expected 0 ; Observed %d %s\n", 
+		G->outpostTurn,
+		isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 		failures[*failCt-1].testNumber = testNumber;
 	}
 	
@@ -430,8 +446,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Player 1 discard count changed unexpectedly\n"
-		"  Expected 0 ; Observed %d\n", 
-		G->discardCount[1]);
+		"  Expected 0 ; Observed %d %s\n", 
+		G->discardCount[1],
+		isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 		failures[*failCt-1].testNumber = testNumber;
 	}
 	
@@ -440,8 +457,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Player 1 deck count changed unexpectedly\n"
-		"  Expected 0 ; Observed %d\n", 
-		G->deckCount[1]);
+		"  Expected 0 ; Observed %d %s\n", 
+		G->deckCount[1],
+		isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 		failures[*failCt-1].testNumber = testNumber;
 	}
 	
@@ -450,8 +468,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Player 1 hand count changed unexpectedly\n"
-		"  Expected 0 ; Observed %d\n", 
-		G->handCount[1]);
+		"  Expected 0 ; Observed %d %s\n", 
+		G->handCount[1],
+		isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 		failures[*failCt-1].testNumber = testNumber;
 	}
 	
@@ -461,8 +480,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Player 1 deck changed unexpectedly at idx %d\n"
-			"  Expected -1 ; Observed %d\n", 
-			i, G->discard[1][i]);
+			"  Expected -1 ; Observed %d %s\n", 
+			i, G->discard[1][i],
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;
@@ -474,8 +494,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Player 1 deck changed unexpectedly at idx %d\n"
-			"  Expected -1 ; Observed %d\n", 
-			i, G->deck[1][i]);
+			"  Expected -1 ; Observed %d %s\n", 
+			i, G->deck[1][i],
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;
@@ -487,8 +508,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Player 1 hand changed unexpectedly at idx %d\n"
-			"  Expected -1 ; Observed %d\n", 
-			i, G->hand[1][i]);
+			"  Expected -1 ; Observed %d %s\n", 
+			i, G->hand[1][i],
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;
@@ -512,8 +534,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Played card count not updated correctly\n"
-		"  Expected 1 ; Observed %d\n", 
-		G->playedCardCount);
+		"  Expected 1 ; Observed %d %s\n", 
+		G->playedCardCount,
+		isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 		failures[*failCt-1].testNumber = testNumber;
 	}
 	//Check playedCards (should have Smithy at index 0, -1 all other indexes)
@@ -523,8 +546,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Played cards not updated as expected at idx %d\n"
-			"  Expected smithy ; Observed %d\n", 
-			i, G->playedCards[0]);
+			"  Expected smithy ; Observed %d %s\n", 
+			i, G->playedCards[0],
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 			failures[*failCt-1].testNumber = testNumber;
 		}
 		else if(i != 0 && G->playedCards[i] != -1 
@@ -532,8 +556,9 @@ int _cardtest1helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Played cards not updated as expected at idx %d\n"
-			"  Expected -1 ; Observed %d\n", 
-			i, G->playedCards[i]);
+			"  Expected -1 ; Observed %d %s\n", 
+			i, G->playedCards[i],
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");	
 			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;

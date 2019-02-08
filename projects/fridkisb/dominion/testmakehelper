@@ -29,9 +29,9 @@ coverage() {
 		gcov dominion.c --function-summaries -b | head -n${line} | tail -n4 >> unittestresults.out
 	done
 	
-	((testNum++))
+	echo -e "\n\n --------------------------------- END ${testTypeCaps} ${testNum} -------------------------------\n\n" >> unittestresults.out
 	
-	echo -e "\n\n" >> unittestresults.out
+	((testNum++))
 }
 
 echo -e "\n\t\t\t\t\t\tTEST SUITE RESULTS - CS362-400 - ASSIGNMENT3\n\n" \

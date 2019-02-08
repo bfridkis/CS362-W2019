@@ -44,9 +44,9 @@ int _unittest1helper(int k[], struct gameState* G, failedTest failures[]){
 	ut2h2s.expectedRV = 0;
 	
 	//Test gain each supply card (curse, estate, duchy, province, copper
-	//silver, gold, and all kingdom cards) to each pile (i == 0 for discard,
+	//silver, gold, and all kingdom cards) from each pile (i == 0 for discard,
 	//i == 1 for deck, and i == 2 for hand).
-	printf("\n\n  Gaining each supply card to each pile for player 0...\n");
+	printf("\n\n  Gaining each supply card from each supply pile for player 0...\n");
 	for(i = 0; i < 3; i++){
 		for(j = 0; j < 17; j++){
 			ut2h2s.expectedPile = i;

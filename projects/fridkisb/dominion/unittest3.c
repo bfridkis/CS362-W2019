@@ -96,11 +96,13 @@ int main (int argc, char** argv) {
 	if(_unittest3helper(k, &G, failures, &failCt, &ut3s, 0,
 			1, NUM_SHUFFLES + 2) != 0){
 		printf("\nMax deck size test failed\n");
+		
+		printf("\n\n\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULTS SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	}
 	
 	if(!failCt){
 		printf("\n\n\t\t\t\t\t\t*****************************\n"
-				   "\t\t\t\t\t\t******ALL TESTS PASSED!******\n"
+				   "\t\t\t\t\t\t***** ALL TESTS PASSED! *****\n"
 				   "\t\t\t\t\t\t*****************************\n\n");
 	}
 	

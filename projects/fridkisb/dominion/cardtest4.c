@@ -16,8 +16,6 @@
 
 #include "_cardtest4helper.h"
 
-#define COUNCIL_ROOM_CALLS 1
-
 int main (int argc, char** argv) {
 	struct gameState G;
 
@@ -119,18 +117,25 @@ int main (int argc, char** argv) {
 		   "\t\t\t\t\t"          "(A total of 4 cards are gained from the deck but the Council_Room\n"
 		   "\t\t\t\t\t"          "itself is discarded so the net gain from the hand should be 3.)\n"
 		   "\t\t\t"         "c. Active player's deck contents are not the same before and after the play\n"
-		   "\t\t\t\t\t"          "(Besides the 4 less cards gained therefrom. i.e. The deck order is not changed.)\n"
+		   "\t\t\t\t\t"          "(Besides the 4 less cards gained therefrom.\n"
+		   "\t\t\t\t\t\t"				"i.e. The deck order is not changed.)\n"
 		   "\t\t\t"         "d. Active player's hand content is changed\n"
-		   "\t\t\t\t\t"          "(Besides the 4 additional cards gained to the end of the hand from the top of the deck\n"
-		   "\t\t"       "3. Inactive players' hands do not gain 1 card from the top of each respective player's own deck\n"
+		   "\t\t\t\t\t"          "(Besides the 4 additional cards gained to the end of the hand from\n"
+		   "\t\t\t\t\t\t"		 	"the top of the deck)\n"
+		   "\t\t"       "3. Inactive players' hands do not gain 1 card from the top of each respective\n"
+		   "\t\t\t"				"player's own deck\n"
 		   "\t\t\t"         "a. Inactive players' deck counts are not decremented by 1.\n"
 		   "\t\t\t"         "b. Inactive players' hand counts are not incremented by 1\n"
 		   "\t\t\t"         "c. Inactive players' deck contents are not the same before and after the play\n"
-		   "\t\t\t\t\t"          "(Besides the 1 less cards gained therefrom. i.e. The deck order is not changed.)\n"
+		   "\t\t\t\t\t"          "(Besides the 1 less cards gained therefrom.\n"
+		   "\t\t\t\t\t\t"				"i.e. The deck order is not changed.)\n"
 		   "\t\t\t"         "d. Inactive players' hand contents are changed\n"
-		   "\t\t\t\t\t"          "(Besides the additional card gained to the end of the hand from the top of the deck\n"
-		   "\t\t"       "4. Active player's discard pile does not gain a council_room, or count is not 1 (starts at 0)\n"
-		   "\t\t"       "5. Inactive players' discard piles are changed, or counts are not 0 (all start at 0)\n"
+		   "\t\t\t\t\t"          "(Besides the additional card gained to the end of the hand from the top\n"
+		   "\t\t\t\t\t\t"				"of the deck\n"
+		   "\t\t"       "4. Active player's discard pile does not gain a council_room, or count is not 1\n"
+		   "\t\t\t\t"				"(starts at 0)\n"
+		   "\t\t"       "5. Inactive players' discard piles are changed, or counts are not 0\n"
+		   "\t\t\t\t"				"(all start at 0)\n"
 		   "\t\t"       "6. numBuys game state is not incremented by 1 (starts at 0)\n"
 		   "\t\t"       "7. Any supply pile count (curses, victory cards, or kingdom cards) is changed\n"
 		   "\t\t"       "8. Any of the following game states are changed:\n"

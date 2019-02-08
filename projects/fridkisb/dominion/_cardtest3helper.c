@@ -243,13 +243,11 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Hand counts not updated properly after Cutpurse play\n"
-			"  Incorrect number of %d cards for player %d\n"
-			"    (player who %s cutpurse)\n"
-			"  Expected: %d ; Observed %d %s\n", 
-			j, i,
-			i == activePlayer ? "played" : "did not play",
-			handSize[i] - 1, G->handCount[i],
-			noCopper ? "(Boundary)" : "(Non-Boundary)");
+			"  Expected: %d for player %d; Observed %d %s\n"
+			"    (player who %s cutpurse)\n",
+			handSize[i] - 1, i, G->handCount[i],
+			noCopper ? "(Boundary)" : "(Non-Boundary)",
+			i == activePlayer ? "played" : "did not play");
 			failures[*failCt-1].testNumber = testNumber;
 		}
 	}
@@ -338,9 +336,12 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Coins value not updated correctly\n"
-		"  Expected %d ; Observed %d %s\n", 
+		"  Expected %d ; Observed %d %s\n"
+		"    (Active player started with %d coin%s)\n",
 		expectedCoins + 2, G->coins,
-		noCopper ? "(Boundary)" : "(Non-Boundary)");
+		noCopper ? "(Boundary)" : "(Non-Boundary)",
+		expectedCoins,
+		expectedCoins == 1 ? "" : "s");
 		failures[*failCt-1].testNumber = testNumber;
 	}
 	

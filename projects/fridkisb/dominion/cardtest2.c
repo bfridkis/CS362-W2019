@@ -16,10 +16,6 @@
 
 #include "_cardtest2helper.h"
 
-#define NUM_PLAYERS 2
-
-#define ADVENTURER_CALLS 1
-
 int main (int argc, char** argv) {
 	struct gameState G;
 

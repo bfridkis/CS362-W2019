@@ -16,8 +16,6 @@
 
 #include "_unittest4helper.h"
 
-#define NUM_COIN_UPDATES 100
-
 int main (int argc, char** argv) {
 	struct gameState G;
 

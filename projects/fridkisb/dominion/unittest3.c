@@ -16,8 +16,6 @@
 
 #include "_unittest3helper.h"
 
-#define NUM_SHUFFLES 250
-
 int main (int argc, char** argv) {
 	struct gameState G;
 

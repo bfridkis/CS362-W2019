@@ -16,10 +16,6 @@
 
 #include "_cardtest1helper.h"
 
-#define NUM_PLAYERS 2
-
-#define SMITHY_CALLS 1
-
 int main (int argc, char** argv) {
 	struct gameState G;
 
@@ -167,12 +163,14 @@ int main (int argc, char** argv) {
 		   "\t\t\t\t\t"          "(A total of 3 cards are gained but the Smithy\n"
 		   "\t\t\t\t\t"          "itself is discarded so the net gain from the previous\n"
 		   "\t\t\t\t\t"          "is 2.)\n"
-		   "\t\t\t"         "c. Active player's deck contents are not the same before and after the play\n"
-		   "\t\t\t\t\t"          "(Besides the 3 less cards gained therefrom. i.e. The deck order is not changed.)\n"
+		   "\t\t\t"         "c. Active player's deck contents are not the same before and after\n"
+		   "\t\t\t\t\t"			 "the play. (Besides the 3 less cards gained therefrom.\n"
+		   "\t\t\t\t\t\t\t\t"			 "i.e. The deck order is not changed.)\n"
 		   "\t\t\t"         "d. Active player's hand order and content are changed\n"
 		   "\t\t\t\t\t"          "(Besides the removal/insertion of the Smithy played/last card drawn\n"
 		   "\t\t\t\t\t"          " and 2 additional cards gained to the end of the hand\n"
-		   "\t\t"       "4. Active player's discard pile does not gain a Smithy, or count is not 1 (starts at 0)\n"
+		   "\t\t"       "4. Active player's discard pile does not gain a Smithy, or count is not 1\n"
+		   "\t\t\t\t"       "(starts at 0)\n"
 		   "\t\t"       "5. Inactive player's discard piles are changed, or count is not 0 (starts at 0)\n"
 		   "\t\t"       "4. Inactive player's deck, hand, deck count, and/or hand count is changed\n"
 		   "\t\t"       "5. Any supply pile count (curses, victory cards, or kingdom cards) is changed\n"

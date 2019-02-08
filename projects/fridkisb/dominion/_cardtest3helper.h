@@ -15,7 +15,14 @@
 //i.e. Failures in excess of this number are still counted, but not documented.
 #define MAX_FAILS 20
 
+//Toggle randomized inputs on/off (0 = off, 1 = on)
 #define RANDOMIZE 0
+
+//Number of non-boundary test runs, 
+//also determines input sizes for each run,
+//if RANDOMIZE is set to 0. 
+//(See cardtest3.c for more details.)
+#define CUTPURSE_CALLS 1
 
 #define NUM_PLAYERS 4
 

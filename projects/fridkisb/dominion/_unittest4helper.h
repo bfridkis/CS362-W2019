@@ -15,7 +15,14 @@
 //i.e. Failures in excess of this number are still counted, but not documented.
 #define MAX_FAILS 10
 
+//Toggle randomized inputs on/off (0 = off, 1 = on)
 #define RANDOMIZE 0
+
+//Number of non-boundary test runs, 
+//also determines input sizes for each run,
+//if RANDOMIZE is set to 0. 
+//(See unittest4.c for more details.)
+#define NUM_COIN_UPDATES 100
 
 #include "dominion.h"
 #include "dominion_helpers.h"

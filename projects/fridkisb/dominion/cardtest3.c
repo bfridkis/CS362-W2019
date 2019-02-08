@@ -16,8 +16,6 @@
 
 #include "_cardtest3helper.h"
 
-#define CUTPURSE_CALLS 1
-
 int main (int argc, char** argv) {
 	struct gameState G;
 
@@ -116,8 +114,8 @@ int main (int argc, char** argv) {
 		   "\t\t\t"           "EXCEPTION: Boundary case of no copper in which players who did not play\n"
 		   "\t\t\t"           "           copper have same hand after cutpurse is played\n"
 		   "\t\t"       "4.  Hand counts are decremented by 1 for each player\n"
-		   "\t\t\t"          "(1 cutpurse discarded for active player or 1 copper\n" 
-		   "\t\t\t"           "discarded for inactive players)\n"
+		   "\t\t\t\t"          "(1 cutpurse discarded for active player or 1 copper\n" 
+		   "\t\t\t\t"           " discarded for inactive players)\n"
 		   "\t\t"       "5.  The game state's 'coins' variable is incremented by 2\n"
 		   "\t\t"       "6.  All of the following game states are unchanged:\n"
 		   "\t\t\t"           "a. numActions\n"
@@ -126,8 +124,10 @@ int main (int argc, char** argv) {
 		   "\t\t\t"           "d. outpostPlayed\n"
 		   "\t\t\t"           "e. outpostTurn\n"
 		   "\t\t\t"           "f. All players' decks are unchanged\n"
-		   "\t\t"       "7.  Active player's discard pile gains a cutpurse, and count is updated to 1 (starts at 0)\n"
-		   "\t\t"       "8.  Inactive players' discard piles are unchanged, and counts remain 0 (all start at 0)\n"
+		   "\t\t"       "7.  Active player's discard pile gains a cutpurse, and count is updated to 1\n"
+		   "\t\t\t\t"              "(starts at 0)\n"
+		   "\t\t"       "8.  Inactive players' discard piles are unchanged, and counts remain 0\n"
+		   "\t\t\t\t"				"(all start at 0)\n"
 		   "\t\t"       "9.  Played card count is incremented by 1 (for cutpurse played)\n"
 		   "\t\t"       "10. Played cards gains one and only cutpurse\n");
 	

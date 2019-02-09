@@ -5,7 +5,7 @@
 
 char inputChar()
 {
-    char randChar = rand() % 10;
+    char randChar = rand() % 9;
 	switch(randChar){
 		case 0:
 			return '[';

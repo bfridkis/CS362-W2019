@@ -5,38 +5,32 @@
 
 char inputChar()
 {
-    char randChar = rand() % 9;
-	switch(randChar){
-		case 0:
-			return '[';
-		case 1:
-			return '(';
-		case 2:
-			return '{';
-		case 3:
-			return ' ';
-		case 4:
-			return 'a';
-		case 5:
-			return 'x';
-		case 6:
-			return '}';
-		case 7:
-			return ')';
-		case 8:
-			return ']';
-	}
+	//Randomly return any ascii character in range 32-127
+    return (char)((rand() % 96) + 32);
 }
 
 char *inputString()
 {
-    char randChar = rand() % 2;
-	if(randChar == 0){
-		return "reset";
+	//Randomly return any string in the set of all
+	//possible 5-character strings containing the 
+	//characters 'r', 'e', 's', 'e', 't' (in any
+	//frequency and in any of the possible 5 character 
+	//positions.)
+	static char randStr[6];
+    int randChar, i = 0;
+	for(i = 0; i < 5; i++){
+		randChar = rand() % 5;
+		if(randChar == 0)
+			randStr[i] = 'r';
+		else if(randChar == 1 || randChar == 2)
+			randStr[i] = 'e';
+		else if(randChar == 3)
+			randStr[i] = 's';
+		else
+			randStr[i] = 't';
 	}
-	else{
-		return "norst";
-	}
+	randStr[6] = '\0';
+	return randStr;
 }
 
 void testme()

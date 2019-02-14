@@ -1,0 +1,126 @@
+#!/bin/bash
+
+coverage() {
+
+	echo -e "\t\t++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> unittestresults.out
+	echo -e "\t\t++                                                                  ++" >> unittestresults.out
+	echo -e "\t\t++          \t\t\t      ${testTypeCaps} ${testNum}\t\t\t\t\t        ++" >> unittestresults.out
+	echo -e "\t\t++                                                                  ++" >> unittestresults.out
+	echo -e "\t\t++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> unittestresults.out
+
+	echo -e "\t\t\t\tResult for running ${programName:0:9} (${test}):" >> unittestresults.out
+	echo -e "\t\t\t\t\t\t\t\t\t${programName}:" >> unittestresults.out 
+	./"${programName:0:9}" >> unittestresults.out
+
+	echo -e "\t  Coverage Report:\n" >> unittestresults.out
+	printf "\t" >> unittestresults.out
+	line=$(gcov ${gcovProg} --function-summaries -b | grep -n ${funcName} | cut -f1 -d:)
+	((line+=3))
+	gcov ${gcovProg} --function-summaries -b | head -n${line} | tail -n4 >> unittestresults.out
+		
+	for i in "${!ancillary_functs[@]}" ; do
+		echo >> unittestresults.out
+		if [[ ${i} = 0 ]] ; then
+			echo -e "The following functions are called by ${funcName}...\n" >> unittestresults.out
+		fi
+		printf "\t" >> unittestresults.out
+		line=$(gcov dominion.c --function-summaries -b | grep -n ${ancillary_functs[$i]} | cut -f1 -d:)
+		((line+=3))
+		gcov dominion.c --function-summaries -b | head -n${line} | tail -n4 >> unittestresults.out
+	done
+	
+	echo -e "\n\n --------------------------------- END ${testTypeCaps} ${testNum} -------------------------------\n\n" >> unittestresults.out
+	
+	((testNum++))
+}
+
+echo -e "\n\t\t\t\t\t\tTEST SUITE RESULTS - CS362-400 - ASSIGNMENT3\n\n" \
+		"\t\t\t\t\t\t\t\t\t  Benjamin Fridkis\n\n" > unittestresults.out
+
+testNum=1
+
+## UNIT TESTS ##
+
+testTypeCaps="UNIT TEST"
+gcovProg="dominion.c"
+
+# Unit Test 1
+test="gainCard function test"
+programName="unittest1.c"
+funcName="gainCard"
+
+coverage
+
+#Unit Test 2
+test="buyCard function test"
+programName="unittest2.c"
+funcName="buyCard"
+ancillary_functs[0]="gainCard"
+
+coverage
+
+# Unit Test 3
+test="shuffle function test"
+programName="unittest3.c"
+funcName="shuffle"
+unset ancillary_functs[0]				#clear ancillary_funct[0]
+
+coverage
+
+# Unit Test 4
+test="updateCoins function test"
+programName="unittest4.c"
+funcName="updateCoins"
+
+coverage
+
+testNum=1
+
+## CARD TESTS ##
+
+testTypeCaps="CARD TEST"
+gcovProg="cardEffects.c"
+
+# Card Test 1
+test="smithy card test"
+programName="cardtest1.c"
+funcName="smithyEffect"
+ancillary_functs[0]="drawCard"
+ancillary_functs[1]="discardCard"
+
+coverage
+
+# Card Test 2
+test="adventurer card test"
+programName="cardtest2.c"
+funcName="adventurerEffect"
+ancillary_functs[0]="drawCard"		#Just to be explicit...
+unset ancillary_functs[1]				#clear ancillary_funct[1]
+
+coverage
+
+#Card Test 3
+test="cutpurse card test"
+programName="cardtest3.c"
+funcName="cutpurseEffect"
+ancillary_functs[0]="discardCard"
+ancillary_functs[1]="updateCoins"
+
+coverage
+
+# Card Test 4
+test="council_room card test"
+programName="cardtest4.c"
+funcName="council_roomEffect"
+ancillary_functs[0]="drawCard"
+ancillary_functs[1]="discardCard"
+
+coverage
+
+
+## REFERENCES
+# https://stackoverflow.com/questions/6723426/looping-over-arrays-printing-both-index-and-value
+# Shotts, William E., The Linux Command Line. http://linuxcommand.org/tlcl.php
+
+
+

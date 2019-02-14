@@ -10,5 +10,6 @@ int minionEffect(int currentPlayer, struct gameState *state, int choice1,
 	int choice2, int handPos);
 int ambassadorEffect(int currentPlayer, struct gameState *state, int choice1,
 	int choice2, int handPos);
+int council_roomEffect(int currentPlayer, struct gameState *state, int handPos);
 
 #endif

@@ -22,7 +22,7 @@
 //also determines input sizes for each run,
 //if RANDOMIZE is set to 0. 
 //(See randomtestcard1.c for more details.)
-#define COUNCIL_ROOM_CALLS 1
+#define COUNCIL_ROOM_CALLS 10000
 
 #include "dominion.h"
 #include "dominion_helpers.h"

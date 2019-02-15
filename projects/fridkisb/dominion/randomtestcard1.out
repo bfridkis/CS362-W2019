@@ -1,0 +1,196 @@
+
+						RANDOM TEST RESULTS - CS362-400 - ASSIGNMENT4
+
+ 									  Benjamin Fridkis
+
+
+		++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		++                                                                  ++
+		++          		         randomtestcard1                        ++
+		++                                                                  ++
+		++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		  Result for running randomtestcard1 (random tests for Council Room):
+									randomtestcard1:
+				Starting randomtestcard1 - Testing 'council_room' card
+
+  Executing 10000 Council_Room plays using hands and decks with random assortment
+	  of supply cards, with at least 1 card in deck for non-active players,
+	  and 4 cards in deck for active players. Hand and deck sizes are random
+	  for each player, up to sizes MAX_HAND and MAX_DECK respectively. The number
+	  of players is random up to MAX_PLAYER. The active player is chosen randomly,
+	  as well as the starting hand position for the active player's council_room card.
+	  The entire game state is randomized before play, and only pertinent data
+	  structures are initialized to known values thereafter. The seed value for the
+	  game is random based on the system clock to ensure non-determinism.
+
+		 -Set 'COUNCIL_ROOM_CALLS' in randomtestcard1.c
+		  to modify number of plays.
+
+  BOUNDARY: Executing Council_Room play using hand with random assortment of
+	            supply cards, with empty decks for all players...
+
+
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULTS SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	Each test (that is not marked 'BOUNDARY') verifies proper game state
+	modification, reporting a failure if any of the following conditions are met:
+		1. Current player variable (whoseTurn) is changed
+		2. Active player's hand does not gain 4 cards from the top of active player's deck
+			a. Active player's deck count is not decremented by 4.
+			b. Active player's hand count is not incremented by 3
+					(A total of 4 cards are gained from the deck but the Council_Room
+					itself is discarded so the net gain from the hand should be 3.)
+			c. Active player's deck contents are not the same before and after the play
+					(Besides the 4 less cards gained therefrom.
+						i.e. The deck order is not changed.)
+			d. Active player's hand content is changed
+					(Besides the 4 additional cards gained to the end of the hand from
+						the top of the deck)
+		3. Inactive players' hands do not gain 1 card from the top of each respective
+			player's own deck
+			a. Inactive players' deck counts are not decremented by 1.
+			b. Inactive players' hand counts are not incremented by 1
+			c. Inactive players' deck contents are not the same before and after the play
+					(Besides the 1 less cards gained therefrom.
+						i.e. The deck order is not changed.)
+			d. Inactive players' hand contents are changed
+					(Besides the additional card gained to the end of the hand from the top
+						of the deck
+		4. Active player's discard pile does not gain a council_room, or count is not 1
+				(starts at 0)
+		5. Inactive players' discard piles are changed, or counts are not 0
+				(all start at 0)
+		6. numBuys game state is not incremented by 1 (starts at 0)
+		7. Any supply pile count (curses, victory cards, or kingdom cards) is changed
+		8. Any of the following game states are changed:
+			a. coins
+			b. numActions
+			c. embargoTokens[]
+			d. outpostPlayed
+			e. outpostTurn
+		9. Played card count is not 1
+		10. Played cards does not have Council_Room @ idx 1 and is unchanged otherwise
+
+		* BOUNDARY test verifies all of the above except for #2 & #3. For the empty    *
+		* deck boundary test, no deck or hand count or contents should change for any  *
+		* player, with the one exception of the active player's hand, which should be  *
+		* decremented by exactly 1 council_room.                                       *
+
+
+	17 tests failed, as follows:
+
+  (Note: See _randomtestcard1helper.c when referencing line #)
+
+1 - TEST #1182 @ LINE 346: Hand count not updated properly after Council_Room play
+  Expected 108 ; Observed 18 (Non-Boundary)
+   (player 0, who played council_room)
+ Aborting remaining deck vs. hand comparison checks for player 0...
+
+
+2 - TEST #1182 @ LINE 386: Cards not gained from top of deck to top of hand (Non-Boundary)
+   (player 3, who did not play council_room)
+
+
+3 - TEST #2375 @ LINE 346: Hand count not updated properly after Council_Room play
+  Expected 463 ; Observed 11 (Non-Boundary)
+   (player 0, who did not play council_room)
+ Aborting remaining deck vs. hand comparison checks for player 0...
+
+
+4 - TEST #2375 @ LINE 346: Hand count not updated properly after Council_Room play
+  Expected 419 ; Observed 19 (Non-Boundary)
+   (player 1, who did not play council_room)
+ Aborting remaining deck vs. hand comparison checks for player 1...
+
+
+5 - TEST #2375 @ LINE 346: Hand count not updated properly after Council_Room play
+  Expected 99 ; Observed -1 (Non-Boundary)
+   (player 2, who did not play council_room)
+ Aborting remaining deck vs. hand comparison checks for player 2...
+
+
+6 - TEST #2375 @ LINE 372: Cards not gained from top of deck to top of hand (Non-Boundary)
+   (player 3, who played council_room)
+
+
+7 - TEST #3837 @ LINE 346: Hand count not updated properly after Council_Room play
+  Expected 420 ; Observed 21 (Non-Boundary)
+   (player 0, who did not play council_room)
+ Aborting remaining deck vs. hand comparison checks for player 0...
+
+
+8 - TEST #5018 @ LINE 346: Hand count not updated properly after Council_Room play
+  Expected 319 ; Observed 22 (Non-Boundary)
+   (player 0, who played council_room)
+ Aborting remaining deck vs. hand comparison checks for player 0...
+
+
+9 - TEST #5018 @ LINE 386: Cards not gained from top of deck to top of hand (Non-Boundary)
+   (player 3, who did not play council_room)
+
+
+10 - TEST #5119 @ LINE 346: Hand count not updated properly after Council_Room play
+  Expected 175 ; Observed 11 (Non-Boundary)
+   (player 0, who did not play council_room)
+ Aborting remaining deck vs. hand comparison checks for player 0...
+
+
+11 - TEST #5119 @ LINE 346: Hand count not updated properly after Council_Room play
+  Expected 372 ; Observed -1 (Non-Boundary)
+   (player 1, who did not play council_room)
+ Aborting remaining deck vs. hand comparison checks for player 1...
+
+
+12 - TEST #5119 @ LINE 372: Cards not gained from top of deck to top of hand (Non-Boundary)
+   (player 3, who played council_room)
+
+
+13 - TEST #7599 @ LINE 346: Hand count not updated properly after Council_Room play
+  Expected 348 ; Observed 9 (Non-Boundary)
+   (player 0, who did not play council_room)
+ Aborting remaining deck vs. hand comparison checks for player 0...
+
+
+14 - TEST #7935 @ LINE 346: Hand count not updated properly after Council_Room play
+  Expected 416 ; Observed 16 (Non-Boundary)
+   (player 0, who played council_room)
+ Aborting remaining deck vs. hand comparison checks for player 0...
+
+
+15 - TEST #7935 @ LINE 386: Cards not gained from top of deck to top of hand (Non-Boundary)
+   (player 3, who did not play council_room)
+
+
+16 - TEST #9181 @ LINE 346: Hand count not updated properly after Council_Room play
+  Expected 354 ; Observed -1 (Non-Boundary)
+   (player 0, who did not play council_room)
+ Aborting remaining deck vs. hand comparison checks for player 0...
+
+
+17 - TEST #9181 @ LINE 372: Cards not gained from top of deck to top of hand (Non-Boundary)
+   (player 3, who played council_room)
+
+
+	  Coverage Report:
+
+	Function 'council_roomEffect'
+Lines executed:100.00% of 9
+Branches executed:100.00% of 6
+Taken at least once:100.00% of 6
+
+The following functions are called by council_roomEffect...
+
+	Function 'drawCard'
+Lines executed:77.27% of 22
+Branches executed:100.00% of 6
+Taken at least once:66.67% of 6
+
+	Function 'discardCard'
+Lines executed:84.62% of 13
+Branches executed:100.00% of 6
+Taken at least once:50.00% of 6
+
+
+ --------------------------------- END ----------------------------------------------
+
+

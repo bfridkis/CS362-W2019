@@ -37,16 +37,18 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 	//Determine random number of players
 	int numPlayers = floor(Random() * NUM_PLAYERS) + 1;
 	
-	//Initialize hand/deck count holders for each player
-	int handCountBeforeCouncil_Room[numplayers] = {0},
-		deckCountBeforeCouncil_Room[numplayers] = {0};
+	//Declare hand/deck count holders for each player
+	int handCountBeforeCouncil_Room[numPlayers],
+		deckCountBeforeCouncil_Room[numPlayers];
 	
 	//Ensure discardCount, deckCount, and handCount are all set to 0
 	//and discard, deck, and hand are cleared for all players
 	for(i = 0; i < numPlayers; i++){
 		G->discardCount[i] = 0;
 		G->deckCount[i] = 0;
+		deckCountBeforeCouncil_Room[i] = 0;
 		G->handCount[i] = 0;
+		handCountBeforeCouncil_Room[i] = 0;
 		memset(G->discard[i], -1, sizeof(int) * MAX_DECK);
 		memset(G->deck[i], -1, sizeof(int) * MAX_DECK);
 		memset(G->hand[i], -1, sizeof(int) * MAX_HAND);
@@ -60,10 +62,17 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 	G->numActions = 1;
 	G->numPlayers = numPlayers;
 	memset(G->embargoTokens, 0, sizeof(int) * treasure_map + 1);
-	G->outpostPlayed = 0;
-	G->outpostTurn = 0;
 	memset(G->playedCards, -1, sizeof(int) * MAX_DECK);
 	G->playedCardCount = 0;
+	
+	//Store embargo token array, outpostPlayed, and outpostTurn
+	//values prior to council_room play
+	int embargoTokensBeforeCouncil_Room[27];
+	for(i = 0; i < 27; i++){
+		embargoTokensBeforeCouncil_Room[i] = G->embargoTokens[i];
+	}
+	int outpostPlayedBeforeCouncil_Room = G->outpostPlayed;
+	int outpostTurnBeforeCouncil_Room = G->outpostTurn;
 	
 	//Ensure supply pile counts are of known value before Council_Room play
 	//Set each to 10
@@ -75,7 +84,7 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 	int activePlayer = 0;
 	if(RANDOMIZE){
 		//Determine random player to play council_room
-		activePlayer = floor(Random() * numplayers);
+		activePlayer = floor(Random() * numPlayers);
 		G->whoseTurn = activePlayer;
 	}
 	else{
@@ -87,7 +96,7 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 		if(RANDOMIZE){
 			//Determine random deck size for each player in 
 			//range 1 - MAX_DECK
-			for(i = 0; i < numplayers; i++){
+			for(i = 0; i < numPlayers; i++){
 				deckCountBeforeCouncil_Room[i] = 1 + floor(Random() * MAX_DECK);
 			}
 		
@@ -98,7 +107,7 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 			}
 		}
 		else{
-			for(i = 0; i < numplayers; i++){
+			for(i = 0; i < numPlayers; i++){
 				deckCountBeforeCouncil_Room[i] = testNumber * 5;
 				if(deckCountBeforeCouncil_Room[i] >= MAX_DECK){
 					deckCountBeforeCouncil_Room[i] = 
@@ -114,14 +123,23 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 	if(RANDOMIZE){
 		//Determine random hand size for each player in 
 		//range 1 - MAX_HAND
-		for(i = 0; i < numplayers; i++){
+		for(i = 0; i < numPlayers; i++){
 			handCountBeforeCouncil_Room[i] = 1 + floor(Random() * MAX_HAND);
+			
+			//Without the following if statement, hand can potentially 
+			//exceed MAX_HAND, which will result in hand count and position
+			//failuers after call to council_roomEffect! See assignment4
+			//writeup for additional discussion on this matter.
+			
+			/* if(handCountBeforeCouncil_Room[i] > MAX_HAND - 4){
+				handCountBeforeCouncil_Room[i] = MAX_HAND - 4;
+			} */
 		}
 	}
 	else{
-		for(i = 0; i < numplayers; i++){
+		for(i = 0; i < numPlayers; i++){
 			handCountBeforeCouncil_Room[i] = (testNumber * 5) + 1;
-			if(handCountBeforeCouncil_Room[i] >= MAX_HAND){
+			if(handCountBeforeCouncil_Room[i] >= MAX_HAND - 4){
 				handCountBeforeCouncil_Room[i] = 
 				(handCountBeforeCouncil_Room[i] % MAX_HAND) + 1;
 			}
@@ -131,7 +149,7 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 	if(RANDOMIZE){
 		//Randomly load each player's deck according to randomly
 		//chosen deck size
-		for(m = 0; !emptyDecks && m < numplayers; m++){
+		for(m = 0; !emptyDecks && m < numPlayers; m++){
 			for(i = 0; i < deckCountBeforeCouncil_Room[m]; i++){
 				G->deck[m][i] = k[(int)floor(Random() * 10)];
 			}
@@ -144,7 +162,7 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 		//final multiple of 17, for deckCountBeforeCouncil_Room as determined above 
 		//(e.g. a 20 card deck will have 1 of each card plus 1 extra 
 		//curse, estate, and duchy.)
-		for(m = 0; !emptyDecks && m < numplayers; m++){
+		for(m = 0; !emptyDecks && m < numPlayers; m++){
 			for(i = 0, j = 0; i < deckCountBeforeCouncil_Room[m]; i++){
 				if(j < 7){
 					G->deck[m][i] = j++;
@@ -163,7 +181,7 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 	if(RANDOMIZE){
 		//Randomly load each player's hand according to randomly
 		//chosen hand size
-		for(m = 0; m < numplayers; m++){
+		for(m = 0; m < numPlayers; m++){
 			for(i = 0; i < handCountBeforeCouncil_Room[m]; i++){
 				G->hand[m][i] = k[(int)floor(Random() * 10)];
 			}
@@ -176,7 +194,7 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 		//final multiple of 17, for handCountBeforeCouncil_Room as 
 		//determined above (e.g. a 20 card deck will have 1 of each 
 		//card plus 1 extra curse, estate, and duchy.)
-		for(m = 0; m < numplayers; m++){
+		for(m = 0; m < numPlayers; m++){
 			for(i = 0, j = 0; i < handCountBeforeCouncil_Room[m]; i++){
 				if(j < 7){
 					G->hand[m][i] = j++;
@@ -210,16 +228,18 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 	//-- (Deterministic if RANDOMIZE is disabled
 	//-- as seed for initializeGame will remain constant
 	//-- with each run.)
-	for(i = 0; i < numplayers; i++){
+	for(i = 0; i < numPlayers; i++){
 		shuffle(i, G);
 	}
 	
 	//Store deck and hand info prior to adventurer call
 	
 	//For deck...
-	int deckCardCountByTypeBeforeCouncil_Room[numplayers][27] = {{0}};
-	int deckBeforeCouncil_Room[numplayers][MAX_DECK];
-	for(i = 0; i < numplayers; i++){
+	int deckCardCountByTypeBeforeCouncil_Room[numPlayers][27];
+	memset(deckCardCountByTypeBeforeCouncil_Room, 
+				0, sizeof(int) * numPlayers * 27);
+	int deckBeforeCouncil_Room[numPlayers][MAX_DECK];
+	for(i = 0; i < numPlayers; i++){
 		for(j = 0; j < G->deckCount[i]; j++){
 			deckBeforeCouncil_Room[i][j] = G->deck[i][j];
 			deckCardCountByTypeBeforeCouncil_Room[i][G->deck[i][j]]++;
@@ -228,9 +248,11 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	
 	//For hand...
-	int handCardCountByTypeBeforeCouncil_Room[numplayers][27] = {{0}};
-	//int handBeforeCouncil_Room[numplayers][MAX_DECK];				//Not needed since order of hand doesn't matter
-	for(i = 0; i < numplayers; i++){
+	int handCardCountByTypeBeforeCouncil_Room[numPlayers][27];
+	memset(handCardCountByTypeBeforeCouncil_Room, 
+				0, sizeof(int) * numPlayers * 27);
+	//int handBeforeCouncil_Room[numPlayers][MAX_DECK];				//Not needed since order of hand doesn't matter
+	for(i = 0; i < numPlayers; i++){
 		for(j = 0; j < G->handCount[i]; j++){
 			//handBeforeCouncil_Room[i][j] = G->hand[i][j];
 			handCardCountByTypeBeforeCouncil_Room[i][G->hand[i][j]]++;
@@ -252,9 +274,11 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//Determine how many of each card type have been removed from (or 
 	//erroneously added to) the deck
-	int deckCardCountByTypeAfterCouncil_Room[numplayers][27] = {{0}};
-	//int deckDiffsAfterCouncil_Room[numplayers][27] = {{0}};			//Not used, but may come in handy later...
-	for(m = 0; m < numplayers; m++){
+	int deckCardCountByTypeAfterCouncil_Room[numPlayers][27];
+	memset(deckCardCountByTypeAfterCouncil_Room, 
+				0, sizeof(int) * numPlayers * 27);
+	//int deckDiffsAfterCouncil_Room[numPlayers][27] = {{0}};			//Not used, but may come in handy later...
+	for(m = 0; m < numPlayers; m++){
 		for(i = 0; i < G->deckCount[m]; i++){
 			deckCardCountByTypeAfterCouncil_Room[m][G->deck[m][i]]++;
 		}
@@ -267,9 +291,12 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//Determine how many of each card type have been added to (or 
 	//erroneously removed from) the hand
-	int handCardCountByTypeAfterCouncil_Room[numplayers][27] = {{0}};
-	int handDiffsAfterCouncil_Room[numplayers][27] = {{0}};
-	for(m = 0; m < numplayers; m++){
+	int handCardCountByTypeAfterCouncil_Room[numPlayers][27];
+	memset(handCardCountByTypeAfterCouncil_Room, 
+				0, sizeof(int) * numPlayers * 27);
+	int handDiffsAfterCouncil_Room[numPlayers][27];
+	memset(handDiffsAfterCouncil_Room, 0, sizeof(int) * numPlayers * 27);
+	for(m = 0; m < numPlayers; m++){
 		for(i = 0; i < G->handCount[m]; i++){
 			handCardCountByTypeAfterCouncil_Room[m][G->hand[m][i]]++;
 		}
@@ -287,7 +314,7 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 	//sure hand is the same as before the council_room play plus 3
 	//new cards (4 are gained from deck but 1 council_room should be
 	//discarded from hand, net gain of 3).
-	for(i = 0; i < numplayers && !emptyDecks; i++){
+	for(i = 0; i < numPlayers && !emptyDecks; i++){
 		//Check deck counts...
 		if(((i != activePlayer && 
 		   deckCountBeforeCouncil_Room[i] - 1 != G->deckCount[i]) ||
@@ -443,7 +470,7 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	
 	// EMPTY DECKS BOUNDARY CHECKS ...
-	for(i = 0; i < numplayers && emptyDecks; i++){
+	for(i = 0; i < numPlayers && emptyDecks; i++){
 		
 		//For emptyDecks boundary test, make sure no decks change
 		if(G->deckCount[i] != 0 && ++(*failCt) <= MAX_FAILS){
@@ -511,7 +538,7 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 		}
 	}
 	
-	//Check that council_room is placed in the active player's discard pile,
+	/* //Check that council_room is placed in the active player's discard pile,
 	//and that no other discard pile index value (for active player) has changed
 	for(i = 0; i < MAX_DECK; i++){
 		if(i == 0 && G->discard[activePlayer][i] != council_room 
@@ -537,10 +564,10 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 			failures[*failCt-1].testNumber = testNumber;
 		}
 		break;
-	}
+	} */
 	
 	//Make sure each non-active player's discard pile does not change
-	for(m = 0; m < numplayers && emptyDecks; m++){
+	for(m = 0; m < numPlayers && emptyDecks; m++){
 		if(m == activePlayer){
 			continue;
 		}
@@ -598,37 +625,40 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//Check embargo tokens...
 	for(i = 0; i < treasure_map + 1; i++){
-		if(G->embargoTokens[i] != 0 && ++(*failCt) <= MAX_FAILS){
-			failures[*failCt-1].lineNumber = __LINE__;
-			sprintf(failures[*failCt-1].description,
-			"Number of embargo tokens changed unexpectedly for card %d\n"
-			"  Expected 0 ; Observed %d %s\n", 
-			i, G->embargoTokens[i],
-			emptyDecks ? "(Boundary)" : "(Non-Boundary)");
-			failures[*failCt-1].testNumber = testNumber;
+		if(G->embargoTokens[i] != embargoTokensBeforeCouncil_Room[i]
+			&& ++(*failCt) <= MAX_FAILS){
+				failures[*failCt-1].lineNumber = __LINE__;
+				sprintf(failures[*failCt-1].description,
+				"Number of embargo tokens changed unexpectedly for card %d\n"
+				"  Expected 0 ; Observed %d %s\n", 
+				i, G->embargoTokens[i],
+				emptyDecks ? "(Boundary)" : "(Non-Boundary)");
+				failures[*failCt-1].testNumber = testNumber;
 		}
 	}
 	
 	//Check outpost played...
-	if(G->outpostPlayed != 0 && ++(*failCt) <= MAX_FAILS){
-		failures[*failCt-1].lineNumber = __LINE__;
-		sprintf(failures[*failCt-1].description,
-		"Outpost played changed unexpectedly\n"
-		"  Expected 0 ; Observed %d %s\n", 
-		G->outpostPlayed,
-		emptyDecks ? "(Boundary)" : "(Non-Boundary)");
-		failures[*failCt-1].testNumber = testNumber;
+	if(G->outpostPlayed != outpostPlayedBeforeCouncil_Room
+		&& ++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Outpost played changed unexpectedly\n"
+			"  Expected 0 ; Observed %d %s\n", 
+			G->outpostPlayed,
+			emptyDecks ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check outpost turn...
-	if(G->outpostTurn != 0 && ++(*failCt) <= MAX_FAILS){
-		failures[*failCt-1].lineNumber = __LINE__;
-		sprintf(failures[*failCt-1].description,
-		"Outpost turn changed unexpectedly\n"
-		"  Expected 0 ; Observed %d %s\n", 
-		G->outpostTurn,
-		emptyDecks ? "(Boundary)" : "(Non-Boundary)");
-		failures[*failCt-1].testNumber = testNumber;
+	if(G->outpostTurn != outpostTurnBeforeCouncil_Room
+		&& ++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Outpost turn changed unexpectedly\n"
+			"  Expected 0 ; Observed %d %s\n", 
+			G->outpostTurn,
+			emptyDecks ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//NOTE: I initially wrote this test assuming the discardCard

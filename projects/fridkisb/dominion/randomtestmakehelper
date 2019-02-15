@@ -7,7 +7,7 @@ coverage() {
 
 	echo -e "\t\t++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> ${programName}.out
 	echo -e "\t\t++                                                                  ++" >> ${programName}.out
-	echo -e "\t\t++          \t\t\t      ${programName}                       ++" >> ${programName}.out
+	echo -e "\t\t++          \t\t         ${programName}                        ++" >> ${programName}.out
 	echo -e "\t\t++                                                                  ++" >> ${programName}.out
 	echo -e "\t\t++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> ${programName}.out
 

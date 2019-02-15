@@ -1,20 +1,21 @@
 /* ---------------------------------------------------------------------------
  * Benjamin Fridkis - CS362 
- * Assignment 3
+ * Assignment 4
  *
- *                         cardtest4.c
+ *                         randomtestcard1.c
  *
  *	     Test for "council_room" card effect - See cardEffects.c line 29
  *
  * Include the following lines in your makefile:
  *
- * cardtest4: cardtest4.c _cardtest4helper.o dominion.o cardEffects.o rngs.o
- * 		gcc -o cardtest4 cardtest4.c -g dominion.o cardEffects.o 
- * 		_cardtest4helper.o rngs.o $(CFLAGS)
+ * randomtestcard1: randomtestcard1.c _randomtestcard1helper.o dominion.o \
+ *					cardEffects.o rngs.o
+ * 		gcc -o randomtestcard1 randomtestcard1.c -g dominion.o cardEffects.o 
+ * 		_randomtestcard1helper.o rngs.o $(CFLAGS)
  * ---------------------------------------------------------------------------
  */
 
-#include "_cardtest4helper.h"
+#include "_randomtestcard1helper.h"
 
 int main (int argc, char** argv) {
 	struct gameState G;
@@ -23,13 +24,19 @@ int main (int argc, char** argv) {
 	failedTest failures[MAX_FAILS];
 	int failCt = 0;
 	
-	printf("\t\t\t\t\t" "Starting cardtest4 - Testing 'council_room' card\n");
+	printf("\t\t\t\t" "Starting randomtestcard1 - Testing 'council_room' card\n");
 	
 	if(RANDOMIZE){
-		printf("\n  Executing %d Council_Room %s using hands with random assortment of \n"
-			   "\t  supply cards, with at least 1 in deck for non-active players,\n"
-			   "\t  and 4 in deck for active players.\n\n"
-			   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in cardtest4.c\n"
+		printf("\n  Executing %d Council_Room %s using hands and decks with random assortment\n"
+			   "\t  of supply cards, with at least 1 card in deck for non-active players,\n"
+			   "\t  and 4 cards in deck for active players. Hand and deck sizes are random\n"
+			   "\t  for each player, up to sizes MAX_HAND and MAX_DECK respectively. The number\n"
+			   "\t  of players is random up to MAX_PLAYER. The active player is chosen randomly,\n"
+			   "\t  as well as the starting hand position for the active player's council_room card.\n"
+			   "\t  The entire game state is randomized before play, and only pertinent data\n"
+			   "\t  structures are initialized to known values thereafter. The seed value for the\n"
+			   "\t  game is random based on the system clock to ensure non-determinism.\n\n"
+			   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in randomtestcard1.c\n"
 			   "\t\t" "  to modify number of plays.\n", COUNCIL_ROOM_CALLS,
 			   COUNCIL_ROOM_CALLS > 1 ? "plays" : "play");
 	}
@@ -47,7 +54,7 @@ int main (int argc, char** argv) {
 		   "\t\t" "  to modify number of plays.\n\n"
 		   "\t\t" " -Random test generator can be turned on\n"
 		   "\t\t" "  by setting the constant 'RANDOMIZE' to 1\n"
-		   "\t\t" "  in _cardtest4helper.h.\n\n", COUNCIL_ROOM_CALLS, 
+		   "\t\t" "  in _randomtestcard1helper.h.\n\n", COUNCIL_ROOM_CALLS, 
 		   COUNCIL_ROOM_CALLS > 1 ? "plays" : "play", MAX_DECK, MAX_DECK);
 	}
 
@@ -65,6 +72,7 @@ int main (int argc, char** argv) {
 			for(j = 0; j < 10; j++){		
 				k[j] = Random() * 19 + 7;
 			}
+			//Generate random seed value
 			seed = Random() * INT_MAX;
 		}
 		else{
@@ -77,8 +85,8 @@ int main (int argc, char** argv) {
 		initializeGame(NUM_PLAYERS, k, seed, &G);
 		
 		//Play Council_Room with random kingdom card set.
-		//(see _cardtest4helper for more details)
-		_cardtest4helper(k, &G, failures, &failCt, 0, i + 1);
+		//(see _randomtestcard1helper for more details)
+		_randomtestcard1helper(k, &G, failures, &failCt, 0, i + 1);
 	}
 	
 	if(RANDOMIZE){
@@ -94,7 +102,7 @@ int main (int argc, char** argv) {
 	if(RANDOMIZE){
 		//Generate set of 10 random Kingdom cards
 		for(j = 0; j < 10; j++){		
-			k[j] = Random() * 19 + 7;
+			k[j] = floor(Random() * 20) + 7;
 		}
 		seed = Random() * INT_MAX;
 	}
@@ -104,7 +112,7 @@ int main (int argc, char** argv) {
 		}
 	}
 	initializeGame(NUM_PLAYERS, k, seed, &G);
-	_cardtest4helper(k, &G, failures, &failCt, 1, COUNCIL_ROOM_CALLS + 1);
+	_randomtestcard1helper(k, &G, failures, &failCt, 1, COUNCIL_ROOM_CALLS + 1);
 	
 	printf("\n\n\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULTS SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	
@@ -172,7 +180,7 @@ int main (int argc, char** argv) {
 				   "\t\t to print more errors.\n\n",
 						failCt, failCt > 0 ? "s" : "", MAX_FAILS);
 		}
-		printf("  (Note: See _cardtest4helper.c when referencing line #)\n\n");
+		printf("  (Note: See _randomtestcard1helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
 			printf("%d - TEST #%d @ LINE %d: %s\n\n", 

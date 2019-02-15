@@ -30,8 +30,8 @@ _cardtest2helper.o: _cardtest2helper.c _cardtest2helper.h dominion.o
 _cardtest3helper.o: _cardtest3helper.c _cardtest3helper.h dominion.o
 	gcc -c _cardtest3helper.c -g  $(CFLAGS)
 	
-_cardtest4helper.o: _cardtest4helper.c _cardtest4helper.h dominion.o
-	gcc -c _cardtest4helper.c -g  $(CFLAGS)
+_randomtestcard1helper.o: _randomtestcard1helper.c _randomtestcard1helper.h dominion.o
+	gcc -c _randomtestcard1helper.c -g  $(CFLAGS)
 	
 playdom: dominion.o playdom.c
 	gcc -o playdom playdom.c -g dominion.o cardEffects.o rngs.o $(CFLAGS)
@@ -67,16 +67,15 @@ cardtest2: cardtest2.c _cardtest2helper.o dominion.o cardEffects.o rngs.o
 cardtest3: cardtest3.c _cardtest3helper.o dominion.o cardEffects.o rngs.o
 	gcc -o cardtest3 cardtest3.c -g dominion.o cardEffects.o _cardtest3helper.o rngs.o $(CFLAGS)
 	
-cardtest4: cardtest4.c _cardtest4helper.o dominion.o cardEffects.o rngs.o
-	gcc -o cardtest4 cardtest4.c -g dominion.o cardEffects.o _cardtest4helper.o rngs.o $(CFLAGS)	
+randomtestcard1: randomtestcard1.c _randomtestcard1helper.o dominion.o cardEffects.o rngs.o
+	gcc -o randomtestcard1 randomtestcard1.c -g dominion.o cardEffects.o _randomtestcard1helper.o rngs.o $(CFLAGS)	
 	
 testAll: dominion.o testSuite.c 
 	gcc -o testSuite testSuite.c -g  dominion.o cardEffects.o rngs.o $(CFLAGS)
 	
-unittestresults: unittest1 unittest2 unittest3 unittest4 \
-				 cardtest1 cardtest2 cardtest3 cardtest4			 
-	@chmod +x testmakehelper
-	@./testmakehelper
+randomtestresults: randomtestcard1			 
+	@chmod +x randomtestmakehelper
+	@./randomtestmakehelper randomtestcard1
 
 interface.o: interface.h interface.c
 	gcc -c interface.c -g  $(CFLAGS)
@@ -94,8 +93,7 @@ all: playdom player
 
 clean:
 	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno \
-	*.so *.out testDrawCard testDrawCard.exe unittest1 unittest2 unittest3 unittest4 \
-	cardtest1 cardtest2 cardtest3 cardtest4
+	*.so *.out testDrawCard testDrawCard.exe randomtestcard1
 	
 # References
 # https://stackoverflow.com/questions/3824500/compiling-c-on-remote-linux-machine-clock-skew-detected-warning

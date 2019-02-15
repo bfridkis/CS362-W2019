@@ -1,19 +1,19 @@
 /* -------------------------------------
  * Benjamin Fridkis - CS362 
- * Assignment 3
+ * Assignment 4
  *
- *       _unittest4helper.h
+ *       _cardtest3helper.h
  *
- * Header file for _unittest4helper.c.
+ * Header file for _cardtest3helper.c.
  * -------------------------------------
  */
 
-#ifndef _UNITTEST4HELPER_H
-#define _UNITTEST4HELPER_H
+#ifndef _CARDTEST3HELPER_H
+#define _CARDTEST3HELPER_H
 
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
-#define MAX_FAILS 10
+#define MAX_FAILS 20
 
 //Toggle randomized inputs on/off (0 = off, 1 = on)
 #define RANDOMIZE 0
@@ -21,16 +21,18 @@
 //Number of non-boundary test runs, 
 //also determines input sizes for each run,
 //if RANDOMIZE is set to 0. 
-//(See unittest4.c for more details.)
-#define NUM_COIN_UPDATES 100
+//(See cardtest3.c for more details.)
+#define CUTPURSE_CALLS 1
+
+#define NUM_PLAYERS 4
 
 #include "dominion.h"
 #include "dominion_helpers.h"
 #include <string.h>
 #include <stdio.h>
 #include <assert.h>
-#include "rngs.h"
 #include <limits.h>
+#include "rngs.h"
 
 struct failedTest {
 	int lineNumber;
@@ -40,7 +42,8 @@ struct failedTest {
 
 typedef struct failedTest failedTest;
 
-int _unittest4helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int isNoTreasureTest, int isNoBonusTest, int testNumber);
+int _cardtest3helper(int k[], struct gameState* G, failedTest failures[], 
+	int* failCt, int noCopper, int testNumber);
+
 
 #endif

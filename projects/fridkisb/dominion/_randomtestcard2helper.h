@@ -1,15 +1,15 @@
 /* -------------------------------------
  * Benjamin Fridkis - CS362 
- * Assignment 3
+ * Assignment 4
  *
- *       _cardtest1helper.h
+ *       _cardtest2helper.h
  *
- * Header file for _cardtest1helper.c.
+ * Header file for _cardtest2helper.c.
  * -------------------------------------
  */
 
-#ifndef _CARDTEST1HELPER_H
-#define _CARDTEST1HELPER_H
+#ifndef _CARDTEST2HELPER_H
+#define _CARDTEST2HELPER_H
 
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
@@ -21,8 +21,8 @@
 //Number of non-boundary test runs, 
 //also determines input sizes for each run,
 //if RANDOMIZE is set to 0. 
-//(See cardtest1.c for more details.)
-#define SMITHY_CALLS 1
+//(See cardtest2.c for more details.)
+#define ADVENTURER_CALLS 1
 
 #define NUM_PLAYERS 2
 
@@ -42,8 +42,8 @@ struct failedTest {
 
 typedef struct failedTest failedTest;
 
-int _cardtest1helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int deckCardCountSpecifier, int isBoundary, int testNumber);
+int _cardtest2helper(int k[], struct gameState* G, failedTest failures[], 
+	int* failCt, int treasureCardCountSpecifier, int isBoundary, int testNumber);
 
 
 #endif

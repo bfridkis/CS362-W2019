@@ -1,33 +1,49 @@
-/* ---------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------
  * Benjamin Fridkis - CS362 
- * Assignment 3
+ * Assignment 4
  *
- *                       _cardtest4helper.c
+ *                       _randomtestcard1helper.c
  *
- *		            Helper function for cardtest4.c
+ *		            Helper function for randomtestcard1.c
  *
  *	      (Test for "council_room" card effect - See cardEffects.c line 5)
  *
  *            Include the following lines in your makefile:
  *
- * _cardtest4helper.o: _cardtest4helper.c _cardtest4helper.h dominion.o
- *		gcc -c _cardtest4helper.c -g  $(CFLAGS)
+ * _randomtestcard1helper.o: _randomtestcard1helper.c _randomtestcard1helper.h \
+ *							 dominion.o
+ *		gcc -c _randomtestcard1helper.c -g  $(CFLAGS)
  *
- * ---------------------------------------------------------------------------
+ * ------------------------------------------------------------------------------
  */
  
-#include "_cardtest4helper.h"
+#include "_randomtestcard1helper.h"
  
-int _cardtest4helper(int k[], struct gameState* G, failedTest failures[], 
+int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[], 
 	int* failCt, int emptyDecks, int testNumber){
 		
 	//Test value variables	   
-	int i, j, m, handCountBeforeCouncil_Room[NUM_PLAYERS] = {0},
-				 deckCountBeforeCouncil_Room[NUM_PLAYERS] = {0};
+	int i, j, m;
+	
+	//Re-select random stream 2 (since initializeGame will have selected
+	//stream 1 in parent function (main, see randomtestcard1.c)
+	SelectStream(2);
+	
+	//Randomize gamestate struct
+	for(i = 0; i < sizeof(struct gameState); i++){
+		((char*)G)[i] = floor(Random() * 256);
+	}
+	
+	//Determine random number of players
+	int numPlayers = floor(Random() * NUM_PLAYERS) + 1;
+	
+	//Initialize hand/deck count holders for each player
+	int handCountBeforeCouncil_Room[numplayers] = {0},
+		deckCountBeforeCouncil_Room[numplayers] = {0};
 	
 	//Ensure discardCount, deckCount, and handCount are all set to 0
 	//and discard, deck, and hand are cleared for all players
-	for(i = 0; i < NUM_PLAYERS; i++){
+	for(i = 0; i < numPlayers; i++){
 		G->discardCount[i] = 0;
 		G->deckCount[i] = 0;
 		G->handCount[i] = 0;
@@ -42,6 +58,7 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	G->coins = 0;
 	G->numBuys = 1;
 	G->numActions = 1;
+	G->numPlayers = numPlayers;
 	memset(G->embargoTokens, 0, sizeof(int) * treasure_map + 1);
 	G->outpostPlayed = 0;
 	G->outpostTurn = 0;
@@ -54,15 +71,11 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 		G->supplyCount[i] = 10;
 	}
 	
-	//Re-select random stream 2 (since initializeGame will have selected
-	//stream 1 in parent function (main, see cardtest4.c)
-	SelectStream(2);
-	
 	//Determine active player, randomly if indicated
 	int activePlayer = 0;
 	if(RANDOMIZE){
 		//Determine random player to play council_room
-		activePlayer = Random() * (NUM_PLAYERS - 1);
+		activePlayer = floor(Random() * numplayers);
 		G->whoseTurn = activePlayer;
 	}
 	else{
@@ -74,8 +87,8 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 		if(RANDOMIZE){
 			//Determine random deck size for each player in 
 			//range 1 - MAX_DECK
-			for(i = 0; i < NUM_PLAYERS; i++){
-				deckCountBeforeCouncil_Room[i] = 1 + (Random() * (MAX_DECK - 1));
+			for(i = 0; i < numplayers; i++){
+				deckCountBeforeCouncil_Room[i] = 1 + floor(Random() * MAX_DECK);
 			}
 		
 			//Ensure active player has at least 4 cards to draw,
@@ -85,7 +98,7 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 			}
 		}
 		else{
-			for(i = 0; i < NUM_PLAYERS; i++){
+			for(i = 0; i < numplayers; i++){
 				deckCountBeforeCouncil_Room[i] = testNumber * 5;
 				if(deckCountBeforeCouncil_Room[i] >= MAX_DECK){
 					deckCountBeforeCouncil_Room[i] = 
@@ -101,12 +114,12 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	if(RANDOMIZE){
 		//Determine random hand size for each player in 
 		//range 1 - MAX_HAND
-		for(i = 0; i < NUM_PLAYERS; i++){
-			handCountBeforeCouncil_Room[i] = 1 + (Random() * (MAX_HAND - 1));
+		for(i = 0; i < numplayers; i++){
+			handCountBeforeCouncil_Room[i] = 1 + floor(Random() * MAX_HAND);
 		}
 	}
 	else{
-		for(i = 0; i < NUM_PLAYERS; i++){
+		for(i = 0; i < numplayers; i++){
 			handCountBeforeCouncil_Room[i] = (testNumber * 5) + 1;
 			if(handCountBeforeCouncil_Room[i] >= MAX_HAND){
 				handCountBeforeCouncil_Room[i] = 
@@ -114,49 +127,74 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 			}
 		}
 	}
-	//Load each player's deck with an equal number of each card,
-	//plus an extra starting at curse for each remainder after 
-	//final multiple of 17, for deckCountBeforeCouncil_Room as determined above 
-	//(e.g. a 20 card deck will have 1 of each card plus 1 extra 
-	//curse, estate, and duchy.)
-	for(m = 0; !emptyDecks && m < NUM_PLAYERS; m++){
-		for(i = 0, j = 0; i < deckCountBeforeCouncil_Room[m]; i++){
-			if(j < 7){
-				G->deck[m][i] = j++;
+	
+	if(RANDOMIZE){
+		//Randomly load each player's deck according to randomly
+		//chosen deck size
+		for(m = 0; !emptyDecks && m < numplayers; m++){
+			for(i = 0; i < deckCountBeforeCouncil_Room[m]; i++){
+				G->deck[m][i] = k[(int)floor(Random() * 10)];
 			}
-			else{
-				G->deck[m][i] = k[j++ - 7];
-			}
-			if(j == 17){
-				j = 0;
-			}
+			G->deckCount[m] = deckCountBeforeCouncil_Room[m];
 		}
-		G->deckCount[m] = deckCountBeforeCouncil_Room[m];
+	}
+	else{
+		//Load each player's deck with an equal number of each card,
+		//plus an extra starting at curse for each remainder after 
+		//final multiple of 17, for deckCountBeforeCouncil_Room as determined above 
+		//(e.g. a 20 card deck will have 1 of each card plus 1 extra 
+		//curse, estate, and duchy.)
+		for(m = 0; !emptyDecks && m < numplayers; m++){
+			for(i = 0, j = 0; i < deckCountBeforeCouncil_Room[m]; i++){
+				if(j < 7){
+					G->deck[m][i] = j++;
+				}
+				else{
+					G->deck[m][i] = k[j++ - 7];
+				}
+				if(j == 17){
+					j = 0;
+				}
+			}
+			G->deckCount[m] = deckCountBeforeCouncil_Room[m];
+		}
 	}
 	
-	//Load each player's hand with an equal number of each card,
-	//plus an extra starting at curse for each remainder after 
-	//final multiple of 17, for handCountBeforeCouncil_Room as 
-	//determined above (e.g. a 20 card deck will have 1 of each 
-	//card plus 1 extra curse, estate, and duchy.)
-	for(m = 0; m < NUM_PLAYERS; m++){
-		for(i = 0, j = 0; i < handCountBeforeCouncil_Room[m]; i++){
-			if(j < 7){
-				G->hand[m][i] = j++;
+	if(RANDOMIZE){
+		//Randomly load each player's hand according to randomly
+		//chosen hand size
+		for(m = 0; m < numplayers; m++){
+			for(i = 0; i < handCountBeforeCouncil_Room[m]; i++){
+				G->hand[m][i] = k[(int)floor(Random() * 10)];
 			}
-			else{
-				G->hand[m][i] = k[j++ - 7];
-			}
-			if(j == 17){
-				j = 0;
-			}
+			G->handCount[m] = handCountBeforeCouncil_Room[m];
 		}
-		G->handCount[m] = handCountBeforeCouncil_Room[m];
+	}
+	else{
+		//Load each player's hand with an equal number of each card,
+		//plus an extra starting at curse for each remainder after 
+		//final multiple of 17, for handCountBeforeCouncil_Room as 
+		//determined above (e.g. a 20 card deck will have 1 of each 
+		//card plus 1 extra curse, estate, and duchy.)
+		for(m = 0; m < numplayers; m++){
+			for(i = 0, j = 0; i < handCountBeforeCouncil_Room[m]; i++){
+				if(j < 7){
+					G->hand[m][i] = j++;
+				}
+				else{
+					G->hand[m][i] = k[j++ - 7];
+				}
+				if(j == 17){
+					j = 0;
+				}
+			}
+			G->handCount[m] = handCountBeforeCouncil_Room[m];
+		}
 	}
 	int handPos;
 	if(RANDOMIZE){
 		//Assign a random hand position for Council_Room for active player
-		handPos = Random() * (G->handCount[activePlayer] - 1);
+		handPos = floor(Random() * G->handCount[activePlayer]);
 		if(handPos == -1){
 			handPos = 0;
 		}
@@ -166,22 +204,22 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	G->hand[activePlayer][handPos] = council_room;
 	//Shuffle each player's deck 
-	//--(shuffle has been tested via unittest3.
-	//-- see unittest3.c and _unittest3helper.c
+	//--(shuffle has been tested via unittest3. 
+	//-- see unittest3.c and _unittest3helper.c (of Assignment 3)
 	//-- for additional details.)
-	//-- (Deterministic if seed is RANDOMIZE is disabled
+	//-- (Deterministic if RANDOMIZE is disabled
 	//-- as seed for initializeGame will remain constant
 	//-- with each run.)
-	for(i = 0; i < NUM_PLAYERS; i++){
+	for(i = 0; i < numplayers; i++){
 		shuffle(i, G);
 	}
 	
 	//Store deck and hand info prior to adventurer call
 	
 	//For deck...
-	int deckCardCountByTypeBeforeCouncil_Room[NUM_PLAYERS][27] = {{0}};
-	int deckBeforeCouncil_Room[NUM_PLAYERS][MAX_DECK];
-	for(i = 0; i < NUM_PLAYERS; i++){
+	int deckCardCountByTypeBeforeCouncil_Room[numplayers][27] = {{0}};
+	int deckBeforeCouncil_Room[numplayers][MAX_DECK];
+	for(i = 0; i < numplayers; i++){
 		for(j = 0; j < G->deckCount[i]; j++){
 			deckBeforeCouncil_Room[i][j] = G->deck[i][j];
 			deckCardCountByTypeBeforeCouncil_Room[i][G->deck[i][j]]++;
@@ -190,9 +228,9 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	
 	//For hand...
-	int handCardCountByTypeBeforeCouncil_Room[NUM_PLAYERS][27] = {{0}};
-	//int handBeforeCouncil_Room[NUM_PLAYERS][MAX_DECK];				//Not needed since order of hand doesn't matter
-	for(i = 0; i < NUM_PLAYERS; i++){
+	int handCardCountByTypeBeforeCouncil_Room[numplayers][27] = {{0}};
+	//int handBeforeCouncil_Room[numplayers][MAX_DECK];				//Not needed since order of hand doesn't matter
+	for(i = 0; i < numplayers; i++){
 		for(j = 0; j < G->handCount[i]; j++){
 			//handBeforeCouncil_Room[i][j] = G->hand[i][j];
 			handCardCountByTypeBeforeCouncil_Room[i][G->hand[i][j]]++;
@@ -214,9 +252,9 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//Determine how many of each card type have been removed from (or 
 	//erroneously added to) the deck
-	int deckCardCountByTypeAfterCouncil_Room[NUM_PLAYERS][27] = {{0}};
-	//int deckDiffsAfterCouncil_Room[NUM_PLAYERS][27] = {{0}};			//Not used, but may come in handy later...
-	for(m = 0; m < NUM_PLAYERS; m++){
+	int deckCardCountByTypeAfterCouncil_Room[numplayers][27] = {{0}};
+	//int deckDiffsAfterCouncil_Room[numplayers][27] = {{0}};			//Not used, but may come in handy later...
+	for(m = 0; m < numplayers; m++){
 		for(i = 0; i < G->deckCount[m]; i++){
 			deckCardCountByTypeAfterCouncil_Room[m][G->deck[m][i]]++;
 		}
@@ -229,9 +267,9 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//Determine how many of each card type have been added to (or 
 	//erroneously removed from) the hand
-	int handCardCountByTypeAfterCouncil_Room[NUM_PLAYERS][27] = {{0}};
-	int handDiffsAfterCouncil_Room[NUM_PLAYERS][27] = {{0}};
-	for(m = 0; m < NUM_PLAYERS; m++){
+	int handCardCountByTypeAfterCouncil_Room[numplayers][27] = {{0}};
+	int handDiffsAfterCouncil_Room[numplayers][27] = {{0}};
+	for(m = 0; m < numplayers; m++){
 		for(i = 0; i < G->handCount[m]; i++){
 			handCardCountByTypeAfterCouncil_Room[m][G->hand[m][i]]++;
 		}
@@ -249,7 +287,7 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	//sure hand is the same as before the council_room play plus 3
 	//new cards (4 are gained from deck but 1 council_room should be
 	//discarded from hand, net gain of 3).
-	for(i = 0; i < NUM_PLAYERS && !emptyDecks; i++){
+	for(i = 0; i < numplayers && !emptyDecks; i++){
 		//Check deck counts...
 		if(((i != activePlayer && 
 		   deckCountBeforeCouncil_Room[i] - 1 != G->deckCount[i]) ||
@@ -405,7 +443,7 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	
 	// EMPTY DECKS BOUNDARY CHECKS ...
-	for(i = 0; i < NUM_PLAYERS && emptyDecks; i++){
+	for(i = 0; i < numplayers && emptyDecks; i++){
 		
 		//For emptyDecks boundary test, make sure no decks change
 		if(G->deckCount[i] != 0 && ++(*failCt) <= MAX_FAILS){
@@ -502,7 +540,7 @@ int _cardtest4helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	
 	//Make sure each non-active player's discard pile does not change
-	for(m = 0; m < NUM_PLAYERS && emptyDecks; m++){
+	for(m = 0; m < numplayers && emptyDecks; m++){
 		if(m == activePlayer){
 			continue;
 		}

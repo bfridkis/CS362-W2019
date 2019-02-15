@@ -26,7 +26,7 @@ coverage() {
 		printf "\t" >> unittestresults.out
 		line=$(gcov dominion.c --function-summaries -b | grep -n ${ancillary_functs[$i]} | cut -f1 -d:)
 		((line+=3))
-		gcov dominion.c --function-summaries -b | head -n${line} | tail -n4 >> unittestresults.out
+		gcov dominion.c --function-summaries -b | head -n${line} | tail -n4 >> ${programName:0:9}.out
 	done
 	
 	echo -e "\n\n --------------------------------- END ${testTypeCaps} ${testNum} -------------------------------\n\n" >> unittestresults.out

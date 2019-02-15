@@ -1,6 +1,6 @@
 /* ---------------------------------------------------------------------------
  * Benjamin Fridkis - CS362 
- * Assignment 3
+ * Assignment 4
  *
  *                         cardtest3.c
  *

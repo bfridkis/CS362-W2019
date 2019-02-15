@@ -1,11 +1,11 @@
-/* -------------------------------------
+/* ----------------------------------------------
  * Benjamin Fridkis - CS362 
  * Assignment 4
  *
- *       _cardtest2helper.h
+ *       _randomtestadventurerhelper.h
  *
- * Header file for _cardtest2helper.c.
- * -------------------------------------
+ * Header file for _randomtestadventurerhelper.c.
+ * -----------------------------------------------
  */
 
 #ifndef _CARDTEST2HELPER_H
@@ -21,10 +21,14 @@
 //Number of non-boundary test runs, 
 //also determines input sizes for each run,
 //if RANDOMIZE is set to 0. 
-//(See cardtest2.c for more details.)
+//(See randomtestadventurer.c for more details.)
 #define ADVENTURER_CALLS 1
 
-#define NUM_PLAYERS 2
+#if RANDOMIZE 
+#define NUM_PLAYERS MAX_PLAYERS
+#else 
+#define NUM_PLAYERS 4
+#endif
 
 #include "dominion.h"
 #include "dominion_helpers.h"
@@ -42,7 +46,7 @@ struct failedTest {
 
 typedef struct failedTest failedTest;
 
-int _cardtest2helper(int k[], struct gameState* G, failedTest failures[], 
+int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failures[], 
 	int* failCt, int treasureCardCountSpecifier, int isBoundary, int testNumber);
 
 

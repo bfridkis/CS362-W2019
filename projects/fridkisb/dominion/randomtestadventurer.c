@@ -2,19 +2,20 @@
  * Benjamin Fridkis - CS362 
  * Assignment 4
  *
- *                         cardtest2.c
+ *                         randomtestadventurer.c
  *
  *	     Test for "adventurer" card effect - See cardEffects.c line 5
  *
  * Include the following lines in your makefile:
  *
- * cardtest2: cardtest2.c _cardtest2helper.o dominion.o cardEffects.o rngs.o
- * 		gcc -o cardtest2 cardtest2.c -g dominion.o cardEffects.o 
- * 		_cardtest2helper.o rngs.o $(CFLAGS)
+ * randomtestadventurer: randomtestadventurer.c _randomtestadventurerhelper.o \
+ *						dominion.o cardEffects.o rngs.o
+ * 		gcc -o randomtestadventurer randomtestadventurer.c -g dominion.o \
+ *		cardEffects.o _randomtestadventurerhelper.o rngs.o $(CFLAGS)
  * ---------------------------------------------------------------------------
  */
 
-#include "_cardtest2helper.h"
+#include "_randomtestadventurerhelper.h"
 
 int main (int argc, char** argv) {
 	struct gameState G;
@@ -23,12 +24,12 @@ int main (int argc, char** argv) {
 	failedTest failures[MAX_FAILS];
 	int failCt = 0;
 	
-	printf("\t\t\t\t\t" "Starting cardtest2 - Testing 'adventurer' card\n");
+	printf("\t\t\t\t\t" "Starting randomtestadventurer - Testing 'adventurer' card\n");
 	
 	if(RANDOMIZE){
 		printf("\n  Executing %d Adventurer %s using hands with random assortment of \n"
 			   "\t  supply cards, with at least 2 treasures in deck...\n\n"
-				"\t\t" " -Set 'ADVENTURER_CALLS' in cardtest2.c\n"
+				"\t\t" " -Set 'ADVENTURER_CALLS' in randomtestadventurer.c\n"
 			   "\t\t"  "  to modify number of plays.\n", ADVENTURER_CALLS,
 			   ADVENTURER_CALLS > 1 ? "plays" : "play");
 	}
@@ -38,15 +39,15 @@ int main (int argc, char** argv) {
 			   "\t" "  If the number of tests cause the deck size to equal or exceed %d when\n"
 			   "\t" "  calculated in this way, the deck size will reset to 1 and begin\n"
 			   "\t" "  incrementing by 1 with each additional successive test, but if\n"
-			   "\t" "  hand size < 6, hand size will be set to 6 (see _cardtest2helper.c line 90).\n"
+			   "\t" "  hand size < 6, hand size will be set to 6 (see _randomtestadventurerhelper.c line 90).\n"
 			   "\t\t" "-e.g. deck size for test 1 = 6, test 2 = 11, test 3 = 16...\n"
 			   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2...\n\n"
 			   "  Kingdom cards are adventurer through great_hall, as enumerated in dominion.h.\n\n"
-			   "\t\t" " -Set 'ADVENTURER_CALLS' in cardtest2.c\n"
+			   "\t\t" " -Set 'ADVENTURER_CALLS' in randomtestadventurer.c\n"
 			   "\t\t" "  to modify number of plays.\n\n"
 			   "\t\t" " -Random test generator can be turned on\n"
 			   "\t\t" "  by setting the constant 'RANDOMIZE' to 1\n"
-			   "\t\t" "  in _cardtest2helper.h.\n\n", ADVENTURER_CALLS, 
+			   "\t\t" "  in _randomtestadventurerhelper.h.\n\n", ADVENTURER_CALLS, 
 			   ADVENTURER_CALLS > 1 ? "plays" : "play", MAX_DECK, MAX_DECK);
 	}
 
@@ -77,8 +78,8 @@ int main (int argc, char** argv) {
 		
 		//Play Adventurer with random kingdom card set with a deck
 		//containing at least 2 treasure cards.
-		//(see _cardtest2helper for more details)
-		_cardtest2helper(k, &G, failures, &failCt, 2, 0, i + 1);
+		//(see _randomtestadventurerhelper for more details)
+		_randomtestadventurerhelper(k, &G, failures, &failCt, 2, 0, i + 1);
 	}
 	
 	if(RANDOMIZE){
@@ -103,7 +104,7 @@ int main (int argc, char** argv) {
 		}
 	}
 	initializeGame(2, k, seed, &G);
-	_cardtest2helper(k, &G, failures, &failCt, 1, 1, ADVENTURER_CALLS + 1);
+	_randomtestadventurerhelper(k, &G, failures, &failCt, 1, 1, ADVENTURER_CALLS + 1);
 	
 	if(RANDOMIZE){
 		printf("\n  BOUNDARY: Executing Adventurer play using hand with random assortment of \n"
@@ -127,7 +128,7 @@ int main (int argc, char** argv) {
 		}
 	}
 	initializeGame(2, k, seed, &G);
-	_cardtest2helper(k, &G, failures, &failCt, 0, 1, ADVENTURER_CALLS + 2);
+	_randomtestadventurerhelper(k, &G, failures, &failCt, 0, 1, ADVENTURER_CALLS + 2);
 	
 	if(RANDOMIZE){
 		printf("\n  BOUNDARY: Executing Adventurer play using hand with random assortment of \n"
@@ -153,7 +154,7 @@ int main (int argc, char** argv) {
 		}
 	}
 	initializeGame(2, k, seed, &G);
-	_cardtest2helper(k, &G, failures, &failCt, -1, 1, ADVENTURER_CALLS + 3);
+	_randomtestadventurerhelper(k, &G, failures, &failCt, -1, 1, ADVENTURER_CALLS + 3);
 	
 	printf("\n\n\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULTS SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	
@@ -195,7 +196,7 @@ int main (int argc, char** argv) {
 		   "\t\t"		"**  not contain at least 2 treasures, but hand has enough to make up the  ** \n" 
 		   "\t\t"		"** difference) or a segmentation fault in others (i.e. when there are not ** \n" 
 		   "\t\t"		"**   at least 2 treasures between deck, discard, and hand combined). This ** \n"
-		   "\t\t"		"**   program (cardtest2) has been deliberately set up to avoid a full on  ** \n"
+		   "\t\t"		"**   program (randomtestadventurer) has been deliberately set up to avoid a full on  ** \n"
 		   "\t\t"		"**    crash due to this error, so that all remaining tests and code will  ** \n"
 		   "\t\t"		"**     be processed to completion. The incorrect behavior (that does not  ** \n"
 		   "\t\t" 		"** result in a full crash) caused by this bug is captured in the BOUNDARY ** \n"
@@ -226,7 +227,7 @@ int main (int argc, char** argv) {
 				   "\t\t to print more errors.\n\n",
 						failCt, failCt > 0 ? "s" : "", MAX_FAILS);
 		}
-		printf("  (Note: See _cardtest2helper.c when referencing line #)\n\n");
+		printf("  (Note: See _randomtestadventurerhelper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
 			printf("%d - TEST #%d @ LINE %d: %s\n\n", 

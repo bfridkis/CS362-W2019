@@ -7,7 +7,11 @@ coverage() {
 
 	echo -e "\t\t++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> ${programName}.out
 	echo -e "\t\t++                                                                  ++" >> ${programName}.out
-	echo -e "\t\t++          \t\t         ${programName}                        ++" >> ${programName}.out
+	if [[ $1 = "randomtestadventurer" ]] ; then
+		echo -e "\t\t++          \t\t      ${programName}                      ++" >> ${programName}.out
+	else
+		echo -e "\t\t++          \t\t         ${programName}                        ++" >> ${programName}.out
+	fi
 	echo -e "\t\t++                                                                  ++" >> ${programName}.out
 	echo -e "\t\t++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> ${programName}.out
 
@@ -32,21 +36,29 @@ coverage() {
 		gcov dominion.c --function-summaries -b | head -n${line} | tail -n4 >> ${programName}.out
 	done
 	
-	echo -e "\n\n --------------------------------- END ----------------------------------------------\n\n" >> ${programName}.out
+	echo -e "\n\n --------------------------------------- END ----------------------------------------\n\n" >> ${programName}.out
 }
 
-## RANDOM TESTS ##
-
 gcovProg="cardEffects.c"
-
-# Unit Test 1
-test="random tests for Council Room"
 programName=$1
-funcName="council_roomEffect"
-ancillary_functs[0]="drawCard"
-ancillary_functs[1]="discardCard"
 
-coverage randomtestcard1
+if [[ $1 = "randomtestcard1" ]] ; then 
+	test="random tests for Council Room"
+	funcName="council_roomEffect"
+	ancillary_functs[0]="drawCard"
+	ancillary_functs[1]="discardCard"
+elif [[ $1 = "randomtestcard2" ]] ; then 
+	test="random tests for Cutpurse"
+	funcName="cutpurseEffect"
+	ancillary_functs[0]="discardCard"
+	ancillary_functs[1]="updateCoins"
+else 
+	test="random tests for Adventurer"
+	funcName="adventurerEffect"
+	ancillary_functs[0]="drawCard"
+fi
+
+coverage $1
 
 ## REFERENCES
 # https://stackoverflow.com/questions/6723426/looping-over-arrays-printing-both-index-and-value

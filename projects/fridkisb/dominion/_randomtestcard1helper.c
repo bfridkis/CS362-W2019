@@ -19,8 +19,8 @@
  
 #include "_randomtestcard1helper.h"
  
-int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int emptyDecks, int testNumber){
+int _randomtestcard1helper(int numPlayers, int k[], struct gameState* G, 
+	failedTest failures[], int* failCt, int emptyDecks, int testNumber){
 		
 	//Test value variables	   
 	int i, j, m;
@@ -33,9 +33,6 @@ int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[],
 	for(i = 0; i < sizeof(struct gameState); i++){
 		((char*)G)[i] = floor(Random() * 256);
 	}
-	
-	//Determine random number of players
-	int numPlayers = floor(Random() * NUM_PLAYERS) + 1;
 	
 	//Declare hand/deck count holders for each player
 	int handCountBeforeCouncil_Room[numPlayers],

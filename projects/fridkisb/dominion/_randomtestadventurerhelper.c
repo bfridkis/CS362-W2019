@@ -18,19 +18,17 @@
  
 #include "_randomtestadventurerhelper.h"
  
-int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int treasureCardCountSpecifier, int isBoundary, int testNumber){
+int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
+	failedTest failures[], int* failCt, int treasureCardCountSpecifier, 
+	int isBoundary, int testNumber){
 		
 	//Test value variables	   
-	int i, j;
+	int i, j, m;
 	
 	//Randomize gamestate struct
 	for(i = 0; i < sizeof(struct gameState); i++){
 		((char*)G)[i] = floor(Random() * 256);
 	}
-	
-	//Determine random number of players
-	int numPlayers = floor(Random() * NUM_PLAYERS) + 1;
 	
 	//Deck count and hand count storage
 	int deckCountBeforeAdventurer[numPlayers], 
@@ -118,35 +116,41 @@ int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failure
 	//tested.)
 	else if(treasureCardCountSpecifier >= 0) {
 		for(i = 0; i < numPlayers; i++){
-			deckCountBeforeAdventurer = treasureCardCountSpecifier + 4;
+			deckCountBeforeAdventurer[i] = treasureCardCountSpecifier + 4;
 		}
 	}
 	else{
 		for(i = 0; i < numPlayers; i++){
-			deckCountBeforeAdventurer = 0;
+			deckCountBeforeAdventurer[i] = 0;
 		}
 	}
 	
 	//Determine Hand Size
-	//A hand size with a minimum of 6 guarantees at least 2 treasures 
-	//in the hand, so that the boundary test cases (i.e. decks with less 
-	//than 2 treasures) will not crash the program if the hand also ends 
-	//up without at least enough treasures to result in a total of 2 (between 
-	//the 2... i.e. there must be at least 2 treasures in the set of total 
-	//player cards [deck, discard, hand] to avoid a segmentation fault
-	//due to a bug present in the adventurer function [adventurerEffect]).
-	//(This bug is detailed in a note above the implementation of 
-	//adventurerEffect in cardEffects.c, and in the assignment write-up.)
 	if(RANDOMIZE){
-		//Determine random hand size, in range 6 - MAX_HAND
+		//Determine random hand size, in range 3 - MAX_HAND
+		//(A minimum hand size of 3 allows for two treasures and an
+		// adventurer for the active player, which is necessary for the
+		// boundary tests to avoid a segmentation fault. The bug that causes
+		// this fault is described in cardEffects.c in the notes for 
+		// adventurerEffect.)
 		for(i = 0; i < numPlayers; i++){
-			handCountBeforeAdventurer[i] = 6 + floor(Random() * MAX_HAND - 5));
+			handCountBeforeAdventurer[i] = 3 + floor(Random() * MAX_HAND - 5);
 		}
 	}
 	else{
+		//A hand size with a minimum of 6 (as generated deterministically below)
+		//guarantees at least 2 treasures in the hand, so that the boundary test 
+		//cases (i.e. decks with less than 2 treasures) will not crash the program 
+		//if the hand also ends up without at least enough treasures to result in 
+		//a total of 2 (between the 2... i.e. there must be at least 2 treasures 
+		//in the set of total player cards [deck, discard, hand] to avoid a 
+		//segmentation fault due to a bug present in the adventurer function 
+		//[adventurerEffect]). (This bug is detailed in a note above the 
+		//implementation of adventurerEffect in cardEffects.c, and in the 
+		//assignment write-up.)
 		for(i = 0; i < numPlayers; i++){
 			handCountBeforeAdventurer[i] = (testNumber * 5) + 1;
-			if(handCountBeforeAdventurer[i] >= MAX_HAND){
+			if(handCountBeforeAdventurer[i] >= MAX_HAND - 2){
 				handCountBeforeAdventurer[i] = (handCountBeforeAdventurer[i] % MAX_HAND) + 1;
 				if(handCountBeforeAdventurer[i] < 6){
 					handCountBeforeAdventurer[i] = 6;
@@ -164,7 +168,7 @@ int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failure
 	if(RANDOMIZE){
 		//Randomly load each player's deck according to randomly
 		//chosen deck size
-		for(m = 0; !emptyDecks && m < numPlayers; m++){
+		for(m = 0; m < numPlayers; m++){
 			for(i = 0; i < deckCountBeforeAdventurer[m]; i++){
 				int randomCard = floor(Random() * 27);
 				//If the random card choice is a kingdom card,
@@ -189,7 +193,7 @@ int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failure
 		//final multiple of 17, for deckCountBeforeAdventurer as determined above 
 		//(e.g. a 20 card deck will have 1 of each card plus 1 extra 
 		//curse, estate, and duchy.)
-		for(m = 0; !emptyDecks && m < numPlayers; m++){
+		for(m = 0; m < numPlayers; m++){
 			for(i = 0, j = 0; i < deckCountBeforeAdventurer[m]; i++){
 				if(j < 7){
 					G->deck[m][i] = j++;
@@ -224,6 +228,7 @@ int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failure
 					G->hand[m][i] = randomCard;
 				}
 			}
+			G->handCount[m] = handCountBeforeAdventurer[m];
 		}
 	}
 	else{
@@ -263,7 +268,7 @@ int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failure
 	int handPos;
 	if(RANDOMIZE){
 		//Assign a random hand position for Adventurer
-		handPos = floor(Random() * (G->handCount[activePlayer]);
+		handPos = floor(Random() * G->handCount[activePlayer]);
 		if(handPos == -1){
 			handPos = 0;
 		}
@@ -285,8 +290,8 @@ int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failure
 	//For deck...
 	int deckCardCountByTypeBeforeAdventurer[27] = {0};
 	int deckBeforeAdventurer[MAX_DECK];
-	for(i = 0; j < G->deckCount[activePlayer]; i++){
-		deckBeforeAdventurer[activePlayer] = G->deck[activePlayer][i];
+	for(i = 0; i < G->deckCount[activePlayer]; i++){
+		deckBeforeAdventurer[i] = G->deck[activePlayer][i];
 		deckCardCountByTypeBeforeAdventurer[G->deck[activePlayer][i]]++;
 	}
 	
@@ -294,16 +299,16 @@ int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failure
 	int handCardCountByTypeBeforeAdventurer[27] = {0};
 	//int handBeforeAdventurer[numPlayers][MAX_DECK];				//Not needed since order of hand doesn't matter
 	for(i = 0; i < G->handCount[activePlayer]; i++){
-		//handBeforeAdventurer[i][j] = G->hand[activePlayer][i];
+		//handBeforeAdventurer[i] = G->hand[activePlayer][i];
 		handCardCountByTypeBeforeAdventurer[G->hand[activePlayer][i]]++;
 	}
 	
-	//Find total number of treasure cards in activePlayer's hand.
+	//Find total number of treasure cards in activePlayer's deck.
 	//(Used in next steps if RANDOMIZE is enabled to ensure active
 	//player's deck contains the appropriate number of treasure cards...)
 	int treasureCardsInAPDeck = deckCardCountByTypeBeforeAdventurer[copper] +
-									deckCardCountByTypeBeforeAdventurer[silver] +
-									deckCardCountByTypeBeforeAdventurer[gold];
+								deckCardCountByTypeBeforeAdventurer[silver] +
+								deckCardCountByTypeBeforeAdventurer[gold];
 	
 	//In case incorrect number of treasure cards are assigned to active
 	//player's deck, reassign indicated number of random treasure cards in 
@@ -316,19 +321,19 @@ int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failure
 			randomTreasureIndex2 = floor(Random() * G->deckCount[activePlayer]);
 		}
 		//Assign random treasure cards to random indexes and update card counts
-		deckCardCountByTypeBeforeAdventurer[activePlayer][randomTreasureIndex1]--;
-		deckCardCountByTypeBeforeAdventurer[activePlayer][randomTreasureIndex2]--;
+		deckCardCountByTypeBeforeAdventurer[randomTreasureIndex1]--;
+		deckCardCountByTypeBeforeAdventurer[randomTreasureIndex2]--;
 		
 		int randomTreasureCard1 = copper + floor(Random() * 3),
 			randomTreasureCard2 = copper + floor(Random() * 3);
 			
-		deckCardCountByTypeBeforeAdventurer[activePlayer][randomTreasureIndex1] =
+		deckCardCountByTypeBeforeAdventurer[randomTreasureIndex1] =
 			randomTreasureCard1;
-		deckCardCountByTypeBeforeAdventurer[activePlayer][randomTreasureIndex2] =
+		deckCardCountByTypeBeforeAdventurer[randomTreasureIndex2] =
 			randomTreasureCard2;
 			
-		deckCardCountByTypeBeforeAdventurer[activePlayer][randomTreasureCard1]++;
-		deckCardCountByTypeBeforeAdventurer[activePlayer][randomTreasureCard2]++;
+		deckCardCountByTypeBeforeAdventurer[randomTreasureCard1]++;
+		deckCardCountByTypeBeforeAdventurer[randomTreasureCard2]++;
 	}
 	else if(RANDOMIZE && treasureCardCountSpecifier < 2 && 
 			(treasureCardsInAPDeck != treasureCardCountSpecifier ||
@@ -344,10 +349,10 @@ int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failure
 						 randomCard == gold){
 							 randomCard = floor(Random() * 27);
 					}
-					deckCardCountByTypeBeforeAdventurer[activePlayer][G->deck[activePlayer][i]]--;
+					deckCardCountByTypeBeforeAdventurer[G->deck[activePlayer][i]]--;
 				    G->deck[activePlayer][i] = randomCard;
-				    deckBeforeAdventurer[activePlayer][i] = randomCard;
-				    deckCardCountByTypeBeforeAdventurer[activePlayer][randomCard]++;
+				    deckBeforeAdventurer[i] = randomCard;
+				    deckCardCountByTypeBeforeAdventurer[randomCard]++;
 			}
 		}
 		//Assign one random treasure card to a random position if specified.
@@ -357,14 +362,38 @@ int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failure
 		if(treasureCardCountSpecifier == 1){
 		//Assign random treasure card to random index and update card counts
 		int randomTreasureIndex = floor(Random() * G->deckCount[activePlayer]);
-		deckCardCountByTypeBeforeAdventurer[activePlayer][randomTreasureIndex]--;
+		deckCardCountByTypeBeforeAdventurer[randomTreasureIndex]--;
 		
 		int randomTreasureCard = copper + floor(Random() * 3);
 			
-		deckCardCountByTypeBeforeAdventurer[activePlayer][randomTreasureIndex] =
+		deckCardCountByTypeBeforeAdventurer[randomTreasureIndex] =
 			randomTreasureCard;
 			
-		deckCardCountByTypeBeforeAdventurer[activePlayer][randomTreasureCard]++;
+		deckCardCountByTypeBeforeAdventurer[randomTreasureCard]++;
+		}
+	}
+	
+	//Find total number of treasure cards in activePlayer's hand, and
+	//modify hand to contain a minimum of 2 treasures if necessary.
+	//(Only needed in boundary tests when RANDOMIZE is enabled 
+	// to prevent segmentation fault caused by adventurer bug described 
+	//previously [i.e. in assignment 2]. See cardEffects.c notes for 
+	//adventurerEffect for more details.)
+	int treasureCardsInAPHand = handCardCountByTypeBeforeAdventurer[copper] +
+								handCardCountByTypeBeforeAdventurer[silver] +
+								handCardCountByTypeBeforeAdventurer[gold];					
+	if(RANDOMIZE && isBoundary){
+		i = 0;
+		while(treasureCardsInAPHand < 2){
+			if(i++ != handPos){
+				handCardCountByTypeBeforeAdventurer[G->hand[activePlayer][i]]--;
+				G->hand[activePlayer][i] = copper;
+				handCardCountByTypeBeforeAdventurer[copper]++;
+				treasureCardsInAPHand++;
+			}
+			if(i == G->handCount[activePlayer]){
+				i = 0;
+			}
 		}
 	}
 		
@@ -386,19 +415,21 @@ int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failure
 	//the deck, no treasures should be gained and handCount should remain
 	//unchanged.
 	if(((treasureCardCountSpecifier == 2 && 
-		G->handCount[activePlayer] != handCountBeforeAdventurer + 2) ||
+		G->handCount[activePlayer] != handCountBeforeAdventurer[activePlayer] + 2) ||
 		(treasureCardCountSpecifier == 1 && 
-		G->handCount[activePlayer] != handCountBeforeAdventurer + 1) ||
+		G->handCount[activePlayer] != handCountBeforeAdventurer[activePlayer] + 1) ||
 		(treasureCardCountSpecifier == 0 && 
-		G->handCount[activePlayer] != handCountBeforeAdventurer)) &&
+		G->handCount[activePlayer] != handCountBeforeAdventurer[activePlayer])) &&
 		++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,
 		"Hand count not updated properly after Adventurer play\n"
 		"  Expected: %d ; Observed %d %s\n", 
-		treasureCardCountSpecifier == 2 ? handCountBeforeAdventurer + 2 : 
-		treasureCardCountSpecifier == 1 ? handCountBeforeAdventurer + 1 : 
-		handCountBeforeAdventurer,
+		treasureCardCountSpecifier == 2 ? 
+			handCountBeforeAdventurer[activePlayer] + 2 : 
+		treasureCardCountSpecifier == 1 ? 
+			handCountBeforeAdventurer[activePlayer] + 1 : 
+		handCountBeforeAdventurer[activePlayer],
 		G->handCount[activePlayer],
 		isBoundary ? "(Boundary)" : "(Non-Boundary)"); 
 		failures[*failCt-1].testNumber = testNumber;
@@ -507,19 +538,21 @@ int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failure
 	
 	//Make sure active player's hand count is updated correctly
 	if(((treasureCardCountSpecifier == 2 && 
-	     G->handCount[activePlayer] != handCountBeforeAdventurer + 2) || 
+	     G->handCount[activePlayer] != handCountBeforeAdventurer[activePlayer] + 2) || 
 	    (treasureCardCountSpecifier == 1 && 
-	     G->handCount[activePlayer] != handCountBeforeAdventurer + 1) || 
+	     G->handCount[activePlayer] != handCountBeforeAdventurer[activePlayer] + 1) || 
 	    (treasureCardCountSpecifier == 0 && 
-	   G->handCount[activePlayer] != handCountBeforeAdventurer)) &&
+	   G->handCount[activePlayer] != handCountBeforeAdventurer[activePlayer])) &&
 	   ++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Hand count not as expected\n"
 			"  Expected: %d ; Observed %d %s\n", 
-			treasureCardCountSpecifier == 2 ? handCountBeforeAdventurer + 2 : 
-			treasureCardCountSpecifier == 1 ? handCountBeforeAdventurer + 1 : 
-			handCountBeforeAdventurer, 
+			treasureCardCountSpecifier == 2 ? 
+				handCountBeforeAdventurer[activePlayer] + 2 : 
+			treasureCardCountSpecifier == 1 ? 
+				handCountBeforeAdventurer[activePlayer] + 1 : 
+			handCountBeforeAdventurer[activePlayer], 
 			G->handCount[activePlayer],
 			isBoundary ? "(Boundary)" : "(Non-Boundary)");
 			failures[*failCt-1].testNumber = testNumber;
@@ -601,7 +634,7 @@ int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failure
 	for(i = 0; i < 27; i++){
 		totalNumCardsRemovedFromDeck += deckDiffsAfterAdventurer[i];
 	}
-	if(deckCountBeforeAdventurer - totalNumCardsRemovedFromDeck !=
+	if(deckCountBeforeAdventurer[activePlayer] - totalNumCardsRemovedFromDeck !=
 	   G->deckCount[activePlayer] && ++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
@@ -614,8 +647,9 @@ int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failure
 	
 	//Make sure the deck order is not changed (for cards remaining in deck)
 	//for active player
-	for(i = 0; i < deckCountBeforeAdventurer - totalNumCardsRemovedFromDeck &&
-			i < G->deckCount[activePlayer]; i++){
+	for(i = 0; i < deckCountBeforeAdventurer[activePlayer] - 
+			totalNumCardsRemovedFromDeck &&
+		i < G->deckCount[activePlayer]; i++){
 		if(deckBeforeAdventurer[i] != G->deck[activePlayer][i]
 			&& ++(*failCt) <= MAX_FAILS){
 				failures[*failCt-1].lineNumber = __LINE__;

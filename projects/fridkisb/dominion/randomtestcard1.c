@@ -64,7 +64,7 @@ int main (int argc, char** argv) {
 	SelectStream(2);
 	PutSeed(-1);
 		   
-	int i, j, k[10], m, seed = 5000;
+	int i, j, k[10], m, seed = 5000, numPlayers;
 	for(i = 0; i < COUNCIL_ROOM_CALLS; i++){
 		
 		if(RANDOMIZE){
@@ -74,19 +74,24 @@ int main (int argc, char** argv) {
 			}
 			//Generate random seed value
 			seed = Random() * INT_MAX;
+			
+			//Generate random player count
+			numPlayers = floor(Random() * NUM_PLAYERS) + 1;
 		}
 		else{
 			for(m = 0, j = 7; j < 17; m++, j++){		
 				k[m] = j;
 			}
+			numPlayers = NUM_PLAYERS;
 		}
 		
-		//Initializes game for two players with random seed value.
-		initializeGame(NUM_PLAYERS, k, seed, &G);
+		//Initializes game for indicated number of players with random seed value. 
+		//(See defined constant NUM_PLAYERS in _randomtestcard1helper.h)
+		initializeGame(numPlayers, k, seed, &G);
 		
 		//Play Council_Room with random kingdom card set.
 		//(see _randomtestcard1helper for more details)
-		_randomtestcard1helper(k, &G, failures, &failCt, 0, i + 1);
+		_randomtestcard1helper(numPlayers, k, &G, failures, &failCt, 0, i + 1);
 	}
 	
 	if(RANDOMIZE){
@@ -105,14 +110,20 @@ int main (int argc, char** argv) {
 			k[j] = floor(Random() * 20) + 7;
 		}
 		seed = Random() * INT_MAX;
+		
+		//Generate random player count
+		numPlayers = floor(Random() * NUM_PLAYERS) + 1;
 	}
 	else{
 		for(m = 0, j = 7; j < 17; m++, j++){		
 			k[m] = j;
 		}
+		
+		numPlayers = NUM_PLAYERS;
 	}
-	initializeGame(NUM_PLAYERS, k, seed, &G);
-	_randomtestcard1helper(k, &G, failures, &failCt, 1, COUNCIL_ROOM_CALLS + 1);
+	initializeGame(numPlayers, k, seed, &G);
+	_randomtestcard1helper(numPlayers, k, &G, failures, 
+		&failCt, 1, COUNCIL_ROOM_CALLS + 1);
 	
 	printf("\n\n\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULTS SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	

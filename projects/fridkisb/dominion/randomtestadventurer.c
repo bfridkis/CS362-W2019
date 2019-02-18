@@ -57,7 +57,7 @@ int main (int argc, char** argv) {
 	SelectStream(2);
 	PutSeed(-1);
 		   
-	int i, j, k[10], m, seed = 5000;
+	int i, j, k[10], m, seed = 5000, numPlayers;
 	for(i = 0; i < ADVENTURER_CALLS; i++){
 		
 		if(RANDOMIZE){
@@ -66,20 +66,27 @@ int main (int argc, char** argv) {
 				k[j] = Random() * 19 + 7;
 			}
 			seed = Random() * INT_MAX;
+			
+			//Generate random player count
+			numPlayers = floor(Random() * NUM_PLAYERS) + 1;
 		}
 		else{
 			for(m = 0, j = 7; j < 17; m++, j++){		
 				k[m] = j;
 			}
+			
+			numPlayers = NUM_PLAYERS;
 		}
 		
-		//Initializes game for two players
-		initializeGame(2, k, seed, &G);
+		//Initializes game for indicated number of players with random seed value. 
+		//(See defined constant NUM_PLAYERS in _randomtestadventurerhelper.h)
+		initializeGame(numPlayers, k, seed, &G);
 		
 		//Play Adventurer with random kingdom card set with a deck
 		//containing at least 2 treasure cards.
 		//(see _randomtestadventurerhelper for more details)
-		_randomtestadventurerhelper(k, &G, failures, &failCt, 2, 0, i + 1);
+		_randomtestadventurerhelper(numPlayers, k, &G, failures, 
+			&failCt, 2, 0, i + 1);
 	}
 	
 	if(RANDOMIZE){
@@ -97,14 +104,20 @@ int main (int argc, char** argv) {
 			k[j] = Random() * 19 + 7;
 		}
 		seed = Random() * INT_MAX;
+		
+		//Generate random player count
+		numPlayers = floor(Random() * NUM_PLAYERS) + 1;
 	}
 	else{
 		for(m = 0, j = 7; j < 17; m++, j++){		
 			k[m] = j;
 		}
+		
+		numPlayers = NUM_PLAYERS;
 	}
-	initializeGame(2, k, seed, &G);
-	_randomtestadventurerhelper(k, &G, failures, &failCt, 1, 1, ADVENTURER_CALLS + 1);
+	initializeGame(numPlayers, k, seed, &G);
+	_randomtestadventurerhelper(numPlayers, k, &G, failures, &failCt, 
+		1, 1, ADVENTURER_CALLS + 1);
 	
 	if(RANDOMIZE){
 		printf("\n  BOUNDARY: Executing Adventurer play using hand with random assortment of \n"
@@ -121,14 +134,20 @@ int main (int argc, char** argv) {
 			k[j] = Random() * 19 + 7;
 		}
 		seed = Random() * INT_MAX;
+		
+		//Generate random player count
+		numPlayers = floor(Random() * NUM_PLAYERS) + 1;
 	}
 	else{
 		for(m = 0, j = 7; j < 17; m++, j++){		
 			k[m] = j;
 		}
+		
+		numPlayers = NUM_PLAYERS;
 	}
-	initializeGame(2, k, seed, &G);
-	_randomtestadventurerhelper(k, &G, failures, &failCt, 0, 1, ADVENTURER_CALLS + 2);
+	initializeGame(numPlayers, k, seed, &G);
+	_randomtestadventurerhelper(numPlayers, k, &G, failures, &failCt, 
+		0, 1, ADVENTURER_CALLS + 2);
 	
 	if(RANDOMIZE){
 		printf("\n  BOUNDARY: Executing Adventurer play using hand with random assortment of \n"
@@ -147,14 +166,20 @@ int main (int argc, char** argv) {
 			k[j] = Random() * 19 + 7;
 		}
 		seed = Random() * INT_MAX;
+		
+		//Generate random player count
+		numPlayers = floor(Random() * NUM_PLAYERS) + 1;
 	}
 	else{
 		for(m = 0, j = 7; j < 17; m++, j++){		
 			k[m] = j;
 		}
+		
+		numPlayers = NUM_PLAYERS;
 	}
-	initializeGame(2, k, seed, &G);
-	_randomtestadventurerhelper(k, &G, failures, &failCt, -1, 1, ADVENTURER_CALLS + 3);
+	initializeGame(numPlayers, k, seed, &G);
+	_randomtestadventurerhelper(numPlayers, k, &G, failures, &failCt,
+		-1, 1, ADVENTURER_CALLS + 3);
 	
 	printf("\n\n\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULTS SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	

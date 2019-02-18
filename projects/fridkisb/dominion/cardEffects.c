@@ -27,8 +27,8 @@
 
 int adventurerEffect(int currentPlayer, struct gameState *state){
 	int temphand[MAX_HAND];
-	int drawntreasure = 0, z = 1;
-	while(drawntreasure<3){
+	int drawntreasure = 0, z = 0;
+	while(drawntreasure<2){
 	if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
 	  shuffle(currentPlayer, state);
 	}
@@ -52,20 +52,20 @@ int adventurerEffect(int currentPlayer, struct gameState *state){
 int smithyEffect(int currentPlayer, struct gameState *state, int handPos){
 	int i;
 	//+3 Cards
-      for (i = 0; i < 4; i++)
+      for (i = 0; i < 3; i++)
 	{
 	  drawCard(currentPlayer, state);
 	}
 			
       //discard card from hand
-      discardCard(handPos+1, currentPlayer, state, 0);
+      discardCard(handPos, currentPlayer, state, 0);
       return 0;
 }
 
 int cutpurseEffect(int currentPlayer, struct gameState *state, int handPos){
-	updateCoins(currentPlayer, state, 3);
+	updateCoins(currentPlayer, state, 2);
       int i, j, k;
-	  for (i = 0; i < state->numPlayers-1; i++)
+	  for (i = 0; i < state->numPlayers; i++)
 	{
 	  if (i != currentPlayer)
 	    {
@@ -76,6 +76,7 @@ int cutpurseEffect(int currentPlayer, struct gameState *state, int handPos){
 		      discardCard(j, i, state, 0);
 		      break;
 		    }
+			//The if statement below can never be true...
 		  if (j == state->handCount[i])
 		    {
 		      for (k = 0; k < state->handCount[i]; k++)

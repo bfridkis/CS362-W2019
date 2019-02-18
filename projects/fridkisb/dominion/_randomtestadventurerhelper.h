@@ -16,7 +16,7 @@
 #define MAX_FAILS 20
 
 //Toggle randomized inputs on/off (0 = off, 1 = on)
-#define RANDOMIZE 0
+#define RANDOMIZE 1
 
 //Number of non-boundary test runs, 
 //also determines input sizes for each run,
@@ -36,6 +36,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <limits.h>
+#include <math.h>
 #include "rngs.h"
 
 struct failedTest {
@@ -46,8 +47,9 @@ struct failedTest {
 
 typedef struct failedTest failedTest;
 
-int _randomtestadventurerhelper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int treasureCardCountSpecifier, int isBoundary, int testNumber);
+int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G, 
+	failedTest failures[], int* failCt, int treasureCardCountSpecifier, 
+	int isBoundary, int testNumber);
 
 
 #endif

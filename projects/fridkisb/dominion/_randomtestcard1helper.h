@@ -47,8 +47,8 @@ struct failedTest {
 
 typedef struct failedTest failedTest;
 
-int _randomtestcard1helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int noCopper, int testNumber);
+int _randomtestcard1helper(int numPlayers, int k[], struct gameState* G, 
+	failedTest failures[], int* failCt, int noCopper, int testNumber);
 
 
 #endif

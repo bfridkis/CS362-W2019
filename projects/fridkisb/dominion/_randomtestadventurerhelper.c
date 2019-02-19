@@ -45,6 +45,8 @@ int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 		G->whoseTurn = 0;
 	}
 	
+	int whoseTurnBeforeAdventurer = G->whoseTurn;
+	
 	//Ensure discardCount, deckCount, and handCount are all set to 0
 	//and discard, deck, and hand are cleared for all players
 	for(i = 0; i < numPlayers; i++){
@@ -93,21 +95,17 @@ int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 	//stream 1 in parent function (main, see randomtestadventurer.c)
 	SelectStream(2);
 	
-	//Determine Deck Sizes
+	//Determine Deck Size for active player
 	if(RANDOMIZE && treasureCardCountSpecifier >= 2){
-		//Determine random deck sizes, based on treasureCardCountSpecifier
-		//(treasureCardCountSpecifier == 2 guarantees a deck size in range
-		//6 - MAX_DECK, which will have at minimum one copper and one silver. 
-		for(i = 0; i < numPlayers; i++){
-			deckCountBeforeAdventurer[i] = 6 + floor(Random() * (MAX_DECK - 5));
-		}
+		//Determine random deck size for active player, based on 
+		//treasureCardCountSpecifier
+		deckCountBeforeAdventurer[activePlayer] = 2 + floor(Random() * (MAX_DECK - 5));
 	}
 	else if(treasureCardCountSpecifier >= 2){
-		for(i = 0; i < numPlayers; i++){
-			deckCountBeforeAdventurer[i] = (testNumber * 5) + 1;
-			if(deckCountBeforeAdventurer[i] >= MAX_DECK){
-				deckCountBeforeAdventurer[i] = (deckCountBeforeAdventurer[i] % MAX_DECK) + 1;
-			}
+		deckCountBeforeAdventurer[activePlayer] = (testNumber * 5) + 1;
+		if(deckCountBeforeAdventurer[activePlayer] >= MAX_DECK){
+			deckCountBeforeAdventurer[activePlayer] = 
+				(deckCountBeforeAdventurer[activePlayer] % MAX_DECK) + 1;
 		}
 	}
 	//A deck size of 5 will contain only one treasure card (copper), and 
@@ -115,27 +113,21 @@ int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 	//"boundary" conditions of decks with less than 2 treasure cards can be 
 	//tested.)
 	else if(treasureCardCountSpecifier >= 0) {
-		for(i = 0; i < numPlayers; i++){
-			deckCountBeforeAdventurer[i] = treasureCardCountSpecifier + 4;
-		}
+		deckCountBeforeAdventurer[activePlayer] = treasureCardCountSpecifier + 4;
 	}
 	else{
-		for(i = 0; i < numPlayers; i++){
-			deckCountBeforeAdventurer[i] = 0;
-		}
+		deckCountBeforeAdventurer[activePlayer] = 0;
 	}
 	
 	//Determine Hand Size
 	if(RANDOMIZE){
-		//Determine random hand size, in range 3 - MAX_HAND
+		//Determine random hand size for active player, in range 3 - MAX_HAND
 		//(A minimum hand size of 3 allows for two treasures and an
 		// adventurer for the active player, which is necessary for the
 		// boundary tests to avoid a segmentation fault. The bug that causes
 		// this fault is described in cardEffects.c in the notes for 
-		// adventurerEffect.)
-		for(i = 0; i < numPlayers; i++){
-			handCountBeforeAdventurer[i] = 3 + floor(Random() * MAX_HAND - 5);
-		}
+		// adventurerEffect.) Non-active players are assigned hand size of 0.
+		handCountBeforeAdventurer[activePlayer] = 3 + floor(Random() * MAX_HAND - 5);
 	}
 	else{
 		//A hand size with a minimum of 6 (as generated deterministically below)
@@ -148,17 +140,15 @@ int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 		//[adventurerEffect]). (This bug is detailed in a note above the 
 		//implementation of adventurerEffect in cardEffects.c, and in the 
 		//assignment write-up.)
-		for(i = 0; i < numPlayers; i++){
-			handCountBeforeAdventurer[i] = (testNumber * 5) + 1;
-			if(handCountBeforeAdventurer[i] >= MAX_HAND - 2){
-				handCountBeforeAdventurer[i] = (handCountBeforeAdventurer[i] % MAX_HAND) + 1;
-				if(handCountBeforeAdventurer[i] < 6){
-					handCountBeforeAdventurer[i] = 6;
-				}
+		handCountBeforeAdventurer[activePlayer] = (testNumber * 5) + 1;
+		if(handCountBeforeAdventurer[activePlayer] >= MAX_HAND - 2){
+			handCountBeforeAdventurer[activePlayer] = 
+				(handCountBeforeAdventurer[activePlayer] % MAX_HAND) + 1;
+			if(handCountBeforeAdventurer[activePlayer] < 6){
+				handCountBeforeAdventurer[activePlayer] = 6;
 			}
 		}
 	}
-	
 	
 	//handCountBeforeAdventurer[activePlayer] = 0; <- Testing with handCountBeforeAdventurer 0 fails with Seg Fault or Bus Error!
 	//								   			   <-- -- At latest this occurs when the BOUNDARY test for a deck 
@@ -166,70 +156,64 @@ int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 	
 	//For deck...
 	if(RANDOMIZE){
-		//Randomly load each player's deck according to randomly
+		//Randomly load active player's deck according to randomly
 		//chosen deck size
-		for(m = 0; m < numPlayers; m++){
-			for(i = 0; i < deckCountBeforeAdventurer[m]; i++){
-				int randomCard = floor(Random() * 27);
-				//If the random card choice is a kingdom card,
-				//randomly assign a kingdom card that is in play
-				//(Note this value may or may not be the same as
-				// as the randomly determined card number above.
-				// This is done to ensure only cards in play are 
-				// used.)
-				if(randomCard >= adventurer){
-					G->deck[m][i] = k[(int)floor(Random() * 10)];
-				}
-				else{
-					G->deck[m][i] = randomCard;
-				}		
+		for(i = 0; i < deckCountBeforeAdventurer[activePlayer]; i++){
+			int randomCard = floor(Random() * 27);
+			//If the random card choice is a kingdom card,
+			//randomly assign a kingdom card that is in play
+			//(Note this value may or may not be the same as
+			// as the randomly determined card number above.
+			// This is done to ensure only cards in play are 
+			// used.)
+			if(randomCard >= adventurer){
+				G->deck[activePlayer][i] = k[(int)floor(Random() * 10)];
 			}
-			G->deckCount[m] = deckCountBeforeAdventurer[m];
+			else{
+				G->deck[activePlayer][i] = randomCard;
+			}		
 		}
+		G->deckCount[activePlayer] = deckCountBeforeAdventurer[activePlayer];
 	}
 	else{
-		//Load each player's deck with an equal number of each card,
+		//Load active player's deck with an equal number of each card,
 		//plus an extra starting at curse for each remainder after 
 		//final multiple of 17, for deckCountBeforeAdventurer as determined above 
 		//(e.g. a 20 card deck will have 1 of each card plus 1 extra 
 		//curse, estate, and duchy.)
-		for(m = 0; m < numPlayers; m++){
-			for(i = 0, j = 0; i < deckCountBeforeAdventurer[m]; i++){
-				if(j < 7){
-					G->deck[m][i] = j++;
-				}
-				else{
-					G->deck[m][i] = k[j++ - 7];
-				}
-				if(j == 17){
-					j = 0;
-				}
+		for(i = 0, j = 0; i < deckCountBeforeAdventurer[activePlayer]; i++){
+			if(j < 7){
+				G->deck[activePlayer][i] = j++;
 			}
-			G->deckCount[m] = deckCountBeforeAdventurer[m];
+			else{
+				G->deck[activePlayer][i] = k[j++ - 7];
+			}
+			if(j == 17){
+				j = 0;
+			}
 		}
+		G->deckCount[activePlayer] = deckCountBeforeAdventurer[activePlayer];
 	}
 	
 	if(RANDOMIZE){
-		//Randomly load each player's hand according to randomly
+		//Randomly load active player's hand according to randomly
 		//chosen hand size
-		for(m = 0; m < numPlayers; m++){
-			for(i = 0; i < handCountBeforeAdventurer[m]; i++){
-				int randomCard = floor(Random() * 27);
-				//If the random card choice is a kingdom card,
-				//randomly assign a kingdom card that is in play
-				//(Note this value may or may not be the same as
-				// as the randomly determined card number above.
-				// This is done to ensure only cards in play are 
-				// used.)
-				if(randomCard >= adventurer){
-					G->hand[m][i] = k[(int)floor(Random() * 10)];
-				}
-				else{
-					G->hand[m][i] = randomCard;
-				}
+		for(i = 0; i < handCountBeforeAdventurer[activePlayer]; i++){
+			int randomCard = floor(Random() * 27);
+			//If the random card choice is a kingdom card,
+			//randomly assign a kingdom card that is in play
+			//(Note this value may or may not be the same as
+			// as the randomly determined card number above.
+			// This is done to ensure only cards in play are 
+			// used.)
+			if(randomCard >= adventurer){
+				G->hand[activePlayer][i] = k[(int)floor(Random() * 10)];
 			}
-			G->handCount[m] = handCountBeforeAdventurer[m];
+			else{
+				G->hand[activePlayer][i] = randomCard;
+			}
 		}
+		G->handCount[activePlayer] = handCountBeforeAdventurer[activePlayer];
 	}
 	else{
 		//Load each player's hand with an equal number of each card,
@@ -237,20 +221,18 @@ int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 		//final multiple of 17, for handCountBeforeAdventurer as 
 		//determined above (e.g. a 20 card deck will have 1 of each 
 		//card plus 1 extra curse, estate, and duchy.)
-		for(m = 0; m < numPlayers; m++){
-			for(i = 0, j = 0; i < handCountBeforeAdventurer[m]; i++){
-				if(j < 7){
-					G->hand[m][i] = j++;
-				}
-				else{
-					G->hand[m][i] = k[j++ - 7];
-				}
-				if(j == 17){
-					j = 0;
-				}
+		for(i = 0, j = 0; i < handCountBeforeAdventurer[activePlayer]; i++){
+			if(j < 7){
+				G->hand[activePlayer][i] = j++;
 			}
-			G->handCount[m] = handCountBeforeAdventurer[m];
+			else{
+				G->hand[activePlayer][i] = k[j++ - 7];
+			}
+			if(j == 17){
+				j = 0;
+			}
 		}
+		G->handCount[activePlayer] = handCountBeforeAdventurer[activePlayer];
 	}
 	
 	//Shuffle each player's hand 
@@ -639,8 +621,10 @@ int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Deck count after Adventurer does not correspond to cards removed\n"
-			" %d cards removed, but resulting deck count is %d %s\n", 
-			totalNumCardsRemovedFromDeck, G->deckCount[activePlayer],
+			" %d cards removed from a starting count of %d,\n"
+			" but resulting deck count is %d %s\n", 
+			totalNumCardsRemovedFromDeck, deckCountBeforeAdventurer[activePlayer],
+			G->deckCount[activePlayer],
 			isBoundary ? "(Boundary)" : "(Non-Boundary)");
 			failures[*failCt-1].testNumber = testNumber;
 	}
@@ -715,14 +699,15 @@ int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 	}
 	
 	//Check whoseTurn...
-	if(G->whoseTurn != 0 && ++(*failCt) <= MAX_FAILS){
-		failures[*failCt-1].lineNumber = __LINE__;
-		sprintf(failures[*failCt-1].description,
-		"Whose turn changed unexpectedly\n"
-		"  Expected 0 ; Observed %d %s\n", 
-		G->whoseTurn,
-		isBoundary ? "(Boundary)" : "(Non-Boundary)");
-		failures[*failCt-1].testNumber = testNumber;
+	if(G->whoseTurn != whoseTurnBeforeAdventurer && 
+		++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Whose turn changed unexpectedly\n"
+			"  Expected 0 ; Observed %d %s\n", 
+			G->whoseTurn,
+			isBoundary ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check coins...
@@ -832,14 +817,15 @@ int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 	//Check discard piles...
 	for(m = 0; m < numPlayers; m++){
 		for(i = 0; i < MAX_DECK; i++){
-			if(G->discard[m][i] != -1 && ++(*failCt) <= MAX_FAILS){
-				failures[*failCt-1].lineNumber = __LINE__;
-				sprintf(failures[*failCt-1].description,
-				"Player %d deck changed unexpectedly at idx %d\n"
-				"  Expected -1 ; Observed %d %s\n", 
-				m, i, G->discard[m][i],
-				isBoundary ? "(Boundary)" : "(Non-Boundary)");
-				failures[*failCt-1].testNumber = testNumber;
+			if(m != activePlayer &&G->discard[m][i] != -1 && 
+				++(*failCt) <= MAX_FAILS){
+					failures[*failCt-1].lineNumber = __LINE__;
+					sprintf(failures[*failCt-1].description,
+					"Player %d deck changed unexpectedly at idx %d\n"
+					"  Expected -1 ; Observed %d %s\n", 
+					m, i, G->discard[m][i],
+					isBoundary ? "(Boundary)" : "(Non-Boundary)");
+					failures[*failCt-1].testNumber = testNumber;
 			}
 			break;
 		}
@@ -848,14 +834,15 @@ int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 	//Check decks...
 	for(m = 0; m < numPlayers; m++){
 		for(i = 0; i < MAX_DECK; i++){
-			if(G->deck[1][m] != -1 && ++(*failCt) <= MAX_FAILS){
-				failures[*failCt-1].lineNumber = __LINE__;
-				sprintf(failures[*failCt-1].description,
-				"Player %d deck changed unexpectedly at idx %d\n"
-				"  Expected -1 ; Observed %d %s\n", 
-				m, i, G->deck[1][m],
-				isBoundary ? "(Boundary)" : "(Non-Boundary)");
-				failures[*failCt-1].testNumber = testNumber;
+			if(m != activePlayer && G->deck[m][i] != -1 && 
+				++(*failCt) <= MAX_FAILS){
+					failures[*failCt-1].lineNumber = __LINE__;
+					sprintf(failures[*failCt-1].description,
+					"Player %d deck changed unexpectedly at idx %d\n"
+					"  Expected -1 ; Observed %d %s\n", 
+					m, i, G->deck[1][m],
+					isBoundary ? "(Boundary)" : "(Non-Boundary)");
+					failures[*failCt-1].testNumber = testNumber;
 			}
 			break;
 		}
@@ -864,14 +851,15 @@ int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 	//Check hands...
 	for(m = 0; m < numPlayers; m++){	
 		for(i = 0; i < MAX_HAND; i++){
-			if(G->hand[m][i] != -1 && ++(*failCt) <= MAX_FAILS){
-				failures[*failCt-1].lineNumber = __LINE__;
-				sprintf(failures[*failCt-1].description,
-				"Player %d hand changed unexpectedly at idx %d\n"
-				"  Expected -1 ; Observed %d %s\n", 
-				m, i, G->hand[m][i],
-				isBoundary ? "(Boundary)" : "(Non-Boundary)");
-				failures[*failCt-1].testNumber = testNumber;
+			if(m != activePlayer && G->hand[m][i] != -1 && 
+				++(*failCt) <= MAX_FAILS){
+					failures[*failCt-1].lineNumber = __LINE__;
+					sprintf(failures[*failCt-1].description,
+					"Player %d hand changed unexpectedly at idx %d\n"
+					"  Expected -1 ; Observed %d %s\n", 
+					m, i, G->hand[m][i],
+					isBoundary ? "(Boundary)" : "(Non-Boundary)");
+					failures[*failCt-1].testNumber = testNumber;
 			}
 			break;
 		}

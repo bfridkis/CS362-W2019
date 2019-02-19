@@ -2,27 +2,33 @@
  * Benjamin Fridkis - CS362 
  * Assignment 4
  *
- *                       _cardtest3helper.c
+ *                       _randomtestcard2helper.c
  *
- *		            Helper function for cardtest3.c
+ *		            Helper function for randomtestcard2.c
  *
  *	      (Test for "cutpurse" card effect - See cardEffects.c line 5)
  *
  *            Include the following lines in your makefile:
  *
- * _cardtest3helper.o: _cardtest3helper.c _cardtest3helper.h dominion.o
- *		gcc -c _cardtest3helper.c -g  $(CFLAGS)
+ * _randomtestcard2helper.o: _randomtestcard2helper.c _randomtestcard2helper.h \
+							dominion.o
+ *		gcc -c _randomtestcard2helper.c -g  $(CFLAGS)
  *
  * ---------------------------------------------------------------------------
  */
  
-#include "_cardtest3helper.h"
+#include "_randomtestcard2helper.h"
  
-int _cardtest3helper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int noCopper, int testNumber){
+int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G, 
+	failedTest failures[], int* failCt, int noCopper, int testNumber){
 		
 	//Test value variables	   
 	int i, j, m;
+	
+	//Randomize gamestate struct
+	for(i = 0; i < sizeof(struct gameState); i++){
+		((char*)G)[i] = floor(Random() * 256);
+	}
 	
 	//Ensure discardCount, deckCount, and handCount are all set to 0
 	//and discard, deck, and hand are cleared for all players
@@ -41,11 +47,25 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	G->coins = 0;
 	G->numBuys = 1;
 	G->numActions = 1;
-	memset(G->embargoTokens, 0, sizeof(int) * treasure_map + 1);
-	G->outpostPlayed = 0;
-	G->outpostTurn = 0;
+	G->numPlayers = numPlayers;
 	memset(G->playedCards, -1, sizeof(int) * MAX_DECK);
 	G->playedCardCount = 0;
+	//If not randomizing, ensure known values of embargoTokens[],
+	//outpostPlayed, and outpostTurn as well.
+	if(!RANDOMIZE){
+		memset(G->embargoTokens, 0, sizeof(int) * treasure_map + 1);
+		G->outpostPlayed = 0;
+		G->outpostTurn = 0;
+	}
+	
+	//Store embargo token array, outpostPlayed, and outpostTurn
+	//values prior to council_room play
+	int embargoTokensBeforeCutpurse[27];
+	for(i = 0; i < 27; i++){
+		embargoTokensBeforeCutpurse[i] = G->embargoTokens[i];
+	}
+	int outpostPlayedBeforeCutpurse = G->outpostPlayed;
+	int outpostTurnBeforeCutpurse = G->outpostTurn;
 	
 	//Ensure supply pile counts are of known value before Cutpurse play
 	//Set each to 10
@@ -54,99 +74,146 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	
 	//Re-select random stream 2 (since initializeGame will have selected
-	//stream 1 in parent function (main, see cardtest3.c)
+	//stream 1 in parent function (main, see randomtestcard2.c)
 	SelectStream(2);
 	
 	//Assign hand size, either randomly if indicated, or according
 	//to test number
-	int handSize[NUM_PLAYERS];
+	int handCountBeforeCutpurse[NUM_PLAYERS];
 	if(RANDOMIZE){
 		//Determine random hand size for each player in 
 		//range 1 - MAX_HAND
 		for(i = 0; i < NUM_PLAYERS; i++){
-			handSize[i] = 1 + (Random() * (MAX_HAND - 1));
+			handCountBeforeCutpurse[i] = 1 + floor(Random() * MAX_HAND);
 		}
 	}
 	else{
 		for(i = 0; i < NUM_PLAYERS; i++){
-			handSize[i] = testNumber * 5;
-			if(handSize[i] >= MAX_HAND){
-				handSize[i] = (handSize[i] % MAX_HAND) + 1;
+			handCountBeforeCutpurse[i] = testNumber * 5;
+			if(handCountBeforeCutpurse[i] >= MAX_HAND){
+				handCountBeforeCutpurse[i] = 
+				(handCountBeforeCutpurse[i] % MAX_HAND) + 1;
 			}
 		}
 	}
 	
-	//Load each player's hand with an equal number of each card,
-	//plus an extra starting at curse for each remainder after 
-	//final multiple of 17, for handSize as determined above 
-	//(e.g. a 20 card deck will have 1 of each card plus 1 extra 
-	//curse, estate, and duchy.)
-	for(m = 0; m < NUM_PLAYERS; m++){
-		for(i = 0, j = 0; i < handSize[m]; i++){
-			if(j < 7){
-				G->hand[m][i] = j++;
+	if(RANDOMIZE){
+		//Randomly load each player's hand according to randomly
+		//chosen hand size
+		for(m = 0; m < numPlayers; m++){
+			for(i = 0; i < handCountBeforeCutpurse[m]; i++){
+				int randomCard = floor(Random() * 27);
+				//If the random card choice is a kingdom card,
+				//randomly assign a kingdom card that is in play
+				//(Note this value may or may not be the same as
+				// as the randomly determined card number above.
+				// This is done to ensure only cards in play are 
+				// used.)
+				if(randomCard >= adventurer){
+					G->hand[m][i] = k[(int)floor(Random() * 10)];
+				}
+				else{
+					G->hand[m][i] = randomCard;
+				}
 			}
-			else{
-				G->hand[m][i] = k[j++ - 7];
-			}
-			if(j == 17){
-				j = 0;
-			}
+			G->handCount[m] = handCountBeforeCutpurse[m];
 		}
-		G->handCount[m] = handSize[m];
+	}
+	else{
+		//Load each player's hand with an equal number of each card,
+		//plus an extra starting at curse for each remainder after 
+		//final multiple of 17, for handCountBeforeCutpurse as 
+		//determined above (e.g. a 20 card deck will have 1 of each 
+		//card plus 1 extra curse, estate, and duchy.)
+		for(m = 0; m < numPlayers; m++){
+			for(i = 0, j = 0; i < handCountBeforeCutpurse[m]; i++){
+				if(j < 7){
+					G->hand[m][i] = j++;
+				}
+				else{
+					G->hand[m][i] = k[j++ - 7];
+				}
+				if(j == 17){
+					j = 0;
+				}
+			}
+			G->handCount[m] = handCountBeforeCutpurse[m];
+		}
 	}
 	
 	//Determine active player, randomly if indicated
-	int activePlayer;
+	int activePlayer = 0;
 	if(RANDOMIZE){
-		//Determine random player to play cutpurse
-		activePlayer = Random() * (NUM_PLAYERS - 1);
+		//Determine random player to play council_room
+		activePlayer = floor(Random() * numPlayers);
 		G->whoseTurn = activePlayer;
 	}
 	else{
-		activePlayer = 0;
+		G->whoseTurn = 0;
 	}
 	
 	//Assign a hand position for Cutpurse for active player
 	int handPos;
 	if(RANDOMIZE){
-		handPos = Random() * (G->handCount[activePlayer] - 1);
-		if(handPos == -1){
-			handPos = 0;
-		}
+		handPos = floor(Random() * G->handCount[activePlayer]);
 	}
 	else{
 		handPos = 0;
 	}
 	G->hand[activePlayer][handPos] = cutpurse;
 	
-	//If this is not the boundary test in which players
-	//have no copper, add a copper to any player with a 
-	//hand size less than 4 (any deck size greater or
-	//equal to 4 is guaranteed to have at least 1 copper
-	//already).
-	if(!noCopper){
-		for(i = 0; i < NUM_PLAYERS; i++){
-			if(handSize[i] < 4){
-				G->hand[i][(int)Random() * (handSize[i] - 1)] = copper;
-			}
-		}
-	}
-	//If this is the boundary test (no copper in hand) replace
-	//all copper with silver
-	else{
-		for(i = 0; i < NUM_PLAYERS; i++){
-			for(j = 4; j < handSize[i]; j += 17){
-				G->hand[i][j] = silver;
-			}
-		}
-	}
-	
 	//Store hand card counts prior to cutpurse call for each player
 	int handCardCountByTypeBeforeCutpurse[MAX_PLAYERS][27] = {{0}};
 	for(i = 0; i < NUM_PLAYERS; i++){
 		for(j = 0; j < G->handCount[i]; j++){
 			handCardCountByTypeBeforeCutpurse[i][G->hand[i][j]]++;
+		}
+	}
+	
+	if(RANDOMIZE && !noCopper){
+		//If deck is built randomly, add a copper to a random index in each
+		//player's hand, to ensure each player has at least one copper.
+		for(i = 0; i < NUM_PLAYERS; i++){
+			int randomCopperIndex = floor(Random() * handCountBeforeCutpurse[i]);
+			handCardCountByTypeBeforeCutpurse[i][G->hand[i][randomCopperIndex]]--;
+			G->hand[i][randomCopperIndex] = copper;
+			handCardCountByTypeBeforeCutpurse[i][copper]++;
+		}
+	}
+	else if(RANDOMIZE){
+		//If noCopper and RANDOMIZE, remove all copper from 
+		//each player's hand
+		for(i = 0; i < NUM_PLAYERS; i++){
+				for(j = 0; j < handCountBeforeCutpurse[i]; j++){
+					if(G->hand[i][j] == copper){
+						G->hand[i][j] = silver;
+				}
+			}
+		}
+	}
+	else{
+		//If hand is built deterministically...
+		
+		//If this is not the boundary test in which players
+		//have no copper, add a copper to any player with a 
+		//hand size less than 4 (any hand size greater or
+		//equal to 4 is guaranteed to have at least 1 copper
+		//already).
+		if(!noCopper){
+			for(i = 0; i < NUM_PLAYERS; i++){
+				if(handCountBeforeCutpurse[i] < 4){
+					G->hand[i][(int)Random() * (handCountBeforeCutpurse[i] - 1)] = copper;
+				}
+			}
+		}
+		//If this is the boundary test (no copper in hand) replace
+		//all copper with silver
+		else{
+			for(i = 0; i < NUM_PLAYERS; i++){
+				for(j = 4; j < handCountBeforeCutpurse[i]; j += 17){
+					G->hand[i][j] = silver;
+				}
+			}
 		}
 	}
 	
@@ -238,14 +305,14 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	//(Non-active players discard 1 copper, active player discards
 	// 1 cutpurse.)
 	for(i = 0; i < NUM_PLAYERS && !noCopper; i++){
-		if(handSize[i] - 1 != G->handCount[i] &&
+		if(handCountBeforeCutpurse[i] - 1 != G->handCount[i] &&
 			++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
 			"Hand counts not updated properly after Cutpurse play\n"
 			"  Expected: %d for player %d; Observed %d %s\n"
 			"    (player who %s cutpurse)\n",
-			handSize[i] - 1, i, G->handCount[i],
+			handCountBeforeCutpurse[i] - 1, i, G->handCount[i],
 			noCopper ? "(Boundary)" : "(Non-Boundary)",
 			i == activePlayer ? "played" : "did not play");
 			failures[*failCt-1].testNumber = testNumber;
@@ -528,37 +595,40 @@ int _cardtest3helper(int k[], struct gameState* G, failedTest failures[],
 	
 	//Check embargo tokens...
 	for(i = 0; i < treasure_map + 1; i++){
-		if(G->embargoTokens[i] != 0 && ++(*failCt) <= MAX_FAILS){
-			failures[*failCt-1].lineNumber = __LINE__;
-			sprintf(failures[*failCt-1].description,
-			"Number of embargo tokens changed unexpectedly for card %d\n"
-			"  Expected 0 ; Observed %d %s\n", 
-			i, G->embargoTokens[i],
-			noCopper ? "(Boundary)" : "(Non-Boundary)");
-			failures[*failCt-1].testNumber = testNumber;
+		if(G->embargoTokens[i] != embargoTokensBeforeCutpurse[i] && 
+			++(*failCt) <= MAX_FAILS){
+				failures[*failCt-1].lineNumber = __LINE__;
+				sprintf(failures[*failCt-1].description,
+				"Number of embargo tokens changed unexpectedly for card %d\n"
+				"  Expected 0 ; Observed %d %s\n", 
+				i, G->embargoTokens[i],
+				noCopper ? "(Boundary)" : "(Non-Boundary)");
+				failures[*failCt-1].testNumber = testNumber;
 		}
 	}
 	
 	//Check outpost played...
-	if(G->outpostPlayed != 0 && ++(*failCt) <= MAX_FAILS){
-		failures[*failCt-1].lineNumber = __LINE__;
-		sprintf(failures[*failCt-1].description,
-		"Outpost played changed unexpectedly\n"
-		"  Expected 0 ; Observed %d %s\n", 
-		G->outpostPlayed,
-		noCopper ? "(Boundary)" : "(Non-Boundary)");
-		failures[*failCt-1].testNumber = testNumber;
+	if(G->outpostPlayed != outpostPlayedBeforeCutpurse && 
+		++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Outpost played changed unexpectedly\n"
+			"  Expected 0 ; Observed %d %s\n", 
+			G->outpostPlayed,
+			noCopper ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//Check outpost turn...
-	if(G->outpostTurn != 0 && ++(*failCt) <= MAX_FAILS){
-		failures[*failCt-1].lineNumber = __LINE__;
-		sprintf(failures[*failCt-1].description,
-		"Outpost turn changed unexpectedly\n"
-		"  Expected 0 ; Observed %d %s\n", 
-		G->outpostTurn,
-		noCopper ? "(Boundary)" : "(Non-Boundary)");
-		failures[*failCt-1].testNumber = testNumber;
+	if(G->outpostTurn != outpostTurnBeforeCutpurse && 
+		++(*failCt) <= MAX_FAILS){
+			failures[*failCt-1].lineNumber = __LINE__;
+			sprintf(failures[*failCt-1].description,
+			"Outpost turn changed unexpectedly\n"
+			"  Expected 0 ; Observed %d %s\n", 
+			G->outpostTurn,
+			noCopper ? "(Boundary)" : "(Non-Boundary)");
+			failures[*failCt-1].testNumber = testNumber;
 	}
 	
 	//NOTE: I initially wrote this test assuming the discardCard

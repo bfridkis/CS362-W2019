@@ -8,8 +8,8 @@
  * ------------------------------------------
  */
 
-#ifndef _CARDTEST4HELPER_H
-#define _CARDTEST4HELPER_H
+#ifndef _RANDOMTESTCARD1HELPER_H
+#define _RANDOMTESTCARD1HELPER_H
 
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.

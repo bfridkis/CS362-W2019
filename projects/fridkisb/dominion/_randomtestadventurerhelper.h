@@ -8,8 +8,8 @@
  * -----------------------------------------------
  */
 
-#ifndef _CARDTEST2HELPER_H
-#define _CARDTEST2HELPER_H
+#ifndef _RANDOMTESTADVENTURERHELPER_H
+#define _RANDOMTESTADVENTURERHELPER_H
 
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
@@ -22,7 +22,7 @@
 //also determines input sizes for each run,
 //if RANDOMIZE is set to 0. 
 //(See randomtestadventurer.c for more details.)
-#define ADVENTURER_CALLS 1
+#define ADVENTURER_CALLS 10000
 
 #if RANDOMIZE 
 #define NUM_PLAYERS MAX_PLAYERS

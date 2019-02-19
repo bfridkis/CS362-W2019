@@ -2,19 +2,20 @@
  * Benjamin Fridkis - CS362 
  * Assignment 4
  *
- *                         cardtest3.c
+ *                         randomtestcard2.c
  *
  *	     Test for "cutpurse" card effect - See cardEffects.c line 5
  *
  * Include the following lines in your makefile:
  *
- * cardtest3: cardtest3.c _cardtest3helper.o dominion.o cardEffects.o rngs.o
- * 		gcc -o cardtest3 cardtest3.c -g dominion.o cardEffects.o 
- * 		_cardtest3helper.o rngs.o $(CFLAGS)
+ * randomtestcard2: randomtestcard2.c _randomtestcard2helper.o dominion.o \
+					cardEffects.o rngs.o
+ * 		gcc -o randomtestcard2 randomtestcard2.c -g dominion.o cardEffects.o 
+ * 		_randomtestcard2helper.o rngs.o $(CFLAGS)
  * ---------------------------------------------------------------------------
  */
 
-#include "_cardtest3helper.h"
+#include "_randomtestcard2helper.h"
 
 int main (int argc, char** argv) {
 	struct gameState G;
@@ -23,12 +24,12 @@ int main (int argc, char** argv) {
 	failedTest failures[MAX_FAILS];
 	int failCt = 0;
 	
-	printf("\t\t\t\t\t" "Starting cardtest3 - Testing 'cutpurse' card\n");
+	printf("\t\t\t\t\t" "Starting randomtestcard2 - Testing 'cutpurse' card\n");
 	
 	if(RANDOMIZE){
 		printf("\n  Executing %d Cutpurse %s using hands with random assortment of \n"
 			   "\t  hand cards for each player, with at least 1 copper in each hand...\n\n"
-			   "\t\t" " -Set 'CUTPURSE_CALLS' in cardtest3.c\n"
+			   "\t\t" " -Set 'CUTPURSE_CALLS' in randomtestcard2.c\n"
 			   "\t\t" "  to modify number of plays.\n", CUTPURSE_CALLS,
 			   CUTPURSE_CALLS > 1 ? "plays" : "play");
 	}
@@ -41,11 +42,11 @@ int main (int argc, char** argv) {
 			   "\t\t" "-e.g. hand size for test 1 = 5, test 2 = 10, test 3 = 15...\n"
 			   "\t\t" "      hand size for test 100 with MAX_HAND @ 500 = 1, test 101 = 2...\n\n"
 			   "  Kingdom cards are adventurer through great_hall, as enumerated in dominion.h.\n\n"
-			   "\t\t" " -Set 'CUTPURSE_CALLS' in cardtest3.c\n"
+			   "\t\t" " -Set 'CUTPURSE_CALLS' in randomtestcard2.c\n"
 			   "\t\t" "  to modify number of plays.\n\n"
 			   "\t\t" " -Random test generator can be turned on\n"
 			   "\t\t" "  by setting the constant 'RANDOMIZE' to 1\n"
-			   "\t\t" "  in _cardtest3helper.h.\n\n", CUTPURSE_CALLS, 
+			   "\t\t" "  in _randomtestcard2helper.h.\n\n", CUTPURSE_CALLS, 
 			   CUTPURSE_CALLS > 1 ? "plays" : "play", MAX_HAND, MAX_HAND);
 	}
 
@@ -55,7 +56,7 @@ int main (int argc, char** argv) {
 	SelectStream(2);
 	PutSeed(-1);
 		   
-	int i, j, k[10], m, seed = 5000;
+	int i, j, k[10], m, seed = 5000, numPlayers;
 	for(i = 0; i < CUTPURSE_CALLS; i++){
 		
 		if(RANDOMIZE){
@@ -64,20 +65,24 @@ int main (int argc, char** argv) {
 				k[j] = Random() * 19 + 7;
 			}
 			seed = Random() * INT_MAX;
+			
+			//Generate random player count
+			numPlayers = floor(Random() * NUM_PLAYERS) + 1;
 		}
 		else{
 			for(m = 0, j = 7; j < 17; m++, j++){		
 				k[m] = j;
 			}
+			numPlayers = NUM_PLAYERS;
 		}
 		
 		//Initializes game for two players with random seed value.
-		initializeGame(NUM_PLAYERS, k, seed, &G);
+		initializeGame(numPlayers, k, seed, &G);
 		
 		//Play Cutpurse with random kingdom card set with a deck
 		//containing at least 2 treasure cards.
-		//(see _cardtest3helper for more details)
-		_cardtest3helper(k, &G, failures, &failCt, 0, i + 1);
+		//(see _randomtestcard2helper for more details)
+		_randomtestcard2helper(numPlayers, k, &G, failures, &failCt, 0, i + 1);
 	}
 	
 	if(RANDOMIZE){
@@ -95,14 +100,19 @@ int main (int argc, char** argv) {
 			k[j] = Random() * 19 + 7;
 		}
 		seed = Random() * INT_MAX;
+		
+		//Generate random player count
+		numPlayers = floor(Random() * NUM_PLAYERS) + 1;
 	}
 	else{
 		for(m = 0, j = 7; j < 17; m++, j++){		
 			k[m] = j;
 		}
+		numPlayers = NUM_PLAYERS;
 	}
-	initializeGame(NUM_PLAYERS, k, seed, &G);
-	_cardtest3helper(k, &G, failures, &failCt, 1, CUTPURSE_CALLS + 1);
+	initializeGame(numPlayers, k, seed, &G);
+	_randomtestcard2helper(numPlayers, k, &G, failures, &failCt, 1, 
+		CUTPURSE_CALLS + 1);
 	
 	printf("\n\n\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULTS SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	
@@ -149,7 +159,7 @@ int main (int argc, char** argv) {
 				   "\t\t to print more errors.\n\n",
 						failCt, failCt > 0 ? "s" : "", MAX_FAILS);
 		}
-		printf("  (Note: See _cardtest3helper.c when referencing line #)\n\n");
+		printf("  (Note: See _randomtestcard2helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
 			printf("%d - TEST #%d @ LINE %d: %s\n\n", 

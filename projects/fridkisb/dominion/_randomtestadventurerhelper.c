@@ -345,7 +345,8 @@ int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 		//Assign random treasure card to random index and update card counts
 		int randomTreasureIndex = floor(Random() * G->deckCount[activePlayer]);
 		deckCardCountByTypeBeforeAdventurer[randomTreasureIndex]--;
-		int randomTreasureCard = copper + floor(Random() * 3);	
+		int randomTreasureCard = copper + floor(Random() * 3);
+		G->deck[activePlayer][randomTreasureIndex] = randomTreasureCard;
 		deckBeforeAdventurer[randomTreasureIndex] = randomTreasureCard;	
 		deckCardCountByTypeBeforeAdventurer[randomTreasureCard]++;
 		}

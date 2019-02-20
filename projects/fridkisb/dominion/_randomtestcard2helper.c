@@ -32,7 +32,7 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 	
 	//Ensure discardCount, deckCount, and handCount are all set to 0
 	//and discard, deck, and hand are cleared for all players
-	for(i = 0; i < NUM_PLAYERS; i++){
+	for(i = 0; i < numPlayers; i++){
 		G->discardCount[i] = 0;
 		G->deckCount[i] = 0;
 		G->handCount[i] = 0;
@@ -79,16 +79,16 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 	
 	//Assign hand size, either randomly if indicated, or according
 	//to test number
-	int handCountBeforeCutpurse[NUM_PLAYERS];
+	int handCountBeforeCutpurse[numPlayers];
 	if(RANDOMIZE){
 		//Determine random hand size for each player in 
 		//range 1 - MAX_HAND
-		for(i = 0; i < NUM_PLAYERS; i++){
+		for(i = 0; i < numPlayers; i++){
 			handCountBeforeCutpurse[i] = 1 + floor(Random() * MAX_HAND);
 		}
 	}
 	else{
-		for(i = 0; i < NUM_PLAYERS; i++){
+		for(i = 0; i < numPlayers; i++){
 			handCountBeforeCutpurse[i] = testNumber * 5;
 			if(handCountBeforeCutpurse[i] >= MAX_HAND){
 				handCountBeforeCutpurse[i] = 
@@ -164,7 +164,7 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 	
 	//Store hand card counts prior to cutpurse call for each player
 	int handCardCountByTypeBeforeCutpurse[MAX_PLAYERS][27] = {{0}};
-	for(i = 0; i < NUM_PLAYERS; i++){
+	for(i = 0; i < numPlayers; i++){
 		for(j = 0; j < G->handCount[i]; j++){
 			handCardCountByTypeBeforeCutpurse[i][G->hand[i][j]]++;
 		}
@@ -173,7 +173,7 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 	if(RANDOMIZE && !noCopper){
 		//If deck is built randomly, add a copper to a random index in each
 		//player's hand, to ensure each player has at least one copper.
-		for(i = 0; i < NUM_PLAYERS; i++){
+		for(i = 0; i < numPlayers; i++){
 			int randomCopperIndex = floor(Random() * handCountBeforeCutpurse[i]);
 			handCardCountByTypeBeforeCutpurse[i][G->hand[i][randomCopperIndex]]--;
 			G->hand[i][randomCopperIndex] = copper;
@@ -183,7 +183,7 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 	else if(RANDOMIZE){
 		//If noCopper and RANDOMIZE, remove all copper from 
 		//each player's hand
-		for(i = 0; i < NUM_PLAYERS; i++){
+		for(i = 0; i < numPlayers; i++){
 				for(j = 0; j < handCountBeforeCutpurse[i]; j++){
 					if(G->hand[i][j] == copper){
 						G->hand[i][j] = silver;
@@ -200,7 +200,7 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 		//equal to 4 is guaranteed to have at least 1 copper
 		//already).
 		if(!noCopper){
-			for(i = 0; i < NUM_PLAYERS; i++){
+			for(i = 0; i < numPlayers; i++){
 				if(handCountBeforeCutpurse[i] < 4){
 					G->hand[i][(int)Random() * (handCountBeforeCutpurse[i] - 1)] = copper;
 				}
@@ -209,7 +209,7 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 		//If this is the boundary test (no copper in hand) replace
 		//all copper with silver
 		else{
-			for(i = 0; i < NUM_PLAYERS; i++){
+			for(i = 0; i < numPlayers; i++){
 				for(j = 4; j < handCountBeforeCutpurse[i]; j += 17){
 					G->hand[i][j] = silver;
 				}
@@ -243,7 +243,7 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 	
 	//Store hand card counts after cutpurse call for each player
 	int handCardCountByTypeAfterCutpurse[MAX_PLAYERS][27] = {{0}};
-	for(i = 0; i < NUM_PLAYERS; i++){
+	for(i = 0; i < numPlayers; i++){
 		for(j = 0; j < G->handCount[i]; j++){
 			handCardCountByTypeAfterCutpurse[i][G->hand[i][j]]++;
 		}
@@ -255,7 +255,7 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 	//copper for all non-active players. For active player, make
 	//sure hand is the same as before the cutpurse play minus 
 	//one cutpurse only.
-	for(i = 0; i < NUM_PLAYERS && !noCopper; i++){
+	for(i = 0; i < numPlayers && !noCopper; i++){
 		for(j = 0; j < 27; j++){
 			if( i != activePlayer && 
 			  ((j == copper && handCardCountByTypeBeforeCutpurse[i][j] - 1 != 
@@ -264,38 +264,38 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 			    handCardCountByTypeBeforeCutpurse[i][j] !=
 			    handCardCountByTypeAfterCutpurse[i][j])) &&
 				++(*failCt) <= MAX_FAILS){
-				failures[*failCt-1].lineNumber = __LINE__;
-				sprintf(failures[*failCt-1].description,
-				"Hand cards not updated properly after Cutpurse play\n"
-				"  Incorrect number of %d cards for player %d\n"
-				"   (player who did not play cutpurse)\n"
-				"  Expected: %d ; Observed %d %s\n", 
-				j, i, 
-				j == copper ? handCardCountByTypeBeforeCutpurse[i][j] - 1 :
-				handCardCountByTypeBeforeCutpurse[i][j],
-				handCardCountByTypeAfterCutpurse[i][j],
-				noCopper ? "(Boundary)" : "(Non-Boundary)");
-				failures[*failCt-1].testNumber = testNumber;
+					failures[*failCt-1].lineNumber = __LINE__;
+					sprintf(failures[*failCt-1].description,
+					"Hand cards not updated properly after Cutpurse play\n"
+					"  Incorrect number of %d cards for player %d\n"
+					"   (player who did not play cutpurse)\n"
+					"  Expected: %d ; Observed %d %s\n", 
+					j, i, 
+					j == copper ? handCardCountByTypeBeforeCutpurse[i][j] - 1 :
+					handCardCountByTypeBeforeCutpurse[i][j],
+					handCardCountByTypeAfterCutpurse[i][j],
+					noCopper ? "(Boundary)" : "(Non-Boundary)");
+					failures[*failCt-1].testNumber = testNumber;
 			}
-			else if( i == activePlayer && 
+			else if(i == activePlayer && 
 				  ((j == cutpurse && handCardCountByTypeBeforeCutpurse[i][j] - 1 != 
 					handCardCountByTypeAfterCutpurse[i][j]) ||
 				   ((j < cutpurse || j > cutpurse) && 
 					handCardCountByTypeBeforeCutpurse[i][j] !=
 					handCardCountByTypeAfterCutpurse[i][j])) &&
 					++(*failCt) <= MAX_FAILS){
-					failures[*failCt-1].lineNumber = __LINE__;
-					sprintf(failures[*failCt-1].description,
-					"Hand cards not updated properly after Cutpurse play\n"
-					"  Incorrect number of %d cards for player %d\n"
-					"    (player who played cutpurse)\n"
-					"  Expected: %d ; Observed %d %s\n", 
-					j, i, 
-					j == cutpurse ? handCardCountByTypeBeforeCutpurse[i][j] - 1 :
-					handCardCountByTypeBeforeCutpurse[i][j],
-					handCardCountByTypeAfterCutpurse[i][j],
-					noCopper ? "(Boundary)" : "(Non-Boundary)");
-					failures[*failCt-1].testNumber = testNumber;
+						failures[*failCt-1].lineNumber = __LINE__;
+						sprintf(failures[*failCt-1].description,
+						"Hand cards not updated properly after Cutpurse play\n"
+						"  Incorrect number of %d cards for player %d\n"
+						"    (player who played cutpurse)\n"
+						"  Expected: %d ; Observed %d %s\n", 
+						j, i, 
+						j == cutpurse ? handCardCountByTypeBeforeCutpurse[i][j] - 1 :
+						handCardCountByTypeBeforeCutpurse[i][j],
+						handCardCountByTypeAfterCutpurse[i][j],
+						noCopper ? "(Boundary)" : "(Non-Boundary)");
+						failures[*failCt-1].testNumber = testNumber;
 			}
 		}
 	}
@@ -304,7 +304,7 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 	//Check to make sure all hand counts are decremented by one.
 	//(Non-active players discard 1 copper, active player discards
 	// 1 cutpurse.)
-	for(i = 0; i < NUM_PLAYERS && !noCopper; i++){
+	for(i = 0; i < numPlayers && !noCopper; i++){
 		if(handCountBeforeCutpurse[i] - 1 != G->handCount[i] &&
 			++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
@@ -324,7 +324,7 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 	//cards as before the cutpurse play. For active player, make
 	//sure hand is the same as before the cutpurse play minus one 
 	//cutpurse only.
-	for(i = 0; i < NUM_PLAYERS && noCopper; i++){
+	for(i = 0; i < numPlayers && noCopper; i++){
 		for(j = 0; j < 27; j++){
 			if(i != activePlayer && 
 			   handCardCountByTypeBeforeCutpurse[i][j] != 
@@ -364,7 +364,7 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 	}
 	
 	//Make sure no deck counts have changed
-	for(i = 0; i < NUM_PLAYERS; i++){
+	for(i = 0; i < numPlayers; i++){
 		if(G->deckCount[i] != 0 && ++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
@@ -380,7 +380,7 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 	}
 	
 	//Make sure no decks have changed
-	for(i = 0; i < NUM_PLAYERS; i++){
+	for(i = 0; i < numPlayers; i++){
 		for(j = 0; j < MAX_DECK; j++){
 			if(G->deck[i][j] != -1 && ++(*failCt) <= MAX_FAILS){
 				failures[*failCt-1].lineNumber = __LINE__;
@@ -429,7 +429,7 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 	//If this is not the no copper boundary check, 
 	//check that discard count for each player is 1, as active player
 	//discards cutpurse and inactive players discard copper...
-	for(i = 0; i < NUM_PLAYERS && !noCopper; i++){
+	for(i = 0; i < numPlayers && !noCopper; i++){
 		if(G->discardCount[i] != 1 && ++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
 			sprintf(failures[*failCt-1].description,
@@ -448,7 +448,7 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 	//check that discard count for active player is 1, and 0
 	//for all other players, as the active player discards cutpurse
 	//and no other players discard
-	for(i = 0; i < NUM_PLAYERS && noCopper; i++){
+	for(i = 0; i < numPlayers && noCopper; i++){
 		if(i == activePlayer && G->discardCount[i] != 1 && 
 			++(*failCt) <= MAX_FAILS){
 			failures[*failCt-1].lineNumber = __LINE__;
@@ -504,7 +504,7 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 	//If this is not the no copper boundary test,
 	//make sure a copper is placed into each non-active player's
 	//discard pile
-	for(m = 0; m < NUM_PLAYERS && !noCopper; m++){
+	for(m = 0; m < numPlayers && !noCopper; m++){
 		if(m == activePlayer){
 			continue;
 		}
@@ -537,7 +537,7 @@ int _randomtestcard2helper(int numPlayers, int k[], struct gameState* G,
 	
 	//If this is the no copper boundary test,
 	//make sure each non-active player's discard pile does not change
-	for(m = 0; m < NUM_PLAYERS && noCopper; m++){
+	for(m = 0; m < numPlayers && noCopper; m++){
 		if(m == activePlayer){
 			continue;
 		}

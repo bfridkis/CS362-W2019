@@ -28,7 +28,15 @@ int main (int argc, char** argv) {
 	
 	if(RANDOMIZE){
 		printf("\n  Executing %d Cutpurse %s using hands with random assortment of \n"
-			   "\t  hand cards for each player, with at least 1 copper in each hand...\n\n"
+			   "\t  cards for each player, with at least 1 copper in each hand...\n\n"
+			   "\t  Hand and deck sizes are random for each player, up to sizes MAX_HAND\n"
+			   "\t  and MAX_DECK respectively. The number of players is random up to MAX_PLAYER.\n"
+			   "\t  The active player is chosen randomly, as well as the starting hand position\n"
+			   "\t  for the active player's council_room card. The entire game state is randomized\n"
+			   "\t  before play, and only pertinent data structures are initialized to known values\n"
+			   "\t  thereafter. The seed value for the random number generator is based on the\n"
+			   "\t  system clock to ensure non-determinism.\n\n"
+			   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in randomtestcard1.c\n"
 			   "\t\t" " -Set 'CUTPURSE_CALLS' in randomtestcard2.c\n"
 			   "\t\t" "  to modify number of plays.\n", CUTPURSE_CALLS,
 			   CUTPURSE_CALLS > 1 ? "plays" : "play");
@@ -66,8 +74,8 @@ int main (int argc, char** argv) {
 			}
 			seed = Random() * INT_MAX;
 			
-			//Generate random player count
-			numPlayers = floor(Random() * NUM_PLAYERS) + 1;
+			//Generate random player count between 2 and MAX_PLAYERS
+			numPlayers = floor(Random() * (MAX_PLAYERS - 1)) + 2;
 		}
 		else{
 			for(m = 0, j = 7; j < 17; m++, j++){		
@@ -86,8 +94,8 @@ int main (int argc, char** argv) {
 	}
 	
 	if(RANDOMIZE){
-		printf("\n  BOUNDARY: Executing Cutpurse play using hand with random assortment of \n"
-			   "\t            hand cards for each player but with no copper cards...\n");
+		printf("\n  BOUNDARY: Executing Cutpurse play using random game state as described\n"
+			   "\t            above but with no copper cards in hands (all players...\n");
 	}
 	else{
 		printf("\n  BOUNDARY: Executing Cutpurse play using hands with no copper (all players)...\n");
@@ -101,8 +109,8 @@ int main (int argc, char** argv) {
 		}
 		seed = Random() * INT_MAX;
 		
-		//Generate random player count
-		numPlayers = floor(Random() * NUM_PLAYERS) + 1;
+		//Generate random player count between 2 and MAX_PLAYERS
+		numPlayers = floor(Random() * (MAX_PLAYERS - 1)) + 2;
 	}
 	else{
 		for(m = 0, j = 7; j < 17; m++, j++){		

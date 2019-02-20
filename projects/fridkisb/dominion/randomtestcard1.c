@@ -29,13 +29,14 @@ int main (int argc, char** argv) {
 	if(RANDOMIZE){
 		printf("\n  Executing %d Council_Room %s using hands and decks with random assortment\n"
 			   "\t  of supply cards, with at least 1 card in deck for non-active players,\n"
-			   "\t  and 4 cards in deck for active players. Hand and deck sizes are random\n"
-			   "\t  for each player, up to sizes MAX_HAND and MAX_DECK respectively. The number\n"
-			   "\t  of players is random up to MAX_PLAYER. The active player is chosen randomly,\n"
-			   "\t  as well as the starting hand position for the active player's council_room card.\n"
-			   "\t  The entire game state is randomized before play, and only pertinent data\n"
-			   "\t  structures are initialized to known values thereafter. The seed value for the\n"
-			   "\t  game is random based on the system clock to ensure non-determinism.\n\n"
+			   "\t  and 4 cards in deck for active players...\n\n"
+			   "\t  Hand and deck sizes are random for each player, up to sizes MAX_HAND and\n"
+			   "\t  MAX_DECK respectively. The number of players is random up to MAX_PLAYER.\n"
+			   "\t  The active player is chosen randomly, as well as the starting hand position\n"
+			   "\t  for the active player's council_room card. The entire game state is randomized\n"
+			   "\t  before play, and only pertinent data structures are initialized to known values\n"
+			   "\t  thereafter. The seed value for the random number generator is based on the\n"
+			   "\t  system clock to ensure non-determinism.\n\n"
 			   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in randomtestcard1.c\n"
 			   "\t\t" "  to modify number of plays.\n", COUNCIL_ROOM_CALLS,
 			   COUNCIL_ROOM_CALLS > 1 ? "plays" : "play");
@@ -75,8 +76,8 @@ int main (int argc, char** argv) {
 			//Generate random seed value
 			seed = Random() * INT_MAX;
 			
-			//Generate random player count
-			numPlayers = floor(Random() * NUM_PLAYERS) + 1;
+			//Generate random player count between 2 and MAX_PLAYERS
+			numPlayers = floor(Random() * (MAX_PLAYERS - 1)) + 2;
 		}
 		else{
 			for(m = 0, j = 7; j < 17; m++, j++){		
@@ -95,12 +96,12 @@ int main (int argc, char** argv) {
 	}
 	
 	if(RANDOMIZE){
-		printf("\n  BOUNDARY: Executing Council_Room play using hand with random assortment of\n"
-			   "\t            supply cards, with empty decks for all players...\n");
+		printf("\n  BOUNDARY: Executing Council_Room play using hand with random game state\n"
+			   "\t            as described above, with empty decks for all players...\n");
 	}
 	else{
 		printf("\n  BOUNDARY: Executing Council_Room play using hands\n"
-			   "\t          with empty decks for all players...\n");
+			   "\t            with empty decks for all players...\n");
 	}
 	
 	//Test with empty decks (all players)
@@ -111,8 +112,8 @@ int main (int argc, char** argv) {
 		}
 		seed = Random() * INT_MAX;
 		
-		//Generate random player count
-		numPlayers = floor(Random() * NUM_PLAYERS) + 1;
+		//Generate random player count between 2 and MAX_PLAYERS
+		numPlayers = floor(Random() * (MAX_PLAYERS - 1)) + 2;
 	}
 	else{
 		for(m = 0, j = 7; j < 17; m++, j++){		
@@ -164,7 +165,7 @@ int main (int argc, char** argv) {
 		   "\t\t\t"          "d. outpostPlayed\n"
 		   "\t\t\t"          "e. outpostTurn\n"
 		   "\t\t"       "9. Played card count is not 1\n"
-		   "\t\t"       "10. Played cards does not have Council_Room @ idx 1 and is unchanged otherwise\n"
+		   "\t   "     "10. Played cards does not have Council_Room @ idx 1 and is unchanged otherwise\n"
 		   "\n"
 		   "\t\t"       "* BOUNDARY test verifies all of the above except for #2 & #3. For the empty    *\n"
 		   "\t\t"       "* deck boundary test, no deck or hand count or contents should change for any  *\n"

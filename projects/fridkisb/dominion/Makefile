@@ -50,7 +50,7 @@ randomtestresults: randomtestcard1 randomtestcard2 randomtestadventurer
 	@chmod +x randomtestmakehelper
 	@./randomtestmakehelper randomtestcard1
 	@./randomtestmakehelper randomtestcard2
-	@./randomtestmakehelper randomtestcardadventurer
+	@./randomtestmakehelper randomtestadventurer
 
 randomtestcard1.out: randomtestcard1
 	@chmod +x randomtestmakehelper

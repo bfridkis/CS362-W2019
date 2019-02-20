@@ -22,13 +22,9 @@
 //also determines input sizes for each run,
 //if RANDOMIZE is set to 0. 
 //(See randomtestcard2.c for more details.)
-#define CUTPURSE_CALLS 1
+#define CUTPURSE_CALLS 10000
 
-#if RANDOMIZE 
-#define NUM_PLAYERS MAX_PLAYERS
-#else 
 #define NUM_PLAYERS 4
-#endif
 
 #include "dominion.h"
 #include "dominion_helpers.h"

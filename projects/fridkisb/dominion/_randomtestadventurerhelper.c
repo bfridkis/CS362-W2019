@@ -99,7 +99,7 @@ int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 	if(RANDOMIZE && treasureCardCountSpecifier >= 2){
 		//Determine random deck size for active player, based on 
 		//treasureCardCountSpecifier
-		deckCountBeforeAdventurer[activePlayer] = 2 + floor(Random() * (MAX_DECK - 5));
+		deckCountBeforeAdventurer[activePlayer] = 2 + floor(Random() * (MAX_DECK - 1));
 	}
 	else if(treasureCardCountSpecifier >= 2){
 		deckCountBeforeAdventurer[activePlayer] = (testNumber * 5) + 1;
@@ -127,7 +127,17 @@ int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 		// boundary tests to avoid a segmentation fault. The bug that causes
 		// this fault is described in cardEffects.c in the notes for 
 		// adventurerEffect.) Non-active players are assigned hand size of 0.
-		handCountBeforeAdventurer[activePlayer] = 3 + floor(Random() * MAX_HAND - 5);
+		handCountBeforeAdventurer[activePlayer] = 3 + floor(Random() * (MAX_HAND - 2));
+		
+		//Without the following if statement, hand can potentially 
+		//exceed MAX_HAND (after active player gains 2 cards to hand),
+		//which will result in hand count and position
+		//failures after call to adventurerEffect! See assignment4
+		//writeup for additional discussion on this matter.
+		
+		/*  if(handCountBeforeAdventurer[activePlayer] > MAX_HAND - 2){
+			handCountBeforeAdventurer[activePlayer] = MAX_HAND - 2;
+		} */ 
 	}
 	else{
 		//A hand size with a minimum of 6 (as generated deterministically below)
@@ -313,7 +323,9 @@ int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 		
 		G->deck[activePlayer][randomTreasureIndex1] = randomTreasureCard1;
 		G->deck[activePlayer][randomTreasureIndex2] = randomTreasureCard2;
-			
+		deckBeforeAdventurer[randomTreasureIndex1] = randomTreasureCard1;
+		deckBeforeAdventurer[randomTreasureIndex2] = randomTreasureCard2;
+		
 		deckCardCountByTypeBeforeAdventurer[randomTreasureCard1]++;
 		deckCardCountByTypeBeforeAdventurer[randomTreasureCard2]++;
 	}

@@ -33,11 +33,7 @@
 #include <math.h>
 #include "rngs.h"
 
-#if RANDOMIZE 
-#define NUM_PLAYERS MAX_PLAYERS
-#else 
 #define NUM_PLAYERS 4
-#endif
 
 struct failedTest {
 	int lineNumber;

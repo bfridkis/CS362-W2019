@@ -131,7 +131,8 @@ int _randomtestcard1helper(int numPlayers, int k[], struct gameState* G,
 			handCountBeforeCouncil_Room[i] = 1 + floor(Random() * MAX_HAND);
 			
 			//Without the following if statement, hand can potentially 
-			//exceed MAX_HAND, which will result in hand count and position
+			//exceed MAX_HAND (after active player gains 4 cards 
+			//to hand), which will result in hand count and position
 			//failures after call to council_roomEffect! See assignment4
 			//writeup for additional discussion on this matter.
 			

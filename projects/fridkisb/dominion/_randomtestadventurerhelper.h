@@ -24,11 +24,7 @@
 //(See randomtestadventurer.c for more details.)
 #define ADVENTURER_CALLS 10000
 
-#if RANDOMIZE 
-#define NUM_PLAYERS MAX_PLAYERS
-#else 
 #define NUM_PLAYERS 4
-#endif
 
 #include "dominion.h"
 #include "dominion_helpers.h"

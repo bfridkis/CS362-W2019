@@ -24,7 +24,7 @@ int main (int argc, char** argv) {
 	failedTest failures[MAX_FAILS];
 	int failCt = 0;
 	
-	printf("\t\t\t\t\t" "Starting randomtestadventurer - Testing 'adventurer' card\n");
+	printf("\t\t\t   " "Starting randomtestadventurer - Testing 'adventurer' card\n");
 	
 	if(RANDOMIZE){
 		printf("\n  Executing %d Adventurer %s using hands with random assortment of \n"

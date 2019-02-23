@@ -27,7 +27,17 @@
 
 int adventurerEffect(int currentPlayer, struct gameState *state){
 	int temphand[MAX_HAND];
-	int drawntreasure = 0, z = 1;
+	
+	//This bug (z=1 rather than z=0 in the line below), 
+	//which was introduced in assignment 2, will cause a 
+	//segmentation fault when running the random test generator 
+	//(assignment 4), and hence has been commented out here so 
+	//program completion will be guaranteed. This is discussed 
+	//in more detail in the assignment 4 writeup.
+	
+	/*int drawntreasure = 0, z = 1;*/
+	
+	int drawntreasure = 0, z = 0;
 	while(drawntreasure<3){
 	if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
 	  shuffle(currentPlayer, state);

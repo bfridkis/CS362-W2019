@@ -5,7 +5,30 @@
 	<projects>
 	</projects>
 	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src/dk/brics/automaton/RegExp.java</name>
+			<type>1</type>
+			<location>C:/Users/fridkbj/Desktop/OSU/CS362-SoftwareEngineeringII/FinalProject/UrlValidatorIncorrect/src/Automaton/RegExp.java</location>
+		</link>
+		<link>
+			<name>src/dk/brics/automaton/State.java</name>
+			<type>1</type>
+			<location>C:/Users/fridkbj/Desktop/OSU/CS362-SoftwareEngineeringII/FinalProject/UrlValidatorIncorrect/src/Automaton/State.java</location>
+		</link>
+		<link>
+			<name>src/dk/brics/automaton/Transition.java</name>
+			<type>1</type>
+			<location>C:/Users/fridkbj/Desktop/OSU/CS362-SoftwareEngineeringII/FinalProject/UrlValidatorIncorrect/src/Automaton/Transition.java</location>
+		</link>
+	</linkedResources>
 </projectDescription>

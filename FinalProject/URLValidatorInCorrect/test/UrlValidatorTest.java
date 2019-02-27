@@ -147,4 +147,5 @@ public class UrlValidatorTest extends TestCase {
 // References
 // https://stackoverflow.com/questions/4669692/valid-characters-for-directory-part-of-a-url-for-short-links
 // https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html
+// https://github.com/cs-au-dk/dk.brics.automaton
 

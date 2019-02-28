@@ -67,6 +67,8 @@ public class UrlValidatorTest extends TestCase {
 		 }while((randomChar >= 58 && randomChar <= 64) ||
 				(randomChar >= 91 && randomChar <= 96) ||
 				(randomChar == 47));
+		 
+		 //Make sure a '.' is not followed by another '.'
 		 if(i > 0 && testUrl.charAt(i-1) == '.' && randomChar == '.') {
 			 do{
 				 randomChar = 48 + rand.nextInt(75);
@@ -119,15 +121,28 @@ public class UrlValidatorTest extends TestCase {
 		 testUrl.append(String.valueOf(rand.nextInt(65536)));
 	 }
 	 
-	 //Use Generex to randomly generate a path string based on PATH_REGEX (UrlValidator.java line 167)
-	 //Generex generex = new Generex("^(/[-\\w:@&?=+,.!*'%$_;\\(\\)]*)?$");
-	 //Generex generex = new Generex("^(/[abcdefghijklmnopqrstuv]*)?$");
-	 Generex generex = new Generex("/[/A-Za-z0-9-_@&?=+,.!*'%$;\\(\\):]*");
-	 String randomPath = generex.random(rand.nextInt(80));		//80 char max
-	 testUrl.append(randomPath);
+	 //75% chance we use a path...
+	 if((1 + rand.nextInt(4)) % 3 != 0) {
+		 //Use Generex to randomly generate a path string based on PATH_REGEX 
+		 //(see UrlValidator.java line 167). Max length for random path is 80.
+		 Generex generex = 
+				 new Generex("(/[-A-Za-z0-9:@&=+,!*'$_;\\(\\)]*(%[A-Fa-f0-9]{2})?(\\.)?)+");
+		 String randomPath = generex.random(rand.nextInt(80));		//80 char max
+		 testUrl.append(randomPath);
+		 System.out.println("Path: " + randomPath);
+	 }
 	 
+	 //50% chance we use a query...
+	 if(rand.nextInt() % 2 == 0) {
+		 //Use Generex to randomly generate a path string based on PATH_REGEX 
+		 //(see UrlValidator.java line 167). Max length for random path is 80.
+		 Generex generex = new Generex("?\\w+?=\\w+?(&\\w+?=\\w+?)*");
+		 String randomQuery = generex.random(rand.nextInt(150));		//150 char max
+		 testUrl.append(randomQuery);
+		 System.out.println("Query: " + randomQuery);
+	 }
 	 System.out.println(testUrl.toString());
-	 System.out.println(randomPath);
+	 
    }
    
    public void testIsValid()

@@ -76,7 +76,6 @@ public class DomainValidator implements Serializable {
 
     // RFC2396 toplabel = alpha | alpha *( alphanum | "-" ) alphanum
     // Max 63 characters
-    //private static final String TOP_LABEL_REGEX = "\\p{Alpha}(?>[\\p{Alnum}-]{0,61}\\p{Alnum})?";
     private static final String TOP_LABEL_REGEX = "\\p{Alpha}(?>[\\p{Alnum}-]{0,61}\\p{Alnum})?";
 
     // RFC2396 hostname = *( domainlabel "." ) toplabel [ "." ]
@@ -163,7 +162,7 @@ public class DomainValidator implements Serializable {
         }
         String[] groups = domainRegex.match(domain);
         if (groups != null && groups.length > 0) {
-            return !isValidTld(groups[0]);
+            return isValidTld(groups[0]);
         }
         return allowLocal && hostnameRegex.isValid(domain);
     }
@@ -320,7 +319,7 @@ public class DomainValidator implements Serializable {
         "alfaromeo", // alfaromeo Fiat Chrysler Automobiles N.V.
         "alibaba", // alibaba Alibaba Group Holding Limited
         "alipay", // alipay Alibaba Group Holding Limited
-        "allfinanz", // allfinanz Allfinanz Deutsche Vermögensberatung Aktiengesellschaft
+        "allfinanz", // allfinanz Allfinanz Deutsche VermÃ¶gensberatung Aktiengesellschaft
         "allstate", // allstate Allstate Fire and Casualty Insurance Company
         "ally", // ally Ally Financial Inc.
         "alsace", // alsace REGION D ALSACE
@@ -344,7 +343,7 @@ public class DomainValidator implements Serializable {
         "archi", // archi STARTING DOT LIMITED
         "army", // army United TLD Holdco Ltd.
         "art", // art UK Creative Ideas Limited
-        "arte", // arte Association Relative à la Télévision Européenne G.E.I.E.
+        "arte", // arte Association Relative Ã  la TÃ©lÃ©vision EuropÃ©enne G.E.I.E.
         "asda", // asda Wal-Mart Stores, Inc.
         "asia", // asia DotAsia Organisation Ltd.
         "associates", // associates Baxter Hill, LLC
@@ -375,7 +374,7 @@ public class DomainValidator implements Serializable {
         "barefoot", // barefoot Gallo Vineyards, Inc.
         "bargains", // bargains Half Hallow, LLC
         "baseball", // baseball MLB Advanced Media DH, LLC
-        "basketball", // basketball Fédération Internationale de Basketball (FIBA)
+        "basketball", // basketball FÃ©dÃ©ration Internationale de Basketball (FIBA)
         "bauhaus", // bauhaus Werkhaus GmbH
         "bayern", // bayern Bayern Connect GmbH
         "bbc", // bbc British Broadcasting Corporation
@@ -384,7 +383,7 @@ public class DomainValidator implements Serializable {
         "bcg", // bcg The Boston Consulting Group, Inc.
         "bcn", // bcn Municipi de Barcelona
         "beats", // beats Beats Electronics, LLC
-        "beauty", // beauty L&#39;Oréal
+        "beauty", // beauty L&#39;OrÃ©al
         "beer", // beer Top Level Domain Holdings Limited
         "bentley", // bentley Bentley Motors Limited
         "berlin", // berlin dotBERLIN GmbH &amp; Co. KG
@@ -413,7 +412,7 @@ public class DomainValidator implements Serializable {
         "boats", // boats DERBoats, LLC
         "boehringer", // boehringer Boehringer Ingelheim International GmbH
         "bofa", // bofa NMS Services, Inc.
-        "bom", // bom Núcleo de Informação e Coordenação do Ponto BR - NIC.br
+        "bom", // bom NÃºcleo de InformaÃ§Ã£o e CoordenaÃ§Ã£o do Ponto BR - NIC.br
         "bond", // bond Bond University Limited
         "boo", // boo Charleston Road Registry Inc.
         "book", // book Amazon Registry Services, Inc.
@@ -501,16 +500,16 @@ public class DomainValidator implements Serializable {
         "cleaning", // cleaning Fox Shadow, LLC
         "click", // click Uniregistry, Corp.
         "clinic", // clinic Goose Park, LLC
-        "clinique", // clinique The Estée Lauder Companies Inc.
+        "clinique", // clinique The EstÃ©e Lauder Companies Inc.
         "clothing", // clothing Steel Lake, LLC
         "cloud", // cloud ARUBA S.p.A.
         "club", // club .CLUB DOMAINS, LLC
-        "clubmed", // clubmed Club Méditerranée S.A.
+        "clubmed", // clubmed Club MÃ©diterranÃ©e S.A.
         "coach", // coach Koko Island, LLC
         "codes", // codes Puff Willow, LLC
         "coffee", // coffee Trixy Cover, LLC
         "college", // college XYZ.COM LLC
-        "cologne", // cologne NetCologne Gesellschaft für Telekommunikation mbH
+        "cologne", // cologne NetCologne Gesellschaft fÃ¼r Telekommunikation mbH
         "com", // com VeriSign Global Registry Services
         "comcast", // comcast Comcast IP Holdings I, LLC
         "commbank", // commbank COMMONWEALTH BANK OF AUSTRALIA
@@ -528,7 +527,7 @@ public class DomainValidator implements Serializable {
         "cookingchannel", // cookingchannel Lifestyle Domain Holdings, Inc.
         "cool", // cool Koko Lake, LLC
         "coop", // coop DotCooperation LLC
-        "corsica", // corsica Collectivité Territoriale de Corse
+        "corsica", // corsica CollectivitÃ© Territoriale de Corse
         "country", // country Top Level Domain Holdings Limited
         "coupon", // coupon Amazon Registry Services, Inc.
         "coupons", // coupons Black Island, LLC
@@ -597,12 +596,12 @@ public class DomainValidator implements Serializable {
         "duns", // duns The Dun &amp; Bradstreet Corporation
         "dupont", // dupont E. I. du Pont de Nemours and Company
         "durban", // durban ZA Central Registry NPC trading as ZA Central Registry
-        "dvag", // dvag Deutsche Vermögensberatung Aktiengesellschaft DVAG
+        "dvag", // dvag Deutsche VermÃ¶gensberatung Aktiengesellschaft DVAG
         "dvr", // dvr Hughes Satellite Systems Corporation
         "earth", // earth Interlink Co., Ltd.
         "eat", // eat Charleston Road Registry Inc.
         "eco", // eco Big Room Inc.
-        "edeka", // edeka EDEKA Verband kaufmännischer Genossenschaften e.V.
+        "edeka", // edeka EDEKA Verband kaufmÃ¤nnischer Genossenschaften e.V.
         "edu", // edu EDUCAUSE
         "education", // education Brice Way, LLC
         "email", // email Spring Madison, LLC
@@ -647,7 +646,7 @@ public class DomainValidator implements Serializable {
         "fidelity", // fidelity Fidelity Brokerage Services LLC
         "fido", // fido Rogers Communications Canada Inc.
         "film", // film Motion Picture Domain Registry Pty Ltd
-        "final", // final Núcleo de Informação e Coordenação do Ponto BR - NIC.br
+        "final", // final NÃºcleo de InformaÃ§Ã£o e CoordenaÃ§Ã£o do Ponto BR - NIC.br
         "finance", // finance Cotton Cypress, LLC
         "financial", // financial Just Cover, LLC
         "fire", // fire Amazon Registry Services, Inc.
@@ -688,7 +687,7 @@ public class DomainValidator implements Serializable {
         "furniture", // furniture Lone Fields, LLC
         "futbol", // futbol United TLD Holdco, Ltd.
         "fyi", // fyi Silver Tigers, LLC
-        "gal", // gal Asociación puntoGAL
+        "gal", // gal AsociaciÃ³n puntoGAL
         "gallery", // gallery Sugar House, LLC
         "gallo", // gallo Gallo Vineyards, Inc.
         "gallup", // gallup Gallup, Inc.
@@ -711,7 +710,7 @@ public class DomainValidator implements Serializable {
         "glass", // glass Black Cover, LLC
         "gle", // gle Charleston Road Registry Inc.
         "global", // global Dot Global Domain Registry Limited
-        "globo", // globo Globo Comunicação e Participações S.A
+        "globo", // globo Globo ComunicaÃ§Ã£o e ParticipaÃ§Ãµes S.A
         "gmail", // gmail Charleston Road Registry Inc.
         "gmbh", // gmbh Extra Dynamite, LLC
         "gmo", // gmo GMO Internet, Inc.
@@ -849,7 +848,7 @@ public class DomainValidator implements Serializable {
         "kindle", // kindle Amazon Registry Services, Inc.
         "kitchen", // kitchen Just Goodbye, LLC
         "kiwi", // kiwi DOT KIWI LIMITED
-        "koeln", // koeln NetCologne Gesellschaft für Telekommunikation mbH
+        "koeln", // koeln NetCologne Gesellschaft fÃ¼r Telekommunikation mbH
         "komatsu", // komatsu Komatsu Ltd.
         "kosher", // kosher Kosher Marketing Assets LLC
         "kpmg", // kpmg KPMG International Cooperative (KPMG International Genossenschaft)
@@ -861,15 +860,15 @@ public class DomainValidator implements Serializable {
         "lacaixa", // lacaixa CAIXA D&#39;ESTALVIS I PENSIONS DE BARCELONA
         "ladbrokes", // ladbrokes LADBROKES INTERNATIONAL PLC
         "lamborghini", // lamborghini Automobili Lamborghini S.p.A.
-        "lamer", // lamer The Estée Lauder Companies Inc.
+        "lamer", // lamer The EstÃ©e Lauder Companies Inc.
         "lancaster", // lancaster LANCASTER
         "lancia", // lancia Fiat Chrysler Automobiles N.V.
-        "lancome", // lancome L&#39;Oréal
+        "lancome", // lancome L&#39;OrÃ©al
         "land", // land Pine Moon, LLC
         "landrover", // landrover Jaguar Land Rover Ltd
         "lanxess", // lanxess LANXESS Corporation
         "lasalle", // lasalle Jones Lang LaSalle Incorporated
-        "lat", // lat ECOM-LAC Federación de Latinoamérica y el Caribe para Internet y el Comercio Electrónico
+        "lat", // lat ECOM-LAC FederaciÃ³n de LatinoamÃ©rica y el Caribe para Internet y el Comercio ElectrÃ³nico
         "latino", // latino Dish DBS Corporation
         "latrobe", // latrobe La Trobe University
         "law", // law Minds + Machines Group Limited
@@ -921,7 +920,7 @@ public class DomainValidator implements Serializable {
         "madrid", // madrid Comunidad de Madrid
         "maif", // maif Mutuelle Assurance Instituteur France (MAIF)
         "maison", // maison Victor Frostbite, LLC
-        "makeup", // makeup L&#39;Oréal
+        "makeup", // makeup L&#39;OrÃ©al
         "man", // man MAN SE
         "management", // management John Goodbye, LLC
         "mango", // mango PUNTO FA S.L.
@@ -933,8 +932,8 @@ public class DomainValidator implements Serializable {
         "maserati", // maserati Fiat Chrysler Automobiles N.V.
         "mattel", // mattel Mattel Sites, Inc.
         "mba", // mba Lone Hollow, LLC
-        "mcd", // mcd McDonald’s Corporation
-        "mcdonalds", // mcdonalds McDonald’s Corporation
+        "mcd", // mcd McDonaldâ€™s Corporation
+        "mcdonalds", // mcdonalds McDonaldâ€™s Corporation
         "mckinsey", // mckinsey McKinsey Holdings, Inc.
         "med", // med Medistry LLC
         "media", // media Grand Glen, LLC
@@ -975,20 +974,20 @@ public class DomainValidator implements Serializable {
         "motorcycles", // motorcycles DERMotorcycles, LLC
         "mov", // mov Charleston Road Registry Inc.
         "movie", // movie New Frostbite, LLC
-        "movistar", // movistar Telefónica S.A.
+        "movistar", // movistar TelefÃ³nica S.A.
         "msd", // msd MSD Registry Holdings, Inc.
         "mtn", // mtn MTN Dubai Limited
         "mtpc", // mtpc Mitsubishi Tanabe Pharma Corporation
         "mtr", // mtr MTR Corporation Limited
         "museum", // museum Museum Domain Management Association
         "mutual", // mutual Northwestern Mutual MU TLD Registry, LLC
-//        "mutuelle", // mutuelle Fédération Nationale de la Mutualité Française (Retired)
+//        "mutuelle", // mutuelle FÃ©dÃ©ration Nationale de la MutualitÃ© FranÃ§aise (Retired)
         "nab", // nab National Australia Bank Limited
         "nadex", // nadex Nadex Domains, Inc
         "nagoya", // nagoya GMO Registry, Inc.
         "name", // name VeriSign Information Services, Inc.
         "nationwide", // nationwide Nationwide Mutual Insurance Company
-        "natura", // natura NATURA COSMÉTICOS S.A.
+        "natura", // natura NATURA COSMÃ‰TICOS S.A.
         "navy", // navy United TLD Holdco Ltd.
         "nba", // nba NBA REGISTRY, LLC
         "nec", // nec NEC Corporation
@@ -1044,7 +1043,7 @@ public class DomainValidator implements Serializable {
         "org", // org Public Interest Registry (PIR)
         "organic", // organic Afilias Limited
         "orientexpress", // orientexpress Orient Express
-        "origins", // origins The Estée Lauder Companies Inc.
+        "origins", // origins The EstÃ©e Lauder Companies Inc.
         "osaka", // osaka Interlink Co., Ltd.
         "otsuka", // otsuka Otsuka Holdings Co., Ltd.
         "ott", // ott Dish DBS Corporation
@@ -1086,7 +1085,7 @@ public class DomainValidator implements Serializable {
         "plumbing", // plumbing Spring Tigers, LLC
         "plus", // plus Sugar Mill, LLC
         "pnc", // pnc PNC Domain Co., LLC
-        "pohl", // pohl Deutsche Vermögensberatung Aktiengesellschaft DVAG
+        "pohl", // pohl Deutsche VermÃ¶gensberatung Aktiengesellschaft DVAG
         "poker", // poker Afilias Domains No. 5 Limited
         "politie", // politie Politie Nederland
         "porn", // porn ICM Registry PN LLC
@@ -1109,7 +1108,7 @@ public class DomainValidator implements Serializable {
         "pub", // pub United TLD Holdco Ltd.
         "pwc", // pwc PricewaterhouseCoopers LLP
         "qpon", // qpon dotCOOL, Inc.
-        "quebec", // quebec PointQuébec Inc
+        "quebec", // quebec PointQuÃ©bec Inc
         "quest", // quest Quest ION Limited
         "qvc", // qvc QVC, Inc.
         "racing", // racing Premier Registry Limited
@@ -1144,7 +1143,7 @@ public class DomainValidator implements Serializable {
         "ricoh", // ricoh Ricoh Company, Ltd.
         "rightathome", // rightathome Johnson Shareholdings, Inc.
         "ril", // ril Reliance Industries Limited
-        "rio", // rio Empresa Municipal de Informática SA - IPLANRIO
+        "rio", // rio Empresa Municipal de InformÃ¡tica SA - IPLANRIO
         "rip", // rip United TLD Holdco Ltd.
         "rmit", // rmit Royal Melbourne Institute of Technology
         "rocher", // rocher Ferrero Trading Lux S.A.
@@ -1193,7 +1192,7 @@ public class DomainValidator implements Serializable {
         "security", // security XYZ.COM LLC
         "seek", // seek Seek Limited
         "select", // select iSelect Ltd
-        "sener", // sener Sener Ingeniería y Sistemas, S.A.
+        "sener", // sener Sener IngenierÃ­a y Sistemas, S.A.
         "services", // services Fox Castle, LLC
         "ses", // ses SES
         "seven", // seven Seven West Media Ltd
@@ -1201,7 +1200,7 @@ public class DomainValidator implements Serializable {
         "sex", // sex ICM Registry SX LLC
         "sexy", // sexy Uniregistry, Corp.
         "sfr", // sfr Societe Francaise du Radiotelephone - SFR
-        "shangrila", // shangrila Shangri‐La International Hotel Management Limited
+        "shangrila", // shangrila Shangriâ€�La International Hotel Management Limited
         "sharp", // sharp Sharp Corporation
         "shaw", // shaw Shaw Cablesystems G.P.
         "shell", // shell Shell Information Technology International Inc
@@ -1219,13 +1218,13 @@ public class DomainValidator implements Serializable {
         "singles", // singles Fern Madison, LLC
         "site", // site DotSite Inc.
         "ski", // ski STARTING DOT LIMITED
-        "skin", // skin L&#39;Oréal
+        "skin", // skin L&#39;OrÃ©al
         "sky", // sky Sky International AG
         "skype", // skype Microsoft Corporation
         "sling", // sling Hughes Satellite Systems Corporation
         "smart", // smart Smart Communications, Inc. (SMART)
         "smile", // smile Amazon Registry Services, Inc.
-        "sncf", // sncf SNCF (Société Nationale des Chemins de fer Francais)
+        "sncf", // sncf SNCF (SociÃ©tÃ© Nationale des Chemins de fer Francais)
         "soccer", // soccer Foggy Shadow, LLC
         "social", // social United TLD Holdco Ltd.
         "softbank", // softbank SoftBank Group Corp.
@@ -1288,7 +1287,7 @@ public class DomainValidator implements Serializable {
         "technology", // technology Auburn Falls, LLC
         "tel", // tel Telnic Ltd.
         "telecity", // telecity TelecityGroup International Limited
-        "telefonica", // telefonica Telefónica S.A.
+        "telefonica", // telefonica TelefÃ³nica S.A.
         "temasek", // temasek Temasek Holdings (Private) Limited
         "tennis", // tennis Cotton Bloom, LLC
         "teva", // teva Teva Pharmaceutical Industries Limited
@@ -1409,99 +1408,99 @@ public class DomainValidator implements Serializable {
         "xfinity", // xfinity Comcast IP Holdings I, LLC
         "xihuan", // xihuan QIHOO 360 TECHNOLOGY CO. LTD.
         "xin", // xin Elegant Leader Limited
-        "xn--11b4c3d", // कॉम VeriSign Sarl
-        "xn--1ck2e1b", // セール Amazon Registry Services, Inc.
-        "xn--1qqw23a", // 佛山 Guangzhou YU Wei Information Technology Co., Ltd.
-        "xn--30rr7y", // 慈善 Excellent First Limited
-        "xn--3bst00m", // 集团 Eagle Horizon Limited
-        "xn--3ds443g", // 在线 TLD REGISTRY LIMITED
-        "xn--3oq18vl8pn36a", // 大众汽车 Volkswagen (China) Investment Co., Ltd.
-        "xn--3pxu8k", // 点看 VeriSign Sarl
-        "xn--42c2d9a", // คอม VeriSign Sarl
-        "xn--45q11c", // 八卦 Zodiac Scorpio Limited
-        "xn--4gbrim", // موقع Suhub Electronic Establishment
-        "xn--55qw42g", // 公益 China Organizational Name Administration Center
-        "xn--55qx5d", // 公司 Computer Network Information Center of Chinese Academy of Sciences （China Internet Network Information Center）
-        "xn--5su34j936bgsg", // 香格里拉 Shangri‐La International Hotel Management Limited
-        "xn--5tzm5g", // 网站 Global Website TLD Asia Limited
-        "xn--6frz82g", // 移动 Afilias Limited
-        "xn--6qq986b3xl", // 我爱你 Tycoon Treasure Limited
-        "xn--80adxhks", // москва Foundation for Assistance for Internet Technologies and Infrastructure Development (FAITID)
-        "xn--80aqecdr1a", // католик Pontificium Consilium de Comunicationibus Socialibus (PCCS) (Pontifical Council for Social Communication)
-        "xn--80asehdb", // онлайн CORE Association
-        "xn--80aswg", // сайт CORE Association
-        "xn--8y0a063a", // 联通 China United Network Communications Corporation Limited
-        "xn--90ae", // бг Imena.BG Plc (NAMES.BG Plc)
-        "xn--9dbq2a", // קום VeriSign Sarl
-        "xn--9et52u", // 时尚 RISE VICTORY LIMITED
-        "xn--9krt00a", // 微博 Sina Corporation
-        "xn--b4w605ferd", // 淡马锡 Temasek Holdings (Private) Limited
-        "xn--bck1b9a5dre4c", // ファッション Amazon Registry Services, Inc.
-        "xn--c1avg", // орг Public Interest Registry
-        "xn--c2br7g", // नेट VeriSign Sarl
-        "xn--cck2b3b", // ストア Amazon Registry Services, Inc.
-        "xn--cg4bki", // 삼성 SAMSUNG SDS CO., LTD
-        "xn--czr694b", // 商标 HU YI GLOBAL INFORMATION RESOURCES(HOLDING) COMPANY.HONGKONG LIMITED
-        "xn--czrs0t", // 商店 Wild Island, LLC
-        "xn--czru2d", // 商城 Zodiac Aquarius Limited
-        "xn--d1acj3b", // дети The Foundation for Network Initiatives “The Smart Internet”
-        "xn--eckvdtc9d", // ポイント Amazon Registry Services, Inc.
-        "xn--efvy88h", // 新闻 Xinhua News Agency Guangdong Branch 新华通讯社广东分社
-        "xn--estv75g", // 工行 Industrial and Commercial Bank of China Limited
-        "xn--fct429k", // 家電 Amazon Registry Services, Inc.
-        "xn--fhbei", // كوم VeriSign Sarl
-        "xn--fiq228c5hs", // 中文网 TLD REGISTRY LIMITED
-        "xn--fiq64b", // 中信 CITIC Group Corporation
-        "xn--fjq720a", // 娱乐 Will Bloom, LLC
-        "xn--flw351e", // 谷歌 Charleston Road Registry Inc.
-        "xn--fzys8d69uvgm", // 電訊盈科 PCCW Enterprises Limited
-        "xn--g2xx48c", // 购物 Minds + Machines Group Limited
-        "xn--gckr3f0f", // クラウド Amazon Registry Services, Inc.
-        "xn--gk3at1e", // 通販 Amazon Registry Services, Inc.
-        "xn--hxt814e", // 网店 Zodiac Libra Limited
-        "xn--i1b6b1a6a2e", // संगठन Public Interest Registry
-        "xn--imr513n", // 餐厅 HU YI GLOBAL INFORMATION RESOURCES (HOLDING) COMPANY. HONGKONG LIMITED
-        "xn--io0a7i", // 网络 Computer Network Information Center of Chinese Academy of Sciences （China Internet Network Information Center）
-        "xn--j1aef", // ком VeriSign Sarl
-        "xn--jlq61u9w7b", // 诺基亚 Nokia Corporation
-        "xn--jvr189m", // 食品 Amazon Registry Services, Inc.
-        "xn--kcrx77d1x4a", // 飞利浦 Koninklijke Philips N.V.
-        "xn--kpu716f", // 手表 Richemont DNS Inc.
-        "xn--kput3i", // 手机 Beijing RITT-Net Technology Development Co., Ltd
-        "xn--mgba3a3ejt", // ارامكو Aramco Services Company
-        "xn--mgba7c0bbn0a", // العليان Crescent Holding GmbH
-        "xn--mgbab2bd", // بازار CORE Association
-        "xn--mgbb9fbpob", // موبايلي GreenTech Consultancy Company W.L.L.
-        "xn--mgbca7dzdo", // ابوظبي Abu Dhabi Systems and Information Centre
-        "xn--mgbi4ecexp", // كاثوليك Pontificium Consilium de Comunicationibus Socialibus (PCCS) (Pontifical Council for Social Communication)
-        "xn--mgbt3dhd", // همراه Asia Green IT System Bilgisayar San. ve Tic. Ltd. Sti.
-        "xn--mk1bu44c", // 닷컴 VeriSign Sarl
-        "xn--mxtq1m", // 政府 Net-Chinese Co., Ltd.
-        "xn--ngbc5azd", // شبكة International Domain Registry Pty. Ltd.
-        "xn--ngbe9e0a", // بيتك Kuwait Finance House
-        "xn--nqv7f", // 机构 Public Interest Registry
-        "xn--nqv7fs00ema", // 组织机构 Public Interest Registry
-        "xn--nyqy26a", // 健康 Stable Tone Limited
-        "xn--p1acf", // рус Rusnames Limited
-        "xn--pbt977c", // 珠宝 Richemont DNS Inc.
-        "xn--pssy2u", // 大拿 VeriSign Sarl
-        "xn--q9jyb4c", // みんな Charleston Road Registry Inc.
-        "xn--qcka1pmc", // グーグル Charleston Road Registry Inc.
-        "xn--rhqv96g", // 世界 Stable Tone Limited
-        "xn--rovu88b", // 書籍 Amazon EU S.à r.l.
-        "xn--ses554g", // 网址 KNET Co., Ltd
-        "xn--t60b56a", // 닷넷 VeriSign Sarl
-        "xn--tckwe", // コム VeriSign Sarl
-        "xn--tiq49xqyj", // 天主教 Pontificium Consilium de Comunicationibus Socialibus (PCCS) (Pontifical Council for Social Communication)
-        "xn--unup4y", // 游戏 Spring Fields, LLC
-        "xn--vermgensberater-ctb", // VERMöGENSBERATER Deutsche Vermögensberatung Aktiengesellschaft DVAG
-        "xn--vermgensberatung-pwb", // VERMöGENSBERATUNG Deutsche Vermögensberatung Aktiengesellschaft DVAG
-        "xn--vhquv", // 企业 Dash McCook, LLC
-        "xn--vuq861b", // 信息 Beijing Tele-info Network Technology Co., Ltd.
-        "xn--w4r85el8fhu5dnra", // 嘉里大酒店 Kerry Trading Co. Limited
-        "xn--w4rs40l", // 嘉里 Kerry Trading Co. Limited
-        "xn--xhq521b", // 广东 Guangzhou YU Wei Information Technology Co., Ltd.
-        "xn--zfr164b", // 政务 China Organizational Name Administration Center
+        "xn--11b4c3d", // à¤•à¥‰à¤® VeriSign Sarl
+        "xn--1ck2e1b", // ã‚»ãƒ¼ãƒ« Amazon Registry Services, Inc.
+        "xn--1qqw23a", // ä½›å±± Guangzhou YU Wei Information Technology Co., Ltd.
+        "xn--30rr7y", // æ…ˆå–„ Excellent First Limited
+        "xn--3bst00m", // é›†å›¢ Eagle Horizon Limited
+        "xn--3ds443g", // åœ¨çº¿ TLD REGISTRY LIMITED
+        "xn--3oq18vl8pn36a", // å¤§ä¼—æ±½è½¦ Volkswagen (China) Investment Co., Ltd.
+        "xn--3pxu8k", // ç‚¹çœ‹ VeriSign Sarl
+        "xn--42c2d9a", // à¸„à¸­à¸¡ VeriSign Sarl
+        "xn--45q11c", // å…«å�¦ Zodiac Scorpio Limited
+        "xn--4gbrim", // Ù…ÙˆÙ‚Ø¹ Suhub Electronic Establishment
+        "xn--55qw42g", // å…¬ç›Š China Organizational Name Administration Center
+        "xn--55qx5d", // å…¬å�¸ Computer Network Information Center of Chinese Academy of Sciences ï¼ˆChina Internet Network Information Centerï¼‰
+        "xn--5su34j936bgsg", // é¦™æ ¼é‡Œæ‹‰ Shangriâ€�La International Hotel Management Limited
+        "xn--5tzm5g", // ç½‘ç«™ Global Website TLD Asia Limited
+        "xn--6frz82g", // ç§»åŠ¨ Afilias Limited
+        "xn--6qq986b3xl", // æˆ‘çˆ±ä½  Tycoon Treasure Limited
+        "xn--80adxhks", // Ð¼Ð¾Ñ�ÐºÐ²Ð° Foundation for Assistance for Internet Technologies and Infrastructure Development (FAITID)
+        "xn--80aqecdr1a", // ÐºÐ°Ñ‚Ð¾Ð»Ð¸Ðº Pontificium Consilium de Comunicationibus Socialibus (PCCS) (Pontifical Council for Social Communication)
+        "xn--80asehdb", // Ð¾Ð½Ð»Ð°Ð¹Ð½ CORE Association
+        "xn--80aswg", // Ñ�Ð°Ð¹Ñ‚ CORE Association
+        "xn--8y0a063a", // è�”é€š China United Network Communications Corporation Limited
+        "xn--90ae", // Ð±Ð³ Imena.BG Plc (NAMES.BG Plc)
+        "xn--9dbq2a", // ×§×•×� VeriSign Sarl
+        "xn--9et52u", // æ—¶å°š RISE VICTORY LIMITED
+        "xn--9krt00a", // å¾®å�š Sina Corporation
+        "xn--b4w605ferd", // æ·¡é©¬é”¡ Temasek Holdings (Private) Limited
+        "xn--bck1b9a5dre4c", // ãƒ•ã‚¡ãƒƒã‚·ãƒ§ãƒ³ Amazon Registry Services, Inc.
+        "xn--c1avg", // Ð¾Ñ€Ð³ Public Interest Registry
+        "xn--c2br7g", // à¤¨à¥‡à¤Ÿ VeriSign Sarl
+        "xn--cck2b3b", // ã‚¹ãƒˆã‚¢ Amazon Registry Services, Inc.
+        "xn--cg4bki", // ì‚¼ì„± SAMSUNG SDS CO., LTD
+        "xn--czr694b", // å•†æ ‡ HU YI GLOBAL INFORMATION RESOURCES(HOLDING) COMPANY.HONGKONG LIMITED
+        "xn--czrs0t", // å•†åº— Wild Island, LLC
+        "xn--czru2d", // å•†åŸŽ Zodiac Aquarius Limited
+        "xn--d1acj3b", // Ð´ÐµÑ‚Ð¸ The Foundation for Network Initiatives â€œThe Smart Internetâ€�
+        "xn--eckvdtc9d", // ãƒ�ã‚¤ãƒ³ãƒˆ Amazon Registry Services, Inc.
+        "xn--efvy88h", // æ–°é—» Xinhua News Agency Guangdong Branch æ–°å�Žé€šè®¯ç¤¾å¹¿ä¸œåˆ†ç¤¾
+        "xn--estv75g", // å·¥è¡Œ Industrial and Commercial Bank of China Limited
+        "xn--fct429k", // å®¶é›» Amazon Registry Services, Inc.
+        "xn--fhbei", // ÙƒÙˆÙ… VeriSign Sarl
+        "xn--fiq228c5hs", // ä¸­æ–‡ç½‘ TLD REGISTRY LIMITED
+        "xn--fiq64b", // ä¸­ä¿¡ CITIC Group Corporation
+        "xn--fjq720a", // å¨±ä¹� Will Bloom, LLC
+        "xn--flw351e", // è°·æ­Œ Charleston Road Registry Inc.
+        "xn--fzys8d69uvgm", // é›»è¨Šç›ˆç§‘ PCCW Enterprises Limited
+        "xn--g2xx48c", // è´­ç‰© Minds + Machines Group Limited
+        "xn--gckr3f0f", // ã‚¯ãƒ©ã‚¦ãƒ‰ Amazon Registry Services, Inc.
+        "xn--gk3at1e", // é€šè²© Amazon Registry Services, Inc.
+        "xn--hxt814e", // ç½‘åº— Zodiac Libra Limited
+        "xn--i1b6b1a6a2e", // à¤¸à¤‚à¤—à¤ à¤¨ Public Interest Registry
+        "xn--imr513n", // é¤�åŽ… HU YI GLOBAL INFORMATION RESOURCES (HOLDING) COMPANY. HONGKONG LIMITED
+        "xn--io0a7i", // ç½‘ç»œ Computer Network Information Center of Chinese Academy of Sciences ï¼ˆChina Internet Network Information Centerï¼‰
+        "xn--j1aef", // ÐºÐ¾Ð¼ VeriSign Sarl
+        "xn--jlq61u9w7b", // è¯ºåŸºäºš Nokia Corporation
+        "xn--jvr189m", // é£Ÿå“� Amazon Registry Services, Inc.
+        "xn--kcrx77d1x4a", // é£žåˆ©æµ¦ Koninklijke Philips N.V.
+        "xn--kpu716f", // æ‰‹è¡¨ Richemont DNS Inc.
+        "xn--kput3i", // æ‰‹æœº Beijing RITT-Net Technology Development Co., Ltd
+        "xn--mgba3a3ejt", // Ø§Ø±Ø§Ù…ÙƒÙˆ Aramco Services Company
+        "xn--mgba7c0bbn0a", // Ø§Ù„Ø¹Ù„ÙŠØ§Ù† Crescent Holding GmbH
+        "xn--mgbab2bd", // Ø¨Ø§Ø²Ø§Ø± CORE Association
+        "xn--mgbb9fbpob", // Ù…ÙˆØ¨Ø§ÙŠÙ„ÙŠ GreenTech Consultancy Company W.L.L.
+        "xn--mgbca7dzdo", // Ø§Ø¨ÙˆØ¸Ø¨ÙŠ Abu Dhabi Systems and Information Centre
+        "xn--mgbi4ecexp", // ÙƒØ§Ø«ÙˆÙ„ÙŠÙƒ Pontificium Consilium de Comunicationibus Socialibus (PCCS) (Pontifical Council for Social Communication)
+        "xn--mgbt3dhd", // Ù‡Ù…Ø±Ø§Ù‡ Asia Green IT System Bilgisayar San. ve Tic. Ltd. Sti.
+        "xn--mk1bu44c", // ë‹·ì»´ VeriSign Sarl
+        "xn--mxtq1m", // æ”¿åºœ Net-Chinese Co., Ltd.
+        "xn--ngbc5azd", // Ø´Ø¨ÙƒØ© International Domain Registry Pty. Ltd.
+        "xn--ngbe9e0a", // Ø¨ÙŠØªÙƒ Kuwait Finance House
+        "xn--nqv7f", // æœºæž„ Public Interest Registry
+        "xn--nqv7fs00ema", // ç»„ç»‡æœºæž„ Public Interest Registry
+        "xn--nyqy26a", // å�¥åº· Stable Tone Limited
+        "xn--p1acf", // Ñ€ÑƒÑ� Rusnames Limited
+        "xn--pbt977c", // ç� å®� Richemont DNS Inc.
+        "xn--pssy2u", // å¤§æ‹¿ VeriSign Sarl
+        "xn--q9jyb4c", // ã�¿ã‚“ã�ª Charleston Road Registry Inc.
+        "xn--qcka1pmc", // ã‚°ãƒ¼ã‚°ãƒ« Charleston Road Registry Inc.
+        "xn--rhqv96g", // ä¸–ç•Œ Stable Tone Limited
+        "xn--rovu88b", // æ›¸ç±� Amazon EU S.Ã  r.l.
+        "xn--ses554g", // ç½‘å�€ KNET Co., Ltd
+        "xn--t60b56a", // ë‹·ë„· VeriSign Sarl
+        "xn--tckwe", // ã‚³ãƒ  VeriSign Sarl
+        "xn--tiq49xqyj", // å¤©ä¸»æ•™ Pontificium Consilium de Comunicationibus Socialibus (PCCS) (Pontifical Council for Social Communication)
+        "xn--unup4y", // æ¸¸æˆ� Spring Fields, LLC
+        "xn--vermgensberater-ctb", // VERMÃ¶GENSBERATER Deutsche VermÃ¶gensberatung Aktiengesellschaft DVAG
+        "xn--vermgensberatung-pwb", // VERMÃ¶GENSBERATUNG Deutsche VermÃ¶gensberatung Aktiengesellschaft DVAG
+        "xn--vhquv", // ä¼�ä¸š Dash McCook, LLC
+        "xn--vuq861b", // ä¿¡æ�¯ Beijing Tele-info Network Technology Co., Ltd.
+        "xn--w4r85el8fhu5dnra", // å˜‰é‡Œå¤§é…’åº— Kerry Trading Co. Limited
+        "xn--w4rs40l", // å˜‰é‡Œ Kerry Trading Co. Limited
+        "xn--xhq521b", // å¹¿ä¸œ Guangzhou YU Wei Information Technology Co., Ltd.
+        "xn--zfr164b", // æ”¿åŠ¡ China Organizational Name Administration Center
         "xperia", // xperia Sony Mobile Communications AB
         "xxx", // xxx ICM Registry LLC
         "xyz", // xyz XYZ.COM LLC
@@ -1516,12 +1515,12 @@ public class DomainValidator implements Serializable {
         "youtube", // youtube Charleston Road Registry Inc.
         "yun", // yun QIHOO 360 TECHNOLOGY CO. LTD.
         "zappos", // zappos Amazon Registry Services, Inc.
-        "zara", // zara Industria de Diseño Textil, S.A. (INDITEX, S.A.)
+        "zara", // zara Industria de DiseÃ±o Textil, S.A. (INDITEX, S.A.)
         "zero", // zero Amazon Registry Services, Inc.
         "zip", // zip Charleston Road Registry Inc.
         "zippo", // zippo Zadco Company
         "zone", // zone Outer Falls, LLC
-        "zuerich", // zuerich Kanton Zürich (Canton of Zurich)
+        "zuerich", // zuerich Kanton ZÃ¼rich (Canton of Zurich)
 };
 
     // WARNING: this array MUST be sorted, otherwise it cannot be searched reliably using binary search
@@ -1542,7 +1541,7 @@ public class DomainValidator implements Serializable {
         "at",                 // Austria
         "au",                 // Australia (includes Ashmore and Cartier Islands and Coral Sea Islands)
         "aw",                 // Aruba
-        "ax",                 // Åland
+        "ax",                 // Ã…land
         "az",                 // Azerbaijan
         "ba",                 // Bosnia and Herzegovina
         "bb",                 // Barbados
@@ -1569,7 +1568,7 @@ public class DomainValidator implements Serializable {
         "cf",                 // Central African Republic
         "cg",                 // Republic of the Congo
         "ch",                 // Switzerland
-        "ci",                 // Côte d'Ivoire
+        "ci",                 // CÃ´te d'Ivoire
         "ck",                 // Cook Islands
         "cl",                 // Chile
         "cm",                 // Cameroon
@@ -1578,7 +1577,7 @@ public class DomainValidator implements Serializable {
         "cr",                 // Costa Rica
         "cu",                 // Cuba
         "cv",                 // Cape Verde
-        "cw",                 // Curaçao
+        "cw",                 // CuraÃ§ao
         "cx",                 // Christmas Island
         "cy",                 // Cyprus
         "cz",                 // Czech Republic
@@ -1627,7 +1626,7 @@ public class DomainValidator implements Serializable {
         "ht",                 // Haiti
         "hu",                 // Hungary
         "id",                 // Indonesia
-        "ie",                 // Ireland (Éire)
+        "ie",                 // Ireland (Ã‰ire)
         "il",                 // Israel
         "im",                 // Isle of Man
         "in",                 // India
@@ -1712,7 +1711,7 @@ public class DomainValidator implements Serializable {
         "pw",                 // Palau
         "py",                 // Paraguay
         "qa",                 // Qatar
-        "re",                 // Réunion
+        "re",                 // RÃ©union
         "ro",                 // Romania
         "rs",                 // Serbia
         "ru",                 // Russia
@@ -1732,7 +1731,7 @@ public class DomainValidator implements Serializable {
         "sn",                 // Senegal
         "so",                 // Somalia
         "sr",                 // Suriname
-        "st",                 // São Tomé and Príncipe
+        "st",                 // SÃ£o TomÃ© and PrÃ­ncipe
         "su",                 // Soviet Union (deprecated)
         "sv",                 // El Salvador
         "sx",                 // Sint Maarten
@@ -1770,52 +1769,52 @@ public class DomainValidator implements Serializable {
         "vu",                 // Vanuatu
         "wf",                 // Wallis and Futuna
         "ws",                 // Samoa (formerly Western Samoa)
-        "xn--3e0b707e", // 한국 KISA (Korea Internet &amp; Security Agency)
-        "xn--45brj9c", // ভারত National Internet Exchange of India
-        "xn--54b7fta0cc", // বাংলা Posts and Telecommunications Division
-        "xn--80ao21a", // қаз Association of IT Companies of Kazakhstan
-        "xn--90a3ac", // срб Serbian National Internet Domain Registry (RNIDS)
+        "xn--3e0b707e", // í•œêµ­ KISA (Korea Internet &amp; Security Agency)
+        "xn--45brj9c", // à¦­à¦¾à¦°à¦¤ National Internet Exchange of India
+        "xn--54b7fta0cc", // à¦¬à¦¾à¦‚à¦²à¦¾ Posts and Telecommunications Division
+        "xn--80ao21a", // Ò›Ð°Ð· Association of IT Companies of Kazakhstan
+        "xn--90a3ac", // Ñ�Ñ€Ð± Serbian National Internet Domain Registry (RNIDS)
         "xn--90ais", // ??? Reliable Software Inc.
-        "xn--clchc0ea0b2g2a9gcd", // சிங்கப்பூர் Singapore Network Information Centre (SGNIC) Pte Ltd
-        "xn--d1alf", // мкд Macedonian Academic Research Network Skopje
-        "xn--e1a4c", // ею EURid vzw/asbl
-        "xn--fiqs8s", // 中国 China Internet Network Information Center
-        "xn--fiqz9s", // 中國 China Internet Network Information Center
-        "xn--fpcrj9c3d", // భారత్ National Internet Exchange of India
-        "xn--fzc2c9e2c", // ලංකා LK Domain Registry
-        "xn--gecrj9c", // ભારત National Internet Exchange of India
-        "xn--h2brj9c", // भारत National Internet Exchange of India
-        "xn--j1amh", // укр Ukrainian Network Information Centre (UANIC), Inc.
-        "xn--j6w193g", // 香港 Hong Kong Internet Registration Corporation Ltd.
-        "xn--kprw13d", // 台湾 Taiwan Network Information Center (TWNIC)
-        "xn--kpry57d", // 台灣 Taiwan Network Information Center (TWNIC)
-        "xn--l1acc", // мон Datacom Co.,Ltd
-        "xn--lgbbat1ad8j", // الجزائر CERIST
-        "xn--mgb9awbf", // عمان Telecommunications Regulatory Authority (TRA)
-        "xn--mgba3a4f16a", // ایران Institute for Research in Fundamental Sciences (IPM)
-        "xn--mgbaam7a8h", // امارات Telecommunications Regulatory Authority (TRA)
-        "xn--mgbayh7gpa", // الاردن National Information Technology Center (NITC)
-        "xn--mgbbh1a71e", // بھارت National Internet Exchange of India
-        "xn--mgbc0a9azcg", // المغرب Agence Nationale de Réglementation des Télécommunications (ANRT)
-        "xn--mgberp4a5d4ar", // السعودية Communications and Information Technology Commission
+        "xn--clchc0ea0b2g2a9gcd", // à®šà®¿à®™à¯�à®•à®ªà¯�à®ªà¯‚à®°à¯� Singapore Network Information Centre (SGNIC) Pte Ltd
+        "xn--d1alf", // Ð¼ÐºÐ´ Macedonian Academic Research Network Skopje
+        "xn--e1a4c", // ÐµÑŽ EURid vzw/asbl
+        "xn--fiqs8s", // ä¸­å›½ China Internet Network Information Center
+        "xn--fiqz9s", // ä¸­åœ‹ China Internet Network Information Center
+        "xn--fpcrj9c3d", // à°­à°¾à°°à°¤à±� National Internet Exchange of India
+        "xn--fzc2c9e2c", // à¶½à¶‚à¶šà·� LK Domain Registry
+        "xn--gecrj9c", // àª­àª¾àª°àª¤ National Internet Exchange of India
+        "xn--h2brj9c", // à¤­à¤¾à¤°à¤¤ National Internet Exchange of India
+        "xn--j1amh", // ÑƒÐºÑ€ Ukrainian Network Information Centre (UANIC), Inc.
+        "xn--j6w193g", // é¦™æ¸¯ Hong Kong Internet Registration Corporation Ltd.
+        "xn--kprw13d", // å�°æ¹¾ Taiwan Network Information Center (TWNIC)
+        "xn--kpry57d", // å�°ç�£ Taiwan Network Information Center (TWNIC)
+        "xn--l1acc", // Ð¼Ð¾Ð½ Datacom Co.,Ltd
+        "xn--lgbbat1ad8j", // Ø§Ù„Ø¬Ø²Ø§Ø¦Ø± CERIST
+        "xn--mgb9awbf", // Ø¹Ù…Ø§Ù† Telecommunications Regulatory Authority (TRA)
+        "xn--mgba3a4f16a", // Ø§ÛŒØ±Ø§Ù† Institute for Research in Fundamental Sciences (IPM)
+        "xn--mgbaam7a8h", // Ø§Ù…Ø§Ø±Ø§Øª Telecommunications Regulatory Authority (TRA)
+        "xn--mgbayh7gpa", // Ø§Ù„Ø§Ø±Ø¯Ù† National Information Technology Center (NITC)
+        "xn--mgbbh1a71e", // Ø¨Ú¾Ø§Ø±Øª National Internet Exchange of India
+        "xn--mgbc0a9azcg", // Ø§Ù„Ù…ØºØ±Ø¨ Agence Nationale de RÃ©glementation des TÃ©lÃ©communications (ANRT)
+        "xn--mgberp4a5d4ar", // Ø§Ù„Ø³Ø¹ÙˆØ¯ÙŠØ© Communications and Information Technology Commission
         "xn--mgbpl2fh", // ????? Sudan Internet Society
-        "xn--mgbtx2b", // عراق Communications and Media Commission (CMC)
-        "xn--mgbx4cd0ab", // مليسيا MYNIC Berhad
-        "xn--mix891f", // 澳門 Bureau of Telecommunications Regulation (DSRT)
-        "xn--node", // გე Information Technologies Development Center (ITDC)
-        "xn--o3cw4h", // ไทย Thai Network Information Center Foundation
-        "xn--ogbpf8fl", // سورية National Agency for Network Services (NANS)
-        "xn--p1ai", // рф Coordination Center for TLD RU
-        "xn--pgbs0dh", // تونس Agence Tunisienne d&#39;Internet
-        "xn--qxam", // ελ ICS-FORTH GR
-        "xn--s9brj9c", // ਭਾਰਤ National Internet Exchange of India
-        "xn--wgbh1c", // مصر National Telecommunication Regulatory Authority - NTRA
-        "xn--wgbl6a", // قطر Communications Regulatory Authority
-        "xn--xkc2al3hye2a", // இலங்கை LK Domain Registry
-        "xn--xkc2dl3a5ee0h", // இந்தியா National Internet Exchange of India
+        "xn--mgbtx2b", // Ø¹Ø±Ø§Ù‚ Communications and Media Commission (CMC)
+        "xn--mgbx4cd0ab", // Ù…Ù„ÙŠØ³ÙŠØ§ MYNIC Berhad
+        "xn--mix891f", // æ¾³é–€ Bureau of Telecommunications Regulation (DSRT)
+        "xn--node", // áƒ’áƒ” Information Technologies Development Center (ITDC)
+        "xn--o3cw4h", // à¹„à¸—à¸¢ Thai Network Information Center Foundation
+        "xn--ogbpf8fl", // Ø³ÙˆØ±ÙŠØ© National Agency for Network Services (NANS)
+        "xn--p1ai", // Ñ€Ñ„ Coordination Center for TLD RU
+        "xn--pgbs0dh", // ØªÙˆÙ†Ø³ Agence Tunisienne d&#39;Internet
+        "xn--qxam", // ÎµÎ» ICS-FORTH GR
+        "xn--s9brj9c", // à¨­à¨¾à¨°à¨¤ National Internet Exchange of India
+        "xn--wgbh1c", // Ù…ØµØ± National Telecommunication Regulatory Authority - NTRA
+        "xn--wgbl6a", // Ù‚Ø·Ø± Communications Regulatory Authority
+        "xn--xkc2al3hye2a", // à®‡à®²à®™à¯�à®•à¯ˆ LK Domain Registry
+        "xn--xkc2dl3a5ee0h", // à®‡à®¨à¯�à®¤à®¿à®¯à®¾ National Internet Exchange of India
         "xn--y9a3aq", // ??? Internet Society
-        "xn--yfro4i67o", // 新加坡 Singapore Network Information Centre (SGNIC) Pte Ltd
-        "xn--ygbi2ammx", // فلسطين Ministry of Telecom &amp; Information Technology (MTIT)
+        "xn--yfro4i67o", // æ–°åŠ å�¡ Singapore Network Information Centre (SGNIC) Pte Ltd
+        "xn--ygbi2ammx", // Ù�Ù„Ø³Ø·ÙŠÙ† Ministry of Telecom &amp; Information Technology (MTIT)
         "ye",                 // Yemen
         "yt",                 // Mayotte
         "za",                 // South Africa

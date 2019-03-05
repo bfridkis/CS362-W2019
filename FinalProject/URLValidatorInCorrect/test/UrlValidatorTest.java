@@ -14,7 +14,14 @@ import main.java.com.mifmif.common.regex.Generex;
 
 public class UrlValidatorTest extends TestCase {
 
-   private static int RANDOM_TEST_RUNS = 100000;
+   private static int RANDOM_TEST_RUNS = 1000;
+   
+   //Constants corresponding to sabotageMask
+   private static int SABOTAGE_SCHEME = 1 << 0;
+   private static int SABOTAGE_AUTHORITY = 1 << 1;
+   private static int SABOTAGE_PORT = 1 << 2;
+   private static int SABOTAGE_PATH = 1 << 3;
+   private static int SABOTAGE_QUERY = 1 << 4;
 
    public UrlValidatorTest(String testName) {
       super(testName);
@@ -41,7 +48,7 @@ public class UrlValidatorTest extends TestCase {
    }
    //You need to create more test cases for your Partitions if you need to 
    
-   public static void randomTestValid()
+   public static void randomTest()
    {
 	 
 	 //Instantiate random number generator
@@ -56,16 +63,26 @@ public class UrlValidatorTest extends TestCase {
 	 //Declare Generex Object
 	 Generex generex;
 	 
-	 int falsePrev = 0;
-	 
-	 for(int i = 0; i < RANDOM_TEST_RUNS; i++) {
+	 for(int i = 0, sabotageMask = 0; i < RANDOM_TEST_RUNS; i++) {
 		 testUrlSB.setLength(0);
 		 
-		//Randomly pick a valid scheme from the defaults
+		 //Randomly pick a valid scheme from the defaults
 		 int randomScheme = rand.nextInt(3);
 		 if(randomScheme == 0) testUrlSB.append("http://");
 		 else if(randomScheme == 1) testUrlSB.append("https://");
 		 else testUrlSB.append("ftp://");
+		 
+		 //If sabotage mask indicates, falsify scheme
+		 if((sabotageMask & SABOTAGE_SCHEME) > 0) {
+			 for(int j = 0, randomChar; j < testUrlSB.length() - 3; j++) {
+				 do{
+					 randomChar = 48 + rand.nextInt(75);
+				 }while(((randomChar >= 58 && randomChar <= 64) ||
+						(randomChar >= 91 && randomChar <= 96)) ||
+						 randomChar == testUrlSB.charAt(j));
+				 testUrlSB.replace(j, j+1, Character.toString((char)randomChar));
+			 }
+		 }
 		 
 		 /* One-Third of the time use hostname for authority */
 		 int randomAuth = rand.nextInt(3) + 1;
@@ -104,14 +121,20 @@ public class UrlValidatorTest extends TestCase {
 			 
 			 //Use Generex to append random domain name characters (up to 63) onto testUrlSB. 
 			 //(Max length for domain name [without TLD] is 63. See lines 73-75 of DomainValidator.java)
-			 generex = new Generex("([A-Za-z0-9]+[\\-\\.]?)+");
+			 
+			 //If sabotage mask indicates, falsify authority
+			 if((sabotageMask & SABOTAGE_AUTHORITY) > 0) {
+				 generex = new Generex("([^A-Za-z0-9]+[\\-\\.]?)+");
+			 }
+			 else {
+				 generex = new Generex("([A-Za-z0-9]+[\\-\\.]?)+");
+			 }
 			 String randomAuthority = generex.random(rand.nextInt(64));
 			 //May still exceed 63 characters based on last pattern match, so truncate if necessary
 			 if(randomAuthority.length() > 63) randomAuthority = randomAuthority.substring(0, 63);
 			 testUrlSB.append(randomAuthority);
 			 //System.out.println("Authority: " + randomAuthority);
 
-			 
 			 
 			 //Replace last character of authority if == '-' or '.' 
 			 //(so "-." and ".." sequences are prevented)
@@ -169,8 +192,16 @@ public class UrlValidatorTest extends TestCase {
 			 
 		 /* One-Third of the time use IPV4 for authority */
 		 else if(randomAuth % 3 == 2) {
-			 //Use Generex to append random ip4v address onto testUrlSB. 
-			 generex = new Generex("([1-2]?[1-5]?[0-5]\\.){3}([1-2]?[1-5]?[0-5]){1}");
+			 
+			 //Use Generex to append random ip4v address onto testUrlSB... 
+			 
+			//If sabotage mask indicates, falsify ipv4 address (authority)
+			 if((sabotageMask & SABOTAGE_AUTHORITY) > 0) {
+				 generex = new Generex("\\-?(2[6-9][0-9]\\.){3}([1-2]?[0-9]?[6-9]){1}");
+			 }
+			 else {
+				 generex = new Generex("([1-2]?[1-5]?[0-5]\\.){3}([1-2]?[1-5]?[0-5]){1}");
+			 }
 			 String randomAuthority = generex.random();
 			 testUrlSB.append(randomAuthority);
 			 //System.out.println("Authority: " + randomAuthority);
@@ -182,23 +213,56 @@ public class UrlValidatorTest extends TestCase {
 			
 			//Use compression 50% of the time
 			if(rand.nextInt()% 2 == 0)
-					//No compression
-					generex = new Generex("\\[([0-9a-fA-F]{4}:){7}[0-9a-fA-F]{4}\\]");
+					
+					//No compression...
+					
+					//If sabotage mask indicates, falsify ipv6 address (authority)
+					if((sabotageMask & SABOTAGE_AUTHORITY) > 0) {
+						generex = new Generex("\\[([0-9g-zG-Z]{4}:){7}[0-9a-fA-Z]{4}\\]");
+					}
+					else {
+						generex = new Generex("\\[([0-9a-fA-F]{4}:){7}[0-9a-fA-F]{4}\\]");
+					}
 			else {
-				//Compression
+				
+				//Compression...
+				
+				//Randomly determine number of hextexts 
+				//(which indicates number of hextexts compressed)
 				int numCompHextets = 1 + rand.nextInt(7);
+				
 				if(numCompHextets == 7) {
 					if(rand.nextInt() % 2 == 0)
-						generex = new Generex("\\[::[0-9a-fA-F]{4}\\]");
+						//If sabotage mask indicates, falsify ipv6 address (authority)
+						if((sabotageMask & SABOTAGE_AUTHORITY) > 0) {
+							generex = new Generex("\\[::[0-9g-zA-Z]{4}\\]");
+						}
+						else{
+							generex = new Generex("\\[::[0-9a-fA-F]{4}\\]");
+						}
 					else
+						//If sabotage mask indicates, falsify ipv6 address (authority)
+						if((sabotageMask & SABOTAGE_AUTHORITY) > 0) {
+							generex = new Generex("\\[[0-9g-zA-Z]{4}::\\]");
+						}
+						else {
 						generex = new Generex("\\[[0-9a-fA-F]{4}::\\]");
+						}
 				}
 				else {
-					//Compression position starts at 1
+					//Compression position starts at 1 (max is 6)
 					int compPos = rand.nextInt(7 - numCompHextets) + 1;
-					generex = new Generex("\\[([0-9a-fA-F]{4}:){"+String.valueOf(compPos)+"}" +
-										  ":([0-9a-fA-F]{4}:){"+String.valueOf(7-numCompHextets-compPos)+"}" +
-										  "[0-9a-fA-F]{4}\\]");
+					//If sabotage mask indicates, falsify ipv6 address (authority)
+					if((sabotageMask & SABOTAGE_AUTHORITY) > 0) {
+						generex = new Generex("\\[([0-9g-zA-Z]{4}:){"+String.valueOf(compPos)+"}" +
+										  ":([0-9g-zA-Z]{4}:){"+String.valueOf(7-numCompHextets-compPos)+"}" +
+										  "[0-9g-zA-Z]{4}\\]");
+					}
+					else {
+						generex = new Generex("\\[([0-9a-fA-F]{4}:){"+String.valueOf(compPos)+"}" +
+								  ":([0-9a-fA-F]{4}:){"+String.valueOf(7-numCompHextets-compPos)+"}" +
+								  "[0-9a-fA-F]{4}\\]");
+					}
 					
 				}
 			}
@@ -207,18 +271,32 @@ public class UrlValidatorTest extends TestCase {
 			//System.out.println("Authority: " + randomAuthority);
 		 }
 			 
-		 //50% chance we use a port number...
-		 if(rand.nextInt() % 2 == 0) {
+		 //50% chance we use a port number, 
+		 //unless port is  sabotaged, in which case port is always used.
+		 if(rand.nextInt() % 2 == 0 || ((sabotageMask & SABOTAGE_PORT) > 0)) {
 			 testUrlSB.append(":");
+			//If sabotage mask indicates, falsify port number
+			 if((sabotageMask & SABOTAGE_PORT) > 0) {
+				 testUrlSB.append(String.valueOf(rand.nextInt(65536) + 65536));
+			 }
 			 testUrlSB.append(String.valueOf(rand.nextInt(65536)));
 		 }
 		 
-		 //75% chance we use a path...
-		 if((1 + rand.nextInt(4)) % 3 != 0) {
+		 
+		 //75% chance we use a path,
+		 //unless path is sabotaged, in which case path always is used.
+		 if((1 + rand.nextInt(4)) % 3 != 0 || ((sabotageMask & SABOTAGE_PATH) > 0)) {
 			 //Use Generex to randomly generate a path string based on PATH_REGEX 
 			 //(see UrlValidator.java line 167). Max length for random path is 80.
-			 generex = 
-					 new Generex("(/[-A-Za-z0-9:@&=+,!*'$_;\\(\\)]+(%[A-Fa-f0-9]{2})?(\\.)?)+");
+			 
+			//If sabotage mask indicates, falsify path
+			 if((sabotageMask & SABOTAGE_PATH) > 0) {
+				 generex = 
+						 new Generex("(/[^-A-Za-z0-9:@&=+,!*'$_;\\(\\)]+\\.\\.(%[A-Fa-f0-9]{2})?(\\.)?)+");
+			 }
+			 else{
+				 generex = new Generex("(/[-A-Za-z0-9:@&=+,!*'$_;\\(\\)]+(%[A-Fa-f0-9]{2})?(\\.)?)+");
+			 }
 			 String randomPath = generex.random(rand.nextInt(81));		//80 char max
 			 //May still exceed 80 characters based on last pattern match, so truncate if necessary
 			 if(randomPath.length() > 80) randomPath = randomPath.substring(0, 81);
@@ -226,11 +304,19 @@ public class UrlValidatorTest extends TestCase {
 			 //System.out.println("Path: " + randomPath);
 		 }
 		 
-		 //50% chance we use a query...
-		 if(rand.nextInt() % 2 == 0) {
+		 //50% chance we use a query,
+		 //unless query is sabotaged, in which case query is always used.
+		 if(rand.nextInt() % 2 == 0 || ((sabotageMask & SABOTAGE_QUERY) > 0)) {
 			 //Use Generex to randomly generate a path string based on PATH_REGEX 
 			 //(see UrlValidator.java line 167). Max length for random path is 80.
-			 generex = new Generex("?\\w+=\\w+(&\\w+=\\w+)*");
+			 
+			 //If sabotage mask indicates, falsify query
+			 if((sabotageMask & SABOTAGE_QUERY) > 0) {
+				 generex = new Generex("?\\s+=\\s+(&\\s+=\\s+)*");
+			 }
+			 else {
+				 generex = new Generex("?\\w+=\\w+(&\\w+=\\w+)*");
+			 }
 			 String randomQuery = generex.random(rand.nextInt(151));	//150 char max
 			//May still exceed 63 characters based on last pattern match, so truncate if necessary
 			 if(randomQuery.length() > 150) randomQuery = randomQuery.substring(0, 151);
@@ -243,19 +329,31 @@ public class UrlValidatorTest extends TestCase {
 		 
 		 //System.out.println(String.valueOf(i) + "    " + testUrl);
 		 
-		 //Run URL validation check
-		 //assertFalse(testUrl, urlValidator.isValid(testUrl));
-		 //assertFalse(testUrl, urlValidator.isValid("www.google.com"));
-		 
-		 if(urlValidator.isValid(testUrl) == false) {
-			 //System.out.println("Authority: " + randomAuthority);
-			 System.out.println(String.valueOf(i) + "    " + "false" + "    " + testUrl);
-			 falsePrev = 1;
+		 //Run URL validation check 
+		 if(sabotageMask == 0 && urlValidator.isValid(testUrl) == false) {
+			 System.out.println(String.valueOf(i) + "    " + "false (should be true)" + "    " + testUrl);
 		 }
-//		 if(urlValidator.isValid(testUrl) == true && falsePrev == 1) {
-//			 System.out.println(String.valueOf(i) + "    " + "true" + "    " + testUrl);
-//			 falsePrev = 0;
-//		 }
+		 else if(sabotageMask > 0 && urlValidator.isValid(testUrl) == true) {
+			 System.out.println(String.valueOf(i) + "    " + "true (should be false)" + "    " + testUrl);
+			 System.out.println(sabotageMask);
+		 }
+		 
+		 //Activate and cycle sabotageMask for the second-to-last one-quarter of tests
+		 if(i >= RANDOM_TEST_RUNS * 0.5 && i < RANDOM_TEST_RUNS * 0.75 &&
+				 sabotageMask < SABOTAGE_SCHEME +
+				                SABOTAGE_AUTHORITY +
+				 				SABOTAGE_PORT +
+				 				SABOTAGE_PATH +
+				 				SABOTAGE_QUERY) {
+			 sabotageMask++;
+		 }
+		 else if(i >= RANDOM_TEST_RUNS * 0.5 && i < RANDOM_TEST_RUNS * 0.75) {
+			 sabotageMask = 1;
+		 }
+		 //Randomize mask for last one-quarter of tests
+		 else if(i >= RANDOM_TEST_RUNS * 0.75) {
+			 sabotageMask = rand.nextInt(32);
+		 }
 	 }
 	 
    }
@@ -267,8 +365,15 @@ public class UrlValidatorTest extends TestCase {
    }
    
    public static void main(String[] args) {
+	   UrlValidator urlValidator = new UrlValidator();
+	   if(urlValidator.isValid("http://10.12.12.22:300000") == false) {
+		   System.out.println("FALSE");
+	   }
+	   else {
+		   System.out.println("TRUE");
+	   }
 	   
-	   UrlValidatorTest.randomTestValid();
+	   UrlValidatorTest.randomTest();
 	   
    }
 

@@ -124,7 +124,11 @@ public class UrlValidatorTest extends TestCase {
 			 
 			 //If sabotage mask indicates, falsify authority
 			 if((sabotageMask & SABOTAGE_AUTHORITY) > 0) {
-				 generex = new Generex("([^A-Za-z0-9]+[\\-\\.]?)+");
+				 //'?' is excluded here because UrlValidator will immediately consider
+				 //any part of the string thereafter as part of the 'query'. (This
+				 //may be considered a bug, because a URL can be validated even if
+				 //it has no proper domain!)
+				 generex = new Generex("([^?A-Za-z0-9]+[\\-\\.]?)+");
 			 }
 			 else {
 				 generex = new Generex("([A-Za-z0-9]+[\\-\\.]?)+");
@@ -292,7 +296,7 @@ public class UrlValidatorTest extends TestCase {
 			//If sabotage mask indicates, falsify path
 			 if((sabotageMask & SABOTAGE_PATH) > 0) {
 				 generex = 
-						 new Generex("(/[^-A-Za-z0-9:@&=+,!*'$_;\\(\\)]+\\.\\.(%[A-Fa-f0-9]{2})?(\\.)?)+");
+						 new Generex("(/[^?\\-A-Za-z0-9:@&=+,!*'$_;\\(\\)]+(\\.\\.)+(%[A-Fa-f0-9]{2})?(\\.)?)+");
 			 }
 			 else{
 				 generex = new Generex("(/[-A-Za-z0-9:@&=+,!*'$_;\\(\\)]+(%[A-Fa-f0-9]{2})?(\\.)?)+");

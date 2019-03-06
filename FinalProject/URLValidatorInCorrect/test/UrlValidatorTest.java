@@ -14,7 +14,7 @@ import main.java.com.mifmif.common.regex.Generex;
 
 public class UrlValidatorTest extends TestCase {
 
-   private static int RANDOM_TEST_RUNS = 1000;
+   private static int RANDOM_TEST_RUNS = 100000;
    
    //Constants corresponding to sabotageMask
    private static int SABOTAGE_SCHEME = 1 << 0;
@@ -124,11 +124,11 @@ public class UrlValidatorTest extends TestCase {
 			 
 			 //If sabotage mask indicates, falsify authority
 			 if((sabotageMask & SABOTAGE_AUTHORITY) > 0) {
-				 //'?' is excluded here because UrlValidator will immediately consider
-				 //any part of the string thereafter as part of the 'query'. (This
-				 //may be considered a bug, because a URL can be validated even if
-				 //it has no proper domain!)
-				 generex = new Generex("([^?A-Za-z0-9]+[\\-\\.]?)+");
+				 //'?' and '#' are excluded here because UrlValidator will immediately consider
+				 //any part of the string thereafter as part of the 'query' or 'fragment, 
+				 //respectively. (This may be considered a bug, because a URL can be 
+				 //validated even if it has no proper domain! Same applies to path below.)
+				 generex = new Generex("([^?#A-Za-z0-9]+[\\-\\.]?)+");
 			 }
 			 else {
 				 generex = new Generex("([A-Za-z0-9]+[\\-\\.]?)+");
@@ -295,8 +295,12 @@ public class UrlValidatorTest extends TestCase {
 			 
 			//If sabotage mask indicates, falsify path
 			 if((sabotageMask & SABOTAGE_PATH) > 0) {
+				//'?' and '#' are excluded here because UrlValidator will immediately consider
+				 //any part of the string thereafter as part of the 'query' or 'fragment, 
+				 //respectively. (This may be considered a bug, because a URL can be 
+				 //validated even if it has an ill-formed path! Same applies to authority above.)
 				 generex = 
-						 new Generex("(/[^?\\-A-Za-z0-9:@&=+,!*'$_;\\(\\)]+(\\.\\.)+(%[A-Fa-f0-9]{2})?(\\.)?)+");
+						 new Generex("(/[^?#\\-A-Za-z0-9:@&=+,!*'$_;\\(\\)]+(\\.\\.)+(%[A-Fa-f0-9]{2})?(\\.)?)+");
 			 }
 			 else{
 				 generex = new Generex("(/[-A-Za-z0-9:@&=+,!*'$_;\\(\\)]+(%[A-Fa-f0-9]{2})?(\\.)?)+");
@@ -342,6 +346,12 @@ public class UrlValidatorTest extends TestCase {
 			 System.out.println(sabotageMask);
 		 }
 		 
+		 //JUnit configuration... only reports first failure
+//		 if(sabotageMask == 0) assertTrue(String.valueOf(i) + "    " + 
+//				 "false (should be true)" + "    " + testUrl, urlValidator.isValid(testUrl));
+//		 else assertFalse(String.valueOf(i) + "    " + " "
+//		 		+ "	true (should be false)" + "    " + testUrl, urlValidator.isValid(testUrl));
+		 
 		 //Activate and cycle sabotageMask for the second-to-last one-quarter of tests
 		 if(i >= RANDOM_TEST_RUNS * 0.5 && i < RANDOM_TEST_RUNS * 0.75 &&
 				 sabotageMask < SABOTAGE_SCHEME +
@@ -365,17 +375,10 @@ public class UrlValidatorTest extends TestCase {
    public void testIsValid()
    {
 	   //You can use this function for programming based testing
-
+	   randomTest();
    }
    
    public static void main(String[] args) {
-	   UrlValidator urlValidator = new UrlValidator();
-	   if(urlValidator.isValid("http://10.12.12.22:300000") == false) {
-		   System.out.println("FALSE");
-	   }
-	   else {
-		   System.out.println("TRUE");
-	   }
 	   
 	   UrlValidatorTest.randomTest();
 	   

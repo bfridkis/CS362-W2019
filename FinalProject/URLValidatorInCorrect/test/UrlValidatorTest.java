@@ -14,7 +14,7 @@ import main.java.com.mifmif.common.regex.Generex;
 
 public class UrlValidatorTest extends TestCase {
 
-   private static int RANDOM_TEST_RUNS = 100000;
+   private static int RANDOM_TEST_RUNS = 10000;
    
    //Constants corresponding to sabotageMask
    private static int SABOTAGE_SCHEME = 1 << 0;
@@ -63,6 +63,7 @@ public class UrlValidatorTest extends TestCase {
 	 //Declare Generex Object
 	 Generex generex;
 	 
+	 //Run tests...
 	 for(int i = 0, sabotageMask = 0; i < RANDOM_TEST_RUNS; i++) {
 		 testUrlSB.setLength(0);
 		 
@@ -127,8 +128,10 @@ public class UrlValidatorTest extends TestCase {
 				 //'?' and '#' are excluded here because UrlValidator will immediately consider
 				 //any part of the string thereafter as part of the 'query' or 'fragment, 
 				 //respectively. (This may be considered a bug, because a URL can be 
-				 //validated even if it has no proper domain! Same applies to path below.)
-				 generex = new Generex("([^?#A-Za-z0-9]+[\\-\\.]?)+");
+				 //validated even if it has no proper domain! Note however that an empty 
+				 //authority is allowed with a scheme of 'file' [to account for a file], 
+				 //though this circumstance is not tested here.)
+				 generex = new Generex("([^A-Za-z0-9]+[\\-\\.]?)+");
 			 }
 			 else {
 				 generex = new Generex("([A-Za-z0-9]+[\\-\\.]?)+");
@@ -222,7 +225,7 @@ public class UrlValidatorTest extends TestCase {
 					
 					//If sabotage mask indicates, falsify ipv6 address (authority)
 					if((sabotageMask & SABOTAGE_AUTHORITY) > 0) {
-						generex = new Generex("\\[([0-9g-zG-Z]{4}:){7}[0-9a-fA-Z]{4}\\]");
+						generex = new Generex("\\[([0-9a-zA-Z]{3}[g-zG-Z]:){7}[0-9a-fA-Z]{4}\\]");
 					}
 					else {
 						generex = new Generex("\\[([0-9a-fA-F]{4}:){7}[0-9a-fA-F]{4}\\]");
@@ -239,7 +242,7 @@ public class UrlValidatorTest extends TestCase {
 					if(rand.nextInt() % 2 == 0)
 						//If sabotage mask indicates, falsify ipv6 address (authority)
 						if((sabotageMask & SABOTAGE_AUTHORITY) > 0) {
-							generex = new Generex("\\[::[0-9g-zA-Z]{4}\\]");
+							generex = new Generex("\\[::[0-9a-zA-Z]{3}[g-zG-Z]\\]");
 						}
 						else{
 							generex = new Generex("\\[::[0-9a-fA-F]{4}\\]");
@@ -247,7 +250,7 @@ public class UrlValidatorTest extends TestCase {
 					else
 						//If sabotage mask indicates, falsify ipv6 address (authority)
 						if((sabotageMask & SABOTAGE_AUTHORITY) > 0) {
-							generex = new Generex("\\[[0-9g-zA-Z]{4}::\\]");
+							generex = new Generex("\\[[0-9a-zA-Z]{3}[g-zG-Z]::\\]");
 						}
 						else {
 						generex = new Generex("\\[[0-9a-fA-F]{4}::\\]");
@@ -258,9 +261,9 @@ public class UrlValidatorTest extends TestCase {
 					int compPos = rand.nextInt(7 - numCompHextets) + 1;
 					//If sabotage mask indicates, falsify ipv6 address (authority)
 					if((sabotageMask & SABOTAGE_AUTHORITY) > 0) {
-						generex = new Generex("\\[([0-9g-zA-Z]{4}:){"+String.valueOf(compPos)+"}" +
-										  ":([0-9g-zA-Z]{4}:){"+String.valueOf(7-numCompHextets-compPos)+"}" +
-										  "[0-9g-zA-Z]{4}\\]");
+						generex = new Generex("\\[([0-9a-zA-Z]{3}[g-zG-Z]:){"+String.valueOf(compPos)+"}" +
+										  ":([0-9a-zA-Z]{3}[g-zG-Z]:){"+String.valueOf(7-numCompHextets-compPos)+"}" +
+										  "[0-9a-zA-Z]{3}[g-zG-Z]\\]");
 					}
 					else {
 						generex = new Generex("\\[([0-9a-fA-F]{4}:){"+String.valueOf(compPos)+"}" +
@@ -281,7 +284,12 @@ public class UrlValidatorTest extends TestCase {
 			 testUrlSB.append(":");
 			//If sabotage mask indicates, falsify port number
 			 if((sabotageMask & SABOTAGE_PORT) > 0) {
-				 testUrlSB.append(String.valueOf(rand.nextInt(65536) + 65536));
+				 if(rand.nextInt() % 2 == 0) {
+					 testUrlSB.append("-");
+				 }
+				 else {
+					 testUrlSB.append(String.valueOf(rand.nextInt(65536) + 65536));
+				 }
 			 }
 			 testUrlSB.append(String.valueOf(rand.nextInt(65536)));
 		 }
@@ -297,10 +305,9 @@ public class UrlValidatorTest extends TestCase {
 			 if((sabotageMask & SABOTAGE_PATH) > 0) {
 				//'?' and '#' are excluded here because UrlValidator will immediately consider
 				 //any part of the string thereafter as part of the 'query' or 'fragment, 
-				 //respectively. (This may be considered a bug, because a URL can be 
-				 //validated even if it has an ill-formed path! Same applies to authority above.)
+				 //respectively.
 				 generex = 
-						 new Generex("(/[^?#\\-A-Za-z0-9:@&=+,!*'$_;\\(\\)]+(\\.\\.)+(%[A-Fa-f0-9]{2})?(\\.)?)+");
+						 new Generex("(/[^?#\\-A-Za-z0-9:@&=+,!*'$_;\\(\\).%])+");
 			 }
 			 else{
 				 generex = new Generex("(/[-A-Za-z0-9:@&=+,!*'$_;\\(\\)]+(%[A-Fa-f0-9]{2})?(\\.)?)+");
@@ -343,10 +350,10 @@ public class UrlValidatorTest extends TestCase {
 		 }
 		 else if(sabotageMask > 0 && urlValidator.isValid(testUrl) == true) {
 			 System.out.println(String.valueOf(i) + "    " + "true (should be false)" + "    " + testUrl);
-			 System.out.println(sabotageMask);
+			 System.out.println("Sabotage Mask: " + sabotageMask);
 		 }
 		 
-		 //JUnit configuration... only reports first failure
+		 //JUnit configuration... only reports first failure, then exits
 //		 if(sabotageMask == 0) assertTrue(String.valueOf(i) + "    " + 
 //				 "false (should be true)" + "    " + testUrl, urlValidator.isValid(testUrl));
 //		 else assertFalse(String.valueOf(i) + "    " + " "
@@ -366,7 +373,7 @@ public class UrlValidatorTest extends TestCase {
 		 }
 		 //Randomize mask for last one-quarter of tests
 		 else if(i >= RANDOM_TEST_RUNS * 0.75) {
-			 sabotageMask = rand.nextInt(32);
+			 sabotageMask = 1 + rand.nextInt(31);
 		 }
 	 }
 	 
@@ -389,9 +396,11 @@ public class UrlValidatorTest extends TestCase {
 // References
 // https://stackoverflow.com/questions/4669692/valid-characters-for-directory-part-of-a-url-for-short-links
 // https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html
+// https://github.com/mifmif/Generex
 // https://github.com/cs-au-dk/dk.brics.automaton
 // http://junit.sourceforge.net/javadoc/org/junit/Assert.html#assertFalse(java.lang.String,%20boolean)
 // https://stackoverflow.com/questions/5192512/how-can-i-clear-or-empty-a-stringbuilder
 // https://stackoverflow.com/questions/8499698/trim-a-string-based-on-the-string-length/8499776
 // https://softwareengineering.stackexchange.com/questions/311413/how-should-we-represent-an-ipv6-address-with-port-number-in-text
 // https://community.cisco.com/t5/ipv6/what-do-you-call-the-ipv6-address-parts/td-p/1690102
+// https://help.eclipse.org/neon/index.jsp?topic=%2Forg.eclipse.jdt.doc.user%2Ftasks%2Ftask-set_method_breakpoints.htm

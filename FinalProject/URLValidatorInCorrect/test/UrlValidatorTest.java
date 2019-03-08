@@ -14,7 +14,7 @@ import main.java.com.mifmif.common.regex.Generex;
 
 public class UrlValidatorTest extends TestCase {
 
-   private static int RANDOM_TEST_RUNS = 10000;
+   private static int RANDOM_TEST_RUNS = 1000;
    
    //Constants corresponding to sabotageMask
    private static int SABOTAGE_SCHEME = 1 << 0;
@@ -131,7 +131,7 @@ public class UrlValidatorTest extends TestCase {
 				 //validated even if it has no proper domain! Note however that an empty 
 				 //authority is allowed with a scheme of 'file' [to account for a file], 
 				 //though this circumstance is not tested here.)
-				 generex = new Generex("([^A-Za-z0-9]+[\\-\\.]?)+");
+				 generex = new Generex("([^?#A-Za-z0-9]+[\\-\\.]?)+");
 			 }
 			 else {
 				 generex = new Generex("([A-Za-z0-9]+[\\-\\.]?)+");
@@ -379,7 +379,7 @@ public class UrlValidatorTest extends TestCase {
 	 
    }
    
-   public void testIsValid()
+   public static void testIsValid()
    {
 	   //You can use this function for programming based testing
 	   randomTest();
@@ -387,7 +387,7 @@ public class UrlValidatorTest extends TestCase {
    
    public static void main(String[] args) {
 	   
-	   UrlValidatorTest.randomTest();
+	   UrlValidatorTest.testIsValid();
 	   
    }
 

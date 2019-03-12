@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------------------
  * Benjamin Fridkis - CS362 
- * Assignment 4
+ * Assignment 5
  *
  *                       _randomtesthelper_councilroom.c
  *
@@ -252,7 +252,7 @@ int _randomtesthelper_councilroom(int numPlayers, int k[], struct gameState* G,
 	G->hand[activePlayer][handPos] = council_room;
 	//Shuffle each player's deck 
 	//--(shuffle has been tested via unittest3. 
-	//-- see unittest3.c and _unittest3helper.c (of Assignment 3)
+	//-- see unittest3.c and _unittest3helper.c (of Assignment 5)
 	//-- for additional details.)
 	//-- (Deterministic if RANDOMIZE is disabled
 	//-- as seed for initializeGame will remain constant

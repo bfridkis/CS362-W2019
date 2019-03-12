@@ -1,6 +1,6 @@
 /* -------------------------------------
  * Benjamin Fridkis - CS362 
- * Assignment 3
+ * Assignment 5
  *
  *       _cardtesthelper_smithy.h
  *
@@ -8,8 +8,8 @@
  * -------------------------------------
  */
 
-#ifndef _CARDTEST1HELPER_H
-#define _CARDTEST1HELPER_H
+#ifndef _CARDTESTHELPER_SMITHY_H
+#define _CARDTESTHELPER_SMITHY_H
 
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.

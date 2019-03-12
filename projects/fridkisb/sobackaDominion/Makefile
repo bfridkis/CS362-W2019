@@ -1,85 +1,82 @@
-CFLAGS= -Wall -Werror -Wfatal-errors -fpic -coverage -lm -std=c99
+CFLAGS= -Wall -Werror -Wfatal-errors -fpic -coverage -lm -g -std=c99
 
 rngs.o: rngs.h rngs.c
-	gcc -c rngs.c -g  $(CFLAGS)
-	
-cardEffects.o: cardEffects.h cardEffects.c dominion.h
-	gcc -c cardEffects.c -g  $(CFLAGS)	
+	gcc -c rngs.c $(CFLAGS)	
 
-dominion.o: dominion.h dominion.c rngs.o cardEffects.o
-	gcc -c dominion.c -g  $(CFLAGS)
+dominion.o: dominion.h dominion.c rngs.o 
+	gcc -c dominion.c $(CFLAGS)
 	
-_unittest1helper.o: _unittest1helper.c _unittest1helper.h dominion.o
-	gcc -c _unittest1helper.c -g  $(CFLAGS)
+_cardtesthelper_smithy.o: _cardtesthelper_smithy.c \
+						  _cardtesthelper_smithy.h dominion.o 
+	gcc -c _cardtesthelper_smithy.c $(CFLAGS)
 	
-_unittest2helper.o: _unittest2helper.c _unittest2helper.h dominion.o
-	gcc -c _unittest2helper.c -g  $(CFLAGS)
+_cardtesthelper_adventurer.o: _cardtesthelper_adventurer.c \
+							  _cardtesthelper_adventurer.h dominion.o \
+	gcc -c _cardtesthelper_adventurer.c $(CFLAGS)
 	
-_unittest3helper.o: _unittest3helper.c _unittest3helper.h dominion.o
-	gcc -c _unittest3helper.c -g  $(CFLAGS)
-
-_unittest4helper.o: _unittest4helper.c _unittest4helper.h dominion.o
-	gcc -c _unittest4helper.c -g  $(CFLAGS)
+_cardtesthelper_councilroom.o: _cardtesthelper_councilroom.c \
+							   _cardtesthelper_councilroom.h dominion.o \
+	gcc -c _cardtesthelper_councilroom.c   $(CFLAGS)
 	
-_cardtest1helper.o: _cardtest1helper.c _cardtest1helper.h dominion.o
-	gcc -c _cardtest1helper.c -g  $(CFLAGS)
+_randomtesthelper_councilroom.o: _randomtesthelper_councilroom.c \
+								 _randomtesthelper_councilroom.h \
+								 dominion.o
+	gcc -c _randomtesthelper_councilroom.c -g  $(CFLAGS)
 	
-_cardtest2helper.o: _cardtest2helper.c _cardtest2helper.h dominion.o
-	gcc -c _cardtest2helper.c -g  $(CFLAGS)
-	
-_cardtest3helper.o: _cardtest3helper.c _cardtest3helper.h dominion.o
-	gcc -c _cardtest3helper.c -g  $(CFLAGS)
-	
-_cardtest4helper.o: _cardtest4helper.c _cardtest4helper.h dominion.o
-	gcc -c _cardtest4helper.c -g  $(CFLAGS)
+_randomtesthelper_adventurer.o: _randomtesthelper_adventurer.c 
+								_randomtesthelper_adventurer.h \
+								dominion.o
+	gcc -c _randomtesthelper_adventurer.c -g  $(CFLAGS)
 	
 playdom: dominion.o playdom.c
-	gcc -o playdom playdom.c -g dominion.o cardEffects.o rngs.o $(CFLAGS)
+	gcc -o playdom playdom.c dominion.o rngs.o $(CFLAGS)
 #To run playdom you need to enter: ./playdom <any integer number> like ./playdom 10*/
 
-testDrawCard: testDrawCard.c dominion.o cardEffects.o rngs.o
-	gcc  -o testDrawCard -g  testDrawCard.c dominion.o cardEffects.o rngs.o $(CFLAGS)
+testDrawCard: testDrawCard.c dominion.o rngs.o
+	gcc  -o testDrawCard testDrawCard.c dominion.o rngs.o $(CFLAGS)
 
-badTestDrawCard: badTestDrawCard.c dominion.o cardEffects.o rngs.o
-	gcc -o badTestDrawCard -g  badTestDrawCard.c dominion.o cardEffects.o rngs.o $(CFLAGS)
+badTestDrawCard: badTestDrawCard.c dominion.o rngs.o
+	gcc -o badTestDrawCard badTestDrawCard.c dominion.o rngs.o $(CFLAGS)
 
-testBuyCard: testDrawCard.c dominion.o cardEffects.o rngs.o
-	gcc -o testDrawCard -g  testDrawCard.c dominion.o cardEffects.o rngs.o $(CFLAGS)
-
-unittest1: unittest1.c _unittest1helper.o dominion.o cardEffects.o rngs.o
-	gcc -o unittest1 unittest1.c -g dominion.o cardEffects.o _unittest1helper.o rngs.o $(CFLAGS)
+testBuyCard: testDrawCard.c dominion.o rngs.o
+	gcc -o testDrawCard testDrawCard.c dominion.o rngs.o $(CFLAGS)
 	
-unittest2: unittest2.c _unittest2helper.o dominion.o cardEffects.o rngs.o
-	gcc -o unittest2 unittest2.c -g dominion.o cardEffects.o _unittest2helper.o rngs.o $(CFLAGS)	
+cardtest_smithy: cardtest_smithy.c _cardtesthelper_smithy.o \
+				 dominion.o rngs.o
+	gcc -o $@ $^ $(CFLAGS)
 	
-unittest3: unittest3.c _unittest3helper.o dominion.o cardEffects.o rngs.o
-	gcc -o unittest3 unittest3.c -g dominion.o cardEffects.o _unittest3helper.o rngs.o $(CFLAGS)
+cardtest_adventurer: cardtest_adventurer.c _cardtesthelper_adventurer.o \
+					 dominion.o rngs.o
+	gcc -o $@ $^ $(CFLAGS)
 	
-unittest4: unittest4.c _unittest4helper.o dominion.o cardEffects.o rngs.o
-	gcc -o unittest4 unittest4.c -g dominion.o cardEffects.o _unittest4helper.o rngs.o $(CFLAGS)
 	
-cardtest1: cardtest1.c _cardtest1helper.o dominion.o cardEffects.o rngs.o
-	gcc -o cardtest1 cardtest1.c -g dominion.o cardEffects.o _cardtest1helper.o rngs.o $(CFLAGS)
+cardtest_councilroom: cardtest_councilroom.c _cardtesthelper_councilroom.o \
+					  dominion.o rngs.o
+	gcc -o $@ $^ $(CFLAGS)
 	
-cardtest2: cardtest2.c _cardtest2helper.o dominion.o cardEffects.o rngs.o
-	gcc -o cardtest2 cardtest2.c -g dominion.o cardEffects.o _cardtest2helper.o rngs.o $(CFLAGS)
+randomtestcard_councilroom: randomtestcard_councilroom.c \
+							_randomtesthelper_councilroom.o \
+							dominion.o rngs.o
+	gcc -o $@ $^ $(CFLAGS)
 	
-cardtest3: cardtest3.c _cardtest3helper.o dominion.o cardEffects.o rngs.o
-	gcc -o cardtest3 cardtest3.c -g dominion.o cardEffects.o _cardtest3helper.o rngs.o $(CFLAGS)
-	
-cardtest4: cardtest4.c _cardtest4helper.o dominion.o cardEffects.o rngs.o
-	gcc -o cardtest4 cardtest4.c -g dominion.o cardEffects.o _cardtest4helper.o rngs.o $(CFLAGS)	
+randomtest_adventurer: randomtest_adventurer.c \
+					  _randomtesthelper_adventurer.o \
+					  dominion.o rngs.o
+	gcc -o $@ $^ $(CFLAGS)
 	
 testAll: dominion.o testSuite.c 
-	gcc -o testSuite testSuite.c -g  dominion.o cardEffects.o rngs.o $(CFLAGS)
+	gcc -o testSuite testSuite.c dominion.o rngs.o $(CFLAGS)
 	
-unittestresults: unittest1 unittest2 unittest3 unittest4 \
-				 cardtest1 cardtest2 cardtest3 cardtest4			 
+testresults: cardtest_smithy cardtest_adventurer cardtest_councilroom \
+			 randomtest_councilroom randomtest_adventurer	
 	@chmod +x testmakehelper
 	@./testmakehelper
+	@chmod +x randomtestmakehelper
+	@./randomtestmakehelper randomtest_councilroom
+	@./randomtestmakehelper randomtest_adventurer
 
 interface.o: interface.h interface.c
-	gcc -c interface.c -g  $(CFLAGS)
+	gcc -c interface.c $(CFLAGS)
 
 runtests: testDrawCard 
 	./testDrawCard &> unittestresult.out
@@ -88,14 +85,14 @@ runtests: testDrawCard
 
 
 player: player.c interface.o
-	gcc -o player player.c -g  dominion.o cardEffects.o rngs.o interface.o $(CFLAGS)
+	gcc -o player player.c dominion.o rngs.o interface.o $(CFLAGS)
 
 all: playdom player 
 
 clean:
 	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno \
 	*.so *.out testDrawCard testDrawCard.exe unittest1 unittest2 unittest3 unittest4 \
-	cardtest1 cardtest2 cardtest3 cardtest4
+	cardtest_smithy cardtest_adventurer cardtest3 cardtest_councilroom
 	
 # References
 # https://stackoverflow.com/questions/3824500/compiling-c-on-remote-linux-machine-clock-skew-detected-warning

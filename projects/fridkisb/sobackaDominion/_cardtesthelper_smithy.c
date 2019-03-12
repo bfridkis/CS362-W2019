@@ -1,6 +1,6 @@
 /* ---------------------------------------------------------------------------
  * Benjamin Fridkis - CS362 
- * Assignment 3
+ * Assignment 5
  *
  *                       _cardtesthelper_smithy.c
  *
@@ -10,7 +10,8 @@
  *
  *            Include the following lines in your makefile:
  *
- * _cardtesthelper_smithy.o: _cardtesthelper_smithy.c _cardtesthelper_smithy.h dominion.o
+ * _cardtesthelper_smithy.o: _cardtesthelper_smithy.c _cardtesthelper_smithy.h \
+ *							 dominion.o
  *		gcc -c _cardtesthelper_smithy.c -g  $(CFLAGS)
  *
  * ---------------------------------------------------------------------------

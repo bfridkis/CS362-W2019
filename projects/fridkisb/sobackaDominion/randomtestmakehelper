@@ -3,7 +3,7 @@
 coverage() {
 
 	echo -e "\n\t\t\t\t\t\tRANDOM TEST RESULTS - CS362-400 - ASSIGNMENT 5\n\n" \
-		"\t\t\t\t\t\t\t\t\t  Benjamin Fridkis\n\n" > testresults.out
+		"\t\t\t\t\t\t\t\t\t  Benjamin Fridkis\n\n" >> testresults.out
 
 	echo -e "\t\t++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> testresults.out
 	echo -e "\t\t++                                                                  ++" >> testresults.out

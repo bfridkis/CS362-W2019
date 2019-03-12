@@ -16,7 +16,7 @@
 //		(state->hand[player][-1]) in continuous search of treasures. The faulty mechanism
 //		lies in the fact that drawCard will simply return a -1 once it has placed
 //		all cards in the temp hand after depleting both the deck and discard piles,
-//		where after playAdventurer erroneously assumes drawCard is still adding 
+//		where after adventurerEffect erroneously assumes drawCard is still adding 
 //		to the hand. The hand itself is then added to the temp hand until no cards are
 //		remaining (i.e. handCount has reached 0. Finally it (handCount) will reach -1,
 //		and the attempt to access state->hand[currentPlayer][-1] will crash
@@ -25,7 +25,7 @@
 //		the program will not crash outright, but the hand will be erroneously depleted
 //		as non-treasure cards are removed until sufficient treasure is found.
 
-int playAdventurer(int currentPlayer, struct gameState *state){
+int adventurerEffect(int currentPlayer, struct gameState *state){
 	int temphand[MAX_HAND];
 	int drawntreasure = 0, z = 1;
 	while(drawntreasure<3){
@@ -49,7 +49,7 @@ int playAdventurer(int currentPlayer, struct gameState *state){
       return 0;
 }
 
-int playSmithy(int currentPlayer, struct gameState *state, int handPos){
+int smithyEffect(int currentPlayer, struct gameState *state, int handPos){
 	int i;
 	//+3 Cards
       for (i = 0; i < 4; i++)
@@ -212,7 +212,7 @@ int ambassadorEffect(int currentPlayer, struct gameState *state, int choice1,
       return 0;
 }
 
-int playCouncilRoom(int currentPlayer, struct gameState *state, int handPos){
+int council_roomEffect(int currentPlayer, struct gameState *state, int handPos){
 	int i;
 	//+4 Cards
 	  for (i = 0; i < 4; i++)

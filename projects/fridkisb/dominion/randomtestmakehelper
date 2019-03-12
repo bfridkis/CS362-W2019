@@ -7,7 +7,7 @@ coverage() {
 
 	echo -e "\t\t++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> ${programName}.out
 	echo -e "\t\t++                                                                  ++" >> ${programName}.out
-	if [[ $1 = "randomtest_adventurer" ]] ; then
+	if [[ $1 = "randomtestadventurer" ]] ; then
 		echo -e "\t\t++          \t\t      ${programName}                      ++" >> ${programName}.out
 	else
 		echo -e "\t\t++          \t\t         ${programName}                        ++" >> ${programName}.out
@@ -42,9 +42,9 @@ coverage() {
 gcovProg="cardEffects.c"
 programName=$1
 
-if [[ $1 = "randomtest_councilroom" ]] ; then 
+if [[ $1 = "randomtestcard1" ]] ; then 
 	test="random tests for Council Room"
-	funcName="playCouncilRoom"
+	funcName="council_roomEffect"
 	ancillary_functs[0]="drawCard"
 	ancillary_functs[1]="discardCard"
 elif [[ $1 = "randomtestcard2" ]] ; then 
@@ -54,7 +54,7 @@ elif [[ $1 = "randomtestcard2" ]] ; then
 	ancillary_functs[1]="updateCoins"
 else 
 	test="random tests for Adventurer"
-	funcName="playAdventurer"
+	funcName="adventurerEffect"
 	ancillary_functs[0]="drawCard"
 fi
 

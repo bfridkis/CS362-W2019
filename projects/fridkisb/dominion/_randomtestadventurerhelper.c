@@ -2,23 +2,23 @@
  * Benjamin Fridkis - CS362 
  * Assignment 4
  *
- *                       _randomtesthelper_adventurer.c
+ *                       _randomtestadventurerhelper.c
  *
- *		            Helper function for randomtest_adventurer.c
+ *		            Helper function for randomtestadventurer.c
  *
  *	      (Test for "adventurer" card effect - See cardEffects.c line 5)
  *
  *            Include the following lines in your makefile:
  *
- * _randomtesthelper_adventurer.o: _randomtesthelper_adventurer.c \
- *								  _randomtesthelper_adventurer.h dominion.o
- *		gcc -c _randomtesthelper_adventurer.c -g  $(CFLAGS)
+ * _randomtestadventurerhelper.o: _randomtestadventurerhelper.c \
+ *								  _randomtestadventurerhelper.h dominion.o
+ *		gcc -c _randomtestadventurerhelper.c -g  $(CFLAGS)
  * ---------------------------------------------------------------------------
  */
  
-#include "_randomtesthelper_adventurer.h"
+#include "_randomtestadventurerhelper.h"
  
-int _randomtesthelper_adventurer(int numPlayers, int k[], struct gameState* G,
+int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 	failedTest failures[], int* failCt, int treasureCardCountSpecifier, 
 	int isBoundary, int testNumber){
 		
@@ -92,7 +92,7 @@ int _randomtesthelper_adventurer(int numPlayers, int k[], struct gameState* G,
 	}
 	
 	//Re-select random stream 2 (since initializeGame will have selected
-	//stream 1 in parent function (main, see randomtest_adventurer.c)
+	//stream 1 in parent function (main, see randomtestadventurer.c)
 	SelectStream(2);
 	
 	//Determine Deck Size for active player
@@ -126,13 +126,13 @@ int _randomtesthelper_adventurer(int numPlayers, int k[], struct gameState* G,
 		// adventurer for the active player, which is necessary for the
 		// boundary tests to avoid a segmentation fault. The bug that causes
 		// this fault is described in cardEffects.c in the notes for 
-		// playAdventurer.) Non-active players are assigned hand size of 0.
+		// adventurerEffect.) Non-active players are assigned hand size of 0.
 		handCountBeforeAdventurer[activePlayer] = 3 + floor(Random() * (MAX_HAND - 2));
 		
 		//Without the following if statement, hand can potentially 
 		//exceed MAX_HAND (after active player gains 2 cards to hand),
 		//which will result in hand count and position
-		//failures after call to playAdventurer! See assignment4
+		//failures after call to adventurerEffect! See assignment4
 		//writeup for additional discussion on this matter.
 		
 		/*  if(handCountBeforeAdventurer[activePlayer] > MAX_HAND - 2){
@@ -147,8 +147,8 @@ int _randomtesthelper_adventurer(int numPlayers, int k[], struct gameState* G,
 		//a total of 2 (between the 2... i.e. there must be at least 2 treasures 
 		//in the set of total player cards [deck, discard, hand] to avoid a 
 		//segmentation fault due to a bug present in the adventurer function 
-		//[playAdventurer]). (This bug is detailed in a note above the 
-		//implementation of playAdventurer in cardEffects.c, and in the 
+		//[adventurerEffect]). (This bug is detailed in a note above the 
+		//implementation of adventurerEffect in cardEffects.c, and in the 
 		//assignment write-up.)
 		handCountBeforeAdventurer[activePlayer] = (testNumber * 5) + 1;
 		if(handCountBeforeAdventurer[activePlayer] >= MAX_HAND - 2){
@@ -370,7 +370,7 @@ int _randomtesthelper_adventurer(int numPlayers, int k[], struct gameState* G,
 	//(Only needed in boundary tests when RANDOMIZE is enabled 
 	// to prevent segmentation fault caused by adventurer bug described 
 	//previously [i.e. in assignment 2]. See cardEffects.c notes for 
-	//playAdventurer for more details.)
+	//adventurerEffect for more details.)
 	int treasureCardsInAPHand = handCardCountByTypeBeforeAdventurer[copper] +
 								handCardCountByTypeBeforeAdventurer[silver] +
 								handCardCountByTypeBeforeAdventurer[gold];					
@@ -697,7 +697,7 @@ int _randomtesthelper_adventurer(int numPlayers, int k[], struct gameState* G,
 	//Make sure other game state values haven't changed
 	
 	//Check numActions (numActions is updated by parent function
-	//playCard, not playAdventurer or any function called by it)...
+	//playCard, not adventurerEffect or any function called by it)...
 	if(G->numActions != 1 && ++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,

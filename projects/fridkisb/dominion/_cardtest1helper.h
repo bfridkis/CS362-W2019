@@ -2,9 +2,9 @@
  * Benjamin Fridkis - CS362 
  * Assignment 3
  *
- *       _cardtesthelper_smithy.h
+ *       _cardtest1helper.h
  *
- * Header file for _cardtesthelper_smithy.c.
+ * Header file for _cardtest1helper.c.
  * -------------------------------------
  */
 
@@ -21,7 +21,7 @@
 //Number of non-boundary test runs, 
 //also determines input sizes for each run,
 //if RANDOMIZE is set to 0. 
-//(See cardtest_smithy.c for more details.)
+//(See cardtest1.c for more details.)
 #define SMITHY_CALLS 1
 
 #define NUM_PLAYERS 2
@@ -42,7 +42,7 @@ struct failedTest {
 
 typedef struct failedTest failedTest;
 
-int _cardtesthelper_smithy(int k[], struct gameState* G, failedTest failures[], 
+int _cardtest1helper(int k[], struct gameState* G, failedTest failures[], 
 	int* failCt, int deckCardCountSpecifier, int isBoundary, int testNumber);
 
 

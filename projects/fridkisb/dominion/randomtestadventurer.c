@@ -2,20 +2,20 @@
  * Benjamin Fridkis - CS362 
  * Assignment 4
  *
- *                         randomtest_adventurer.c
+ *                         randomtestadventurer.c
  *
  *	     Test for "adventurer" card effect - See cardEffects.c line 5
  *
  * Include the following lines in your makefile:
  *
- * randomtest_adventurer: randomtest_adventurer.c _randomtesthelper_adventurer.o \
+ * randomtestadventurer: randomtestadventurer.c _randomtestadventurerhelper.o \
  *						dominion.o cardEffects.o rngs.o
- * 		gcc -o randomtest_adventurer randomtest_adventurer.c -g dominion.o \
- *		cardEffects.o _randomtesthelper_adventurer.o rngs.o $(CFLAGS)
+ * 		gcc -o randomtestadventurer randomtestadventurer.c -g dominion.o \
+ *		cardEffects.o _randomtestadventurerhelper.o rngs.o $(CFLAGS)
  * ---------------------------------------------------------------------------
  */
 
-#include "_randomtesthelper_adventurer.h"
+#include "_randomtestadventurerhelper.h"
 
 int main (int argc, char** argv) {
 	struct gameState G;
@@ -24,7 +24,7 @@ int main (int argc, char** argv) {
 	failedTest failures[MAX_FAILS];
 	int failCt = 0;
 	
-	printf("\t\t\t   " "Starting randomtest_adventurer - Testing 'adventurer' card\n");
+	printf("\t\t\t   " "Starting randomtestadventurer - Testing 'adventurer' card\n");
 	
 	if(RANDOMIZE){
 		printf("\n  Executing %d Adventurer %s using hands with random assortment of \n"
@@ -36,7 +36,7 @@ int main (int argc, char** argv) {
 			   "\t  before play, and only pertinent data structures are initialized to known values\n"
 			   "\t  thereafter. The seed value for the random number generator is based on the system\n"
 			   "\t  clock to ensure non-determinism.\n\n"
-				"\t\t" " -Set 'ADVENTURER_CALLS' in randomtest_adventurer.c\n"
+				"\t\t" " -Set 'ADVENTURER_CALLS' in randomtestadventurer.c\n"
 			   "\t\t"  "  to modify number of plays.\n", ADVENTURER_CALLS,
 			   ADVENTURER_CALLS > 1 ? "plays" : "play");
 	}
@@ -46,15 +46,15 @@ int main (int argc, char** argv) {
 			   "\t" "  If the number of tests cause the deck size to equal or exceed %d when\n"
 			   "\t" "  calculated in this way, the deck size will reset to 1 and begin\n"
 			   "\t" "  incrementing by 1 with each additional successive test, but if\n"
-			   "\t" "  hand size < 6, hand size will be set to 6 (see _randomtesthelper_adventurer.c line 90).\n"
+			   "\t" "  hand size < 6, hand size will be set to 6 (see _randomtestadventurerhelper.c line 90).\n"
 			   "\t\t" "-e.g. deck size for test 1 = 6, test 2 = 11, test 3 = 16...\n"
 			   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2...\n\n"
 			   "  Kingdom cards are adventurer through great_hall, as enumerated in dominion.h.\n\n"
-			   "\t\t" " -Set 'ADVENTURER_CALLS' in randomtest_adventurer.c\n"
+			   "\t\t" " -Set 'ADVENTURER_CALLS' in randomtestadventurer.c\n"
 			   "\t\t" "  to modify number of plays.\n\n"
 			   "\t\t" " -Random test generator can be turned on\n"
 			   "\t\t" "  by setting the constant 'RANDOMIZE' to 1\n"
-			   "\t\t" "  in _randomtesthelper_adventurer.h.\n\n", ADVENTURER_CALLS, 
+			   "\t\t" "  in _randomtestadventurerhelper.h.\n\n", ADVENTURER_CALLS, 
 			   ADVENTURER_CALLS > 1 ? "plays" : "play", MAX_DECK, MAX_DECK);
 	}
 
@@ -86,13 +86,13 @@ int main (int argc, char** argv) {
 		}
 		
 		//Initializes game for indicated number of players with random seed value. 
-		//(See defined constant NUM_PLAYERS in _randomtesthelper_adventurer.h)
+		//(See defined constant NUM_PLAYERS in _randomtestadventurerhelper.h)
 		initializeGame(numPlayers, k, seed, &G);
 		
 		//Play Adventurer with random kingdom card set with a deck
 		//containing at least 2 treasure cards.
-		//(see _randomtesthelper_adventurer for more details)
-		_randomtesthelper_adventurer(numPlayers, k, &G, failures, 
+		//(see _randomtestadventurerhelper for more details)
+		_randomtestadventurerhelper(numPlayers, k, &G, failures, 
 			&failCt, 2, 0, i + 1);
 	}
 	
@@ -123,7 +123,7 @@ int main (int argc, char** argv) {
 		numPlayers = NUM_PLAYERS;
 	}
 	initializeGame(numPlayers, k, seed, &G);
-	_randomtesthelper_adventurer(numPlayers, k, &G, failures, &failCt, 
+	_randomtestadventurerhelper(numPlayers, k, &G, failures, &failCt, 
 		1, 1, ADVENTURER_CALLS + 1);
 	
 	if(RANDOMIZE){
@@ -153,7 +153,7 @@ int main (int argc, char** argv) {
 		numPlayers = NUM_PLAYERS;
 	}
 	initializeGame(numPlayers, k, seed, &G);
-	_randomtesthelper_adventurer(numPlayers, k, &G, failures, &failCt, 
+	_randomtestadventurerhelper(numPlayers, k, &G, failures, &failCt, 
 		0, 1, ADVENTURER_CALLS + 2);
 	
 	if(RANDOMIZE){
@@ -184,7 +184,7 @@ int main (int argc, char** argv) {
 		numPlayers = NUM_PLAYERS;
 	}
 	initializeGame(numPlayers, k, seed, &G);
-	_randomtesthelper_adventurer(numPlayers, k, &G, failures, &failCt,
+	_randomtestadventurerhelper(numPlayers, k, &G, failures, &failCt,
 		-1, 1, ADVENTURER_CALLS + 3);
 	
 	printf("\n\n\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULTS SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
@@ -227,7 +227,7 @@ int main (int argc, char** argv) {
 		   "\t\t"		"**  not contain at least 2 treasures, but hand has enough to make up the  ** \n" 
 		   "\t\t"		"** difference) or a segmentation fault in others (i.e. when there are not ** \n" 
 		   "\t\t"		"**   at least 2 treasures between deck, discard, and hand combined). This ** \n"
-		   "\t\t"		"**   program (randomtest_adventurer) has been deliberately set up to avoid a full on  ** \n"
+		   "\t\t"		"**   program (randomtestadventurer) has been deliberately set up to avoid a full on  ** \n"
 		   "\t\t"		"**    crash due to this error, so that all remaining tests and code will  ** \n"
 		   "\t\t"		"**     be processed to completion. The incorrect behavior (that does not  ** \n"
 		   "\t\t" 		"** result in a full crash) caused by this bug is captured in the BOUNDARY ** \n"
@@ -258,7 +258,7 @@ int main (int argc, char** argv) {
 				   "\t\t to print more errors.\n\n",
 						failCt, failCt > 0 ? "s" : "", MAX_FAILS);
 		}
-		printf("  (Note: See _randomtesthelper_adventurer.c when referencing line #)\n\n");
+		printf("  (Note: See _randomtestadventurerhelper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
 			printf("%d - TEST #%d @ LINE %d: %s\n\n", 

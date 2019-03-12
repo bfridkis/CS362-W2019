@@ -1,30 +1,28 @@
-/* -------------------------------------
+/* ------------------------------------------
  * Benjamin Fridkis - CS362 
- * Assignment 3
+ * Assignment 4
  *
- *       _cardtest_councilroomhelper.h
+ *       _randomtestcard1helper.h
  *
- * Header file for _cardtest_councilroomhelper.c.
- * -------------------------------------
+ * Header file for _randomtestcard1helper.c.
+ * ------------------------------------------
  */
 
-#ifndef _CARDTEST4HELPER_H
-#define _CARDTEST4HELPER_H
+#ifndef _RANDOMTESTCARD1HELPER_H
+#define _RANDOMTESTCARD1HELPER_H
 
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
 #define MAX_FAILS 20
 
 //Toggle randomized inputs on/off (0 = off, 1 = on)
-#define RANDOMIZE 0
+#define RANDOMIZE 1
 
 //Number of non-boundary test runs, 
 //also determines input sizes for each run,
 //if RANDOMIZE is set to 0. 
-//(See cardtest_councilroom.c for more details.)
-#define COUNCIL_ROOM_CALLS 1
-
-#define NUM_PLAYERS 4
+//(See randomtestcard1.c for more details.)
+#define COUNCIL_ROOM_CALLS 10000
 
 #include "dominion.h"
 #include "dominion_helpers.h"
@@ -32,7 +30,10 @@
 #include <stdio.h>
 #include <assert.h>
 #include <limits.h>
+#include <math.h>
 #include "rngs.h"
+
+#define NUM_PLAYERS 4
 
 struct failedTest {
 	int lineNumber;
@@ -42,8 +43,8 @@ struct failedTest {
 
 typedef struct failedTest failedTest;
 
-int _cardtest_councilroomhelper(int k[], struct gameState* G, failedTest failures[], 
-	int* failCt, int noCopper, int testNumber);
+int _randomtestcard1helper(int numPlayers, int k[], struct gameState* G, 
+	failedTest failures[], int* failCt, int noCopper, int testNumber);
 
 
 #endif

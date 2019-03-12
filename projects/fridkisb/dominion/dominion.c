@@ -664,10 +664,10 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   switch( card ) 
 	{
 	case adventurer:
-	  return playAdventurer(currentPlayer, state);
+	  return adventurerEffect(currentPlayer, state);
 			
 	case council_room:
-	  return playCouncilRoom(currentPlayer, state, handPos);
+	  return council_roomEffect(currentPlayer, state, handPos);
 			
 	  //put played card in played card pile
 	  discardCard(handPos, currentPlayer, state, 0);
@@ -792,7 +792,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 	  return 0;
 		
 	case smithy:
-	  return playSmithy(currentPlayer, state, handPos);
+	  return smithyEffect(currentPlayer, state, handPos);
 		
 	case village:
 	  //+1 Card

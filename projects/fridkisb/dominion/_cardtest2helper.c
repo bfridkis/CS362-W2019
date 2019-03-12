@@ -2,23 +2,23 @@
  * Benjamin Fridkis - CS362 
  * Assignment 3
  *
- *                       _cardtesthelper_adventurer.c
+ *                       _cardtest2helper.c
  *
- *		            Helper function for cardtest_adventurer.c
+ *		            Helper function for cardtest2.c
  *
  *	      (Test for "adventurer" card effect - See cardEffects.c line 5)
  *
  *            Include the following lines in your makefile:
  *
- * _cardtesthelper_adventurer.o: _cardtesthelper_adventurer.c _cardtesthelper_adventurer.h dominion.o
- *		gcc -c _cardtesthelper_adventurer.c -g  $(CFLAGS)
+ * _cardtest2helper.o: _cardtest2helper.c _cardtest2helper.h dominion.o
+ *		gcc -c _cardtest2helper.c -g  $(CFLAGS)
  *
  * ---------------------------------------------------------------------------
  */
  
-#include "_cardtesthelper_adventurer.h"
+#include "_cardtest2helper.h"
  
-int _cardtesthelper_adventurer(int k[], struct gameState* G, failedTest failures[], 
+int _cardtest2helper(int k[], struct gameState* G, failedTest failures[], 
 	int* failCt, int treasureCardCountSpecifier, int isBoundary, int testNumber){
 		
 	//Test value variables	   
@@ -60,7 +60,7 @@ int _cardtesthelper_adventurer(int k[], struct gameState* G, failedTest failures
 	}
 	
 	//Re-select random stream 2 (since initializeGame will have selected
-	//stream 1 in parent function (main, see cardtest_adventurer.c)
+	//stream 1 in parent function (main, see cardtest2.c)
 	SelectStream(2);
 	
 	//   Determine Deck Size
@@ -94,9 +94,9 @@ int _cardtesthelper_adventurer(int k[], struct gameState* G, failedTest failures
 	//up without at least enough treasures to result in a total of 2 (between 
 	//the 2... i.e. there must be at least 2 treasures in the set of total 
 	//player cards [deck, discard, hand] to avoid a segmentation fault
-	//due to a bug present in the adventurer function [playAdventurer]).
+	//due to a bug present in the adventurer function [adventurerEffect]).
 	//(This bug is detailed in a note above the implementation of 
-	//playAdventurer in cardEffects.c, and in the assignment write-up.)
+	//adventurerEffect in cardEffects.c, and in the assignment write-up.)
 	if(RANDOMIZE){
 		//Determine random hand size, in range 6 - MAX_HAND
 		handCountBeforeAdventurer = 6 + (Random() * (MAX_HAND - 6));
@@ -498,7 +498,7 @@ int _cardtesthelper_adventurer(int k[], struct gameState* G, failedTest failures
 	//Make sure other game state values haven't changed
 	
 	//Check numActions (numActions is updated by parent function
-	//playCard, not playAdventurer or any function called by it)...
+	//playCard, not adventurerEffect or any function called by it)...
 	if(G->numActions != 1 && ++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,

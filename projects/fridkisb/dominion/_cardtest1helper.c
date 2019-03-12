@@ -2,23 +2,23 @@
  * Benjamin Fridkis - CS362 
  * Assignment 3
  *
- *                       _cardtesthelper_smithy.c
+ *                       _cardtest1helper.c
  *
- *		            Helper function for cardtest_smithy.c
+ *		            Helper function for cardtest1.c
  *
  *	      (Test for "smithy" card effect - See cardEffects.c line 29)
  *
  *            Include the following lines in your makefile:
  *
- * _cardtesthelper_smithy.o: _cardtesthelper_smithy.c _cardtesthelper_smithy.h dominion.o
- *		gcc -c _cardtesthelper_smithy.c -g  $(CFLAGS)
+ * _cardtest1helper.o: _cardtest1helper.c _cardtest1helper.h dominion.o
+ *		gcc -c _cardtest1helper.c -g  $(CFLAGS)
  *
  * ---------------------------------------------------------------------------
  */
  
-#include "_cardtesthelper_smithy.h"
+#include "_cardtest1helper.h"
  
-int _cardtesthelper_smithy(int k[], struct gameState* G, failedTest failures[], 
+int _cardtest1helper(int k[], struct gameState* G, failedTest failures[], 
 	int* failCt, int deckCardCountSpecifier, int isBoundary, int testNumber){
 		
 	//Test value variables	   
@@ -60,7 +60,7 @@ int _cardtesthelper_smithy(int k[], struct gameState* G, failedTest failures[],
 	}
 	
 	//Re-select random stream 2 (since initializeGame will have selected
-	//stream 1 in parent function (main, see cardtest_smithy.c)
+	//stream 1 in parent function (main, see cardtest1.c)
 	SelectStream(2);
 	
 	
@@ -232,7 +232,7 @@ int _cardtesthelper_smithy(int k[], struct gameState* G, failedTest failures[],
 	//[the index from which the Smithy is played] vs. what is expected
 	//at the "top" of the hand without "breaking into" the smithy function itself.
 	//(See dominion.c line 1062 for the details of the discardCard function and
-	//cardEffects.c line 29 for more details concerning the playSmithy function.).
+	//cardEffects.c line 29 for more details concerning the smithyEffect function.).
 	for(i = 0, j = 0; i < handCountBeforeSmithy - 1; i++){
 		if(((i != handPos && j < 7 && G->hand[0][i] != j) ||
 			(i != handPos && j >= 7 && G->hand[0][i] != k[j-7])) &&
@@ -360,7 +360,7 @@ int _cardtesthelper_smithy(int k[], struct gameState* G, failedTest failures[],
 	//Make sure other game state values haven't changed
 	
 	//Check numActions (numActions is updated by parent function
-	//playCard, not playSmithy or any function called by it)...
+	//playCard, not smithyEffect or any function called by it)...
 	if(G->numActions != 1 && ++(*failCt) <= MAX_FAILS){
 		failures[*failCt-1].lineNumber = __LINE__;
 		sprintf(failures[*failCt-1].description,

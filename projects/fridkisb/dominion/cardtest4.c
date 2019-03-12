@@ -1,21 +1,20 @@
 /* ---------------------------------------------------------------------------
  * Benjamin Fridkis - CS362 
- * Assignment 4
+ * Assignment 3
  *
- *                         randomtest_councilroom.c
+ *                         cardtest4.c
  *
  *	     Test for "council_room" card effect - See cardEffects.c line 29
  *
  * Include the following lines in your makefile:
  *
- * randomtest_councilroom: randomtest_councilroom.c _randomtesthelper_councilroom.o dominion.o \
- *					cardEffects.o rngs.o
- * 		gcc -o randomtest_councilroom randomtest_councilroom.c -g dominion.o cardEffects.o 
- * 		_randomtesthelper_councilroom.o rngs.o $(CFLAGS)
+ * cardtest4: cardtest4.c _cardtest4helper.o dominion.o cardEffects.o rngs.o
+ * 		gcc -o cardtest4 cardtest4.c -g dominion.o cardEffects.o 
+ * 		_cardtest4helper.o rngs.o $(CFLAGS)
  * ---------------------------------------------------------------------------
  */
 
-#include "_randomtesthelper_councilroom.h"
+#include "_cardtest4helper.h"
 
 int main (int argc, char** argv) {
 	struct gameState G;
@@ -24,20 +23,13 @@ int main (int argc, char** argv) {
 	failedTest failures[MAX_FAILS];
 	int failCt = 0;
 	
-	printf("\t\t\t\t" "Starting randomtest_councilroom - Testing 'council_room' card\n");
+	printf("\t\t\t\t\t" "Starting cardtest4 - Testing 'council_room' card\n");
 	
 	if(RANDOMIZE){
-		printf("\n  Executing %d Council_Room %s using hands and decks with random assortment\n"
-			   "\t  of supply cards, with at least 1 card in deck for non-active players,\n"
-			   "\t  and 4 cards in deck for active players...\n\n"
-			   "\t  Hand and deck sizes are random for each player, up to sizes MAX_HAND and\n"
-			   "\t  MAX_DECK respectively. The number of players is random up to MAX_PLAYER.\n"
-			   "\t  The active player is chosen randomly, as well as the starting hand position\n"
-			   "\t  for the active player's council_room card. The entire game state is randomized\n"
-			   "\t  before play, and only pertinent data structures are initialized to known values\n"
-			   "\t  thereafter. The seed value for the random number generator is based on the\n"
-			   "\t  system clock to ensure non-determinism.\n\n"
-			   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in randomtest_councilroom.c\n"
+		printf("\n  Executing %d Council_Room %s using hands with random assortment of \n"
+			   "\t  supply cards, with at least 1 in deck for non-active players,\n"
+			   "\t  and 4 in deck for active players.\n\n"
+			   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in cardtest4.c\n"
 			   "\t\t" "  to modify number of plays.\n", COUNCIL_ROOM_CALLS,
 			   COUNCIL_ROOM_CALLS > 1 ? "plays" : "play");
 	}
@@ -51,11 +43,11 @@ int main (int argc, char** argv) {
 		   "\t\t" "-e.g. deck size for test 1 = 5, test 2 = 10, test 3 = 15...\n"
 		   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2...\n\n"
 		   "  Kingdom cards are adventurer through great_hall, as enumerated in dominion.h.\n\n"
-		   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in cardtest_smithy.c\n"
+		   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in cardtest1.c\n"
 		   "\t\t" "  to modify number of plays.\n\n"
 		   "\t\t" " -Random test generator can be turned on\n"
 		   "\t\t" "  by setting the constant 'RANDOMIZE' to 1\n"
-		   "\t\t" "  in _randomtesthelper_councilroom.h.\n\n", COUNCIL_ROOM_CALLS, 
+		   "\t\t" "  in _cardtest4helper.h.\n\n", COUNCIL_ROOM_CALLS, 
 		   COUNCIL_ROOM_CALLS > 1 ? "plays" : "play", MAX_DECK, MAX_DECK);
 	}
 
@@ -65,7 +57,7 @@ int main (int argc, char** argv) {
 	SelectStream(2);
 	PutSeed(-1);
 		   
-	int i, j, k[10], m, seed = 5000, numPlayers;
+	int i, j, k[10], m, seed = 5000;
 	for(i = 0; i < COUNCIL_ROOM_CALLS; i++){
 		
 		if(RANDOMIZE){
@@ -73,58 +65,46 @@ int main (int argc, char** argv) {
 			for(j = 0; j < 10; j++){		
 				k[j] = Random() * 19 + 7;
 			}
-			//Generate random seed value
 			seed = Random() * INT_MAX;
-			
-			//Generate random player count between 2 and MAX_PLAYERS
-			numPlayers = floor(Random() * (MAX_PLAYERS - 1)) + 2;
 		}
 		else{
 			for(m = 0, j = 7; j < 17; m++, j++){		
 				k[m] = j;
 			}
-			numPlayers = NUM_PLAYERS;
 		}
 		
-		//Initializes game for indicated number of players with random seed value. 
-		//(See defined constant NUM_PLAYERS in _randomtesthelper_councilroom.h)
-		initializeGame(numPlayers, k, seed, &G);
+		//Initializes game for two players with random seed value.
+		initializeGame(NUM_PLAYERS, k, seed, &G);
 		
 		//Play Council_Room with random kingdom card set.
-		//(see _randomtesthelper_councilroom for more details)
-		_randomtesthelper_councilroom(numPlayers, k, &G, failures, &failCt, 0, i + 1);
+		//(see _cardtest4helper for more details)
+		_cardtest4helper(k, &G, failures, &failCt, 0, i + 1);
 	}
 	
 	if(RANDOMIZE){
-		printf("\n  BOUNDARY: Executing Council_Room play using hand with random game state\n"
-			   "\t            as described above, with empty decks for all players...\n");
+		printf("\n  BOUNDARY: Executing Council_Room play using hand with random assortment of\n"
+			   "\t            supply cards, with empty decks for all players...\n");
 	}
 	else{
 		printf("\n  BOUNDARY: Executing Council_Room play using hands\n"
-			   "\t            with empty decks for all players...\n");
+			   "\t          with empty decks for all players...\n");
 	}
 	
 	//Test with empty decks (all players)
 	if(RANDOMIZE){
 		//Generate set of 10 random Kingdom cards
 		for(j = 0; j < 10; j++){		
-			k[j] = floor(Random() * 20) + 7;
+			k[j] = Random() * 19 + 7;
 		}
 		seed = Random() * INT_MAX;
-		
-		//Generate random player count between 2 and MAX_PLAYERS
-		numPlayers = floor(Random() * (MAX_PLAYERS - 1)) + 2;
 	}
 	else{
 		for(m = 0, j = 7; j < 17; m++, j++){		
 			k[m] = j;
 		}
-		
-		numPlayers = NUM_PLAYERS;
 	}
-	initializeGame(numPlayers, k, seed, &G);
-	_randomtesthelper_councilroom(numPlayers, k, &G, failures, 
-		&failCt, 1, COUNCIL_ROOM_CALLS + 1);
+	initializeGame(NUM_PLAYERS, k, seed, &G);
+	_cardtest4helper(k, &G, failures, &failCt, 1, COUNCIL_ROOM_CALLS + 1);
 	
 	printf("\n\n\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULTS SUMMARY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	
@@ -165,7 +145,7 @@ int main (int argc, char** argv) {
 		   "\t\t\t"          "d. outpostPlayed\n"
 		   "\t\t\t"          "e. outpostTurn\n"
 		   "\t\t"       "9. Played card count is not 1\n"
-		   "\t   "     "10. Played cards does not have Council_Room @ idx 1 and is unchanged otherwise\n"
+		   "\t\t"       "10. Played cards does not have Council_Room @ idx 1 and is unchanged otherwise\n"
 		   "\n"
 		   "\t\t"       "* BOUNDARY test verifies all of the above except for #2 & #3. For the empty    *\n"
 		   "\t\t"       "* deck boundary test, no deck or hand count or contents should change for any  *\n"
@@ -192,7 +172,7 @@ int main (int argc, char** argv) {
 				   "\t\t to print more errors.\n\n",
 						failCt, failCt > 0 ? "s" : "", MAX_FAILS);
 		}
-		printf("  (Note: See _randomtesthelper_councilroom.c when referencing line #)\n\n");
+		printf("  (Note: See _cardtest4helper.c when referencing line #)\n\n");
 		int i;
 		for(i = 0; i < failCt && i < MAX_FAILS; i++){
 			printf("%d - TEST #%d @ LINE %d: %s\n\n", 

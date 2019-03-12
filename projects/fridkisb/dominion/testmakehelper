@@ -83,8 +83,8 @@ gcovProg="cardEffects.c"
 
 # Card Test 1
 test="smithy card test"
-programName="cardtest1.c"
-funcName="smithyEffect"
+programName="cardtest_smithy.c"
+funcName="playSmithy"
 ancillary_functs[0]="drawCard"
 ancillary_functs[1]="discardCard"
 
@@ -92,8 +92,8 @@ coverage
 
 # Card Test 2
 test="adventurer card test"
-programName="cardtest2.c"
-funcName="adventurerEffect"
+programName="cardtest_adventurer.c"
+funcName="playAdventurer"
 ancillary_functs[0]="drawCard"		#Just to be explicit...
 unset ancillary_functs[1]				#clear ancillary_funct[1]
 
@@ -110,8 +110,8 @@ coverage
 
 # Card Test 4
 test="council_room card test"
-programName="cardtest4.c"
-funcName="council_roomEffect"
+programName="cardtest_councilroom.c"
+funcName="playCouncilRoom"
 ancillary_functs[0]="drawCard"
 ancillary_functs[1]="discardCard"
 

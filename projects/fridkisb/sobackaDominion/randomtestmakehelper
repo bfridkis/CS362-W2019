@@ -1,0 +1,68 @@
+#!/bin/bash
+
+coverage() {
+
+	echo -e "\n\t\t\t\t\t\tRANDOM TEST RESULTS - CS362-400 - ASSIGNMENT4\n\n" \
+		"\t\t\t\t\t\t\t\t\t  Benjamin Fridkis\n\n" > ${programName}.out
+
+	echo -e "\t\t++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> ${programName}.out
+	echo -e "\t\t++                                                                  ++" >> ${programName}.out
+	if [[ $1 = "randomtest_adventurer" ]] ; then
+		echo -e "\t\t++          \t\t      ${programName}                      ++" >> ${programName}.out
+	else
+		echo -e "\t\t++          \t\t         ${programName}                        ++" >> ${programName}.out
+	fi
+	echo -e "\t\t++                                                                  ++" >> ${programName}.out
+	echo -e "\t\t++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> ${programName}.out
+
+	echo -e "\t\t  Result for running ${programName} (${test}):" >> ${programName}.out
+	echo -e "\t\t\t\t\t\t\t\t\t${programName}:" >> ${programName}.out 
+	./"${programName}" >> ${programName}.out
+
+	echo -e "\t  Coverage Report:\n" >> ${programName}.out
+	printf "\t" >> ${programName}.out
+	line=$(gcov ${gcovProg} --function-summaries -b | grep -n ${funcName} | cut -f1 -d:)
+	((line+=3))
+	gcov ${gcovProg} --function-summaries -b | head -n${line} | tail -n4 >> ${programName}.out
+		
+	for i in "${!ancillary_functs[@]}" ; do
+		echo >> ${programName}.out
+		if [[ ${i} = 0 ]] ; then
+			echo -e "The following functions are called by ${funcName}...\n" >> ${programName}.out
+		fi
+		printf "\t" >> ${programName}.out
+		line=$(gcov dominion.c --function-summaries -b | grep -n ${ancillary_functs[$i]} | cut -f1 -d:)
+		((line+=3))
+		gcov dominion.c --function-summaries -b | head -n${line} | tail -n4 >> ${programName}.out
+	done
+	
+	echo -e "\n\n --------------------------------------- END ----------------------------------------\n\n" >> ${programName}.out
+}
+
+gcovProg="cardEffects.c"
+programName=$1
+
+if [[ $1 = "randomtest_councilroom" ]] ; then 
+	test="random tests for Council Room"
+	funcName="playCouncilRoom"
+	ancillary_functs[0]="drawCard"
+	ancillary_functs[1]="discardCard"
+elif [[ $1 = "randomtestcard2" ]] ; then 
+	test="random tests for Cutpurse"
+	funcName="cutpurseEffect"
+	ancillary_functs[0]="discardCard"
+	ancillary_functs[1]="updateCoins"
+else 
+	test="random tests for Adventurer"
+	funcName="playAdventurer"
+	ancillary_functs[0]="drawCard"
+fi
+
+coverage $1
+
+## REFERENCES
+# https://stackoverflow.com/questions/6723426/looping-over-arrays-printing-both-index-and-value
+# Shotts, William E., The Linux Command Line. http://linuxcommand.org/tlcl.php
+
+
+

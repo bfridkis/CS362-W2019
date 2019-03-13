@@ -29,7 +29,7 @@ int main (int argc, char** argv) {
 		printf("\n  Executing %d Council_Room %s using hands with random assortment of \n"
 			   "\t  supply cards, with at least 1 in deck for non-active players,\n"
 			   "\t  and 4 in deck for active players.\n\n"
-			   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in cardtest4.c\n"
+			   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in _cardtest4helper.h\n"
 			   "\t\t" "  to modify number of plays.\n", COUNCIL_ROOM_CALLS,
 			   COUNCIL_ROOM_CALLS > 1 ? "plays" : "play");
 	}

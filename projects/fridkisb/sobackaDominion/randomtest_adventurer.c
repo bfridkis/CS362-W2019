@@ -36,7 +36,7 @@ int main (int argc, char** argv) {
 			   "\t  before play, and only pertinent data structures are initialized to known values\n"
 			   "\t  thereafter. The seed value for the random number generator is based on the system\n"
 			   "\t  clock to ensure non-determinism.\n\n"
-				"\t\t" " -Set 'ADVENTURER_CALLS' in randomtest_adventurer.c\n"
+				"\t\t" " -Set 'ADVENTURER_CALLS' in _randomtesthelper_adventurer.h\n"
 			   "\t\t"  "  to modify number of plays.\n", ADVENTURER_CALLS,
 			   ADVENTURER_CALLS > 1 ? "plays" : "play");
 	}
@@ -227,12 +227,12 @@ int main (int argc, char** argv) {
 		   "\t\t"		"**  not contain at least 2 treasures, but hand has enough to make up the  ** \n" 
 		   "\t\t"		"** difference) or a segmentation fault in others (i.e. when there are not ** \n" 
 		   "\t\t"		"**   at least 2 treasures between deck, discard, and hand combined). This ** \n"
-		   "\t\t"		"**   program (randomtest_adventurer) has been deliberately set up to avoid a full on  ** \n"
-		   "\t\t"		"**    crash due to this error, so that all remaining tests and code will  ** \n"
-		   "\t\t"		"**     be processed to completion. The incorrect behavior (that does not  ** \n"
-		   "\t\t" 		"** result in a full crash) caused by this bug is captured in the BOUNDARY ** \n"
-		   "\t\t" 		"**  test results. Please see cardEffects.c and the assignment write-up    ** \n"
-		   "\t\t" 		"**                  for a complete description of the error.              ** \n"
+		   "\t\t"		"**   program (cardtest_adventurer) has been deliberately set up to avoid  ** \n"
+		   "\t\t"		"**  a full on crash due to this error, so that all remaining tests and    ** \n"
+		   "\t\t"		"**   code will be processed to completion. The incorrect behavior (that   ** \n"
+		   "\t\t"		"** does not result in a full crash) caused by this bug is captured in the ** \n"
+		   "\t\t"		"**    BOUNDARY test results. Please see cardEffects.c and the assignment  ** \n"
+		   "\t\t"		"**            write-up for a complete description of the error.           ** \n"
 		   "\t\t" 		"**                                                                        ** \n"
 		   "\t\t" 		"**  (The bug mentioned above was NOT introduced as part of assignment 2.  ** \n"
 		   "\t\t" 		"**    The test results here should indicate additional findings which     ** \n"
@@ -254,7 +254,7 @@ int main (int argc, char** argv) {
 		}
 		else{
 			printf("\n\n\t%d test%s failed.\n\n\tFirst %d failures documented below:\n\n"
-				   "\t\t-Set MAX_FAILS in _unittest4helper.h\n"
+				   "\t\t-Set MAX_FAILS in _randomtesthelper_adventurer.h\n"
 				   "\t\t to print more errors.\n\n",
 						failCt, failCt > 0 ? "s" : "", MAX_FAILS);
 		}

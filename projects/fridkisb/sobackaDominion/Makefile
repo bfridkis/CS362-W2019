@@ -11,22 +11,22 @@ _cardtesthelper_smithy.o: _cardtesthelper_smithy.c \
 	gcc -c _cardtesthelper_smithy.c $(CFLAGS)
 	
 _cardtesthelper_adventurer.o: _cardtesthelper_adventurer.c \
-							  _cardtesthelper_adventurer.h dominion.o \
+							  _cardtesthelper_adventurer.h dominion.o 
 	gcc -c _cardtesthelper_adventurer.c $(CFLAGS)
 	
 _cardtesthelper_councilroom.o: _cardtesthelper_councilroom.c \
-							   _cardtesthelper_councilroom.h dominion.o \
-	gcc -c _cardtesthelper_councilroom.c   $(CFLAGS)
+							   _cardtesthelper_councilroom.h dominion.o 
+	gcc -c _cardtesthelper_councilroom.c $(CFLAGS)
 	
 _randomtesthelper_councilroom.o: _randomtesthelper_councilroom.c \
 								 _randomtesthelper_councilroom.h \
 								 dominion.o
-	gcc -c _randomtesthelper_councilroom.c -g  $(CFLAGS)
+	gcc -c _randomtesthelper_councilroom.c $(CFLAGS)
 	
-_randomtesthelper_adventurer.o: _randomtesthelper_adventurer.c 
+_randomtesthelper_adventurer.o: _randomtesthelper_adventurer.c \
 								_randomtesthelper_adventurer.h \
 								dominion.o
-	gcc -c _randomtesthelper_adventurer.c -g  $(CFLAGS)
+	gcc -c _randomtesthelper_adventurer.c $(CFLAGS)
 	
 playdom: dominion.o playdom.c
 	gcc -o playdom playdom.c dominion.o rngs.o $(CFLAGS)
@@ -54,9 +54,9 @@ cardtest_councilroom: cardtest_councilroom.c _cardtesthelper_councilroom.o \
 					  dominion.o rngs.o
 	gcc -o $@ $^ $(CFLAGS)
 	
-randomtestcard_councilroom: randomtestcard_councilroom.c \
-							_randomtesthelper_councilroom.o \
-							dominion.o rngs.o
+randomtest_councilroom: randomtest_councilroom.c \
+						_randomtesthelper_councilroom.o \
+						dominion.o rngs.o
 	gcc -o $@ $^ $(CFLAGS)
 	
 randomtest_adventurer: randomtest_adventurer.c \
@@ -91,8 +91,9 @@ all: playdom player
 
 clean:
 	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno \
-	*.so *.out testDrawCard testDrawCard.exe unittest1 unittest2 unittest3 unittest4 \
-	cardtest_smithy cardtest_adventurer cardtest3 cardtest_councilroom
+	*.so *.out testDrawCard testDrawCard.exe \
+	cardtest_smithy cardtest_adventurer cardtest3 cardtest_councilroom \
+	randomtest_councilroom randomtest_adventurer
 	
 # References
 # https://stackoverflow.com/questions/3824500/compiling-c-on-remote-linux-machine-clock-skew-detected-warning

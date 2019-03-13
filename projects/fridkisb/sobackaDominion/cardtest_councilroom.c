@@ -24,7 +24,7 @@ int main (int argc, char** argv) {
 	failedTest failures[MAX_FAILS];
 	int failCt = 0;
 	
-	printf("\t\t\t\t\t" "Starting cardtest_councilroom - Testing 'council_room' card\n");
+	printf("\t\t\t  " "Starting cardtest_councilroom - Testing 'council_room' card\n");
 	
 	if(RANDOMIZE){
 		printf("\n  Executing %d Council_Room %s using hands with random assortment of \n"
@@ -39,12 +39,13 @@ int main (int argc, char** argv) {
 		   "\t" "  by multiples of 5 with each successive test number, up to %d (MAX_DECK).\n"
 		   "\t" "  If the number of tests cause the deck size to exceed %d when\n"
 		   "\t" "  calculated in this way, the deck size will reset to 1 and begin incrementing\n"
-		   "\t" "  by 1 with each additional successive test, but if the active player's\n\n"
-		    "\t" "  deck size < 4, active player's deck size will be set to 6 (to ensure enough draw cards).\n"
+		   "\t" "  by 1 with each additional successive test, but if the active player's\n"
+		   "\t" "  deck size < 4, active player's deck size will be set to 6\n"
+		   "\t" "  (to ensure enough draw cards).\n"
 		   "\t\t" "-e.g. deck size for test 1 = 5, test 2 = 10, test 3 = 15...\n"
 		   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2...\n\n"
 		   "  Kingdom cards are adventurer through great_hall, as enumerated in dominion.h.\n\n"
-		   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in cardtest_smithy.c\n"
+		   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in _cardtesthelper_councilroom.h\n"
 		   "\t\t" "  to modify number of plays.\n\n"
 		   "\t\t" " -Random test generator can be turned on\n"
 		   "\t\t" "  by setting the constant 'RANDOMIZE' to 1\n"
@@ -169,7 +170,7 @@ int main (int argc, char** argv) {
 		}
 		else{
 			printf("\n\n\t%d test%s failed.\n\n\tFirst %d failures documented below:\n\n"
-				   "\t\t-Set MAX_FAILS in _unittest4helper.h\n"
+				   "\t\t-Set MAX_FAILS in _cardtesthelper_councilroom.h\n"
 				   "\t\t to print more errors.\n\n",
 						failCt, failCt > 0 ? "s" : "", MAX_FAILS);
 		}

@@ -8,9 +8,15 @@ coverage() {
 	echo -e "\t\t++                                                                  ++" >> testresults.out
 	echo -e "\t\t++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> testresults.out
 
-	echo -e "\t\t\t\tResult for running ${programName:0:9} (${test}):" >> testresults.out
-	echo -e "\t\t\t\t\t\t\t\t\t${programName}:" >> testresults.out 
-	./"${programName:0:9}" >> testresults.out
+	if [[ "${test}" = "smithy card test" ]] ; then
+	echo -e "\t\t\t\tResult for running ${programName} (${test}):" >> testresults.out
+	echo -e "\t\t\t\t\t\t\t\t\t${programName}.c:" >> testresults.out 
+	else 
+	echo -e "\t\t  Result for running ${programName} (${test}):" >> testresults.out
+	echo -e "\t\t\t\t\t\t\t\t${programName}.c:" >> testresults.out 
+	fi
+	
+	./"${programName}" >> testresults.out
 
 	echo -e "\t  Coverage Report:\n" >> testresults.out
 	printf "\t" >> testresults.out
@@ -34,19 +40,19 @@ coverage() {
 	((testNum++))
 }
 
-echo -e "\n\t\t\t\t\t\tTEST SUITE RESULTS - CS362-400 - ASSIGNMENT 5\n\n" \
-		"\t\t\t\t\t\t\t\t\t  Benjamin Fridkis\n\n" > testresults.out
+echo -e "\n\t\t\t\t\tTEST SUITE RESULTS - CS362-400 - ASSIGNMENT 5\n\n" \
+		"\t\t\t\t\t\t\t\t  Benjamin Fridkis\n\n" > testresults.out
 
 testNum=1
 
 ## CARD TESTS ##
 
 testTypeCaps="CARD TEST"
-gcovProg="cardEffects.c"
+gcovProg="dominion.c"
 
 # Card Test 1
 test="smithy card test"
-programName="cardtest_smithy.c"
+programName="cardtest_smithy"
 funcName="playSmithy"
 ancillary_functs[0]="drawCard"
 ancillary_functs[1]="discardCard"
@@ -55,7 +61,7 @@ coverage
 
 # Card Test 2
 test="adventurer card test"
-programName="cardtest_adventurer.c"
+programName="cardtest_adventurer"
 funcName="playAdventurer"
 ancillary_functs[0]="drawCard"		#Just to be explicit...
 unset ancillary_functs[1]			#clear ancillary_funct[1]
@@ -64,7 +70,7 @@ coverage
 
 # Card Test 3
 test="council_room card test"
-programName="cardtest_councilroom.c"
+programName="cardtest_councilroom"
 funcName="playCouncilRoom"
 ancillary_functs[0]="drawCard"
 ancillary_functs[1]="discardCard"

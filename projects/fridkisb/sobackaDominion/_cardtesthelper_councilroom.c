@@ -2,7 +2,7 @@
  * Benjamin Fridkis - CS362 
  * Assignment 5
  *
- *                       _cardtest_councilroomhelper.c
+ *                       _cardtesthelper_councilroom.c
  *
  *		            Helper function for cardtest_councilroom.c
  *
@@ -10,15 +10,15 @@
  *
  *            Include the following lines in your makefile:
  *
- * _cardtest_councilroomhelper.o: _cardtest_councilroomhelper.c _cardtest_councilroomhelper.h dominion.o
- *		gcc -c _cardtest_councilroomhelper.c -g  $(CFLAGS)
+ * _cardtesthelper_councilroom.o: _cardtesthelper_councilroom.c _cardtesthelper_councilroom.h dominion.o
+ *		gcc -c _cardtesthelper_councilroom.c -g  $(CFLAGS)
  *
  * ---------------------------------------------------------------------------
  */
  
-#include "_cardtest_councilroomhelper.h"
+#include "_cardtesthelper_councilroom.h"
  
-int _cardtest_councilroomhelper(int k[], struct gameState* G, failedTest failures[], 
+int _cardtesthelper_councilroom(int k[], struct gameState* G, failedTest failures[], 
 	int* failCt, int emptyDecks, int testNumber){
 		
 	//Test value variables	   

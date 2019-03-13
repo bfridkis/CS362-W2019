@@ -1,15 +1,15 @@
-/* ------------------------------------------
+/* --------------------------------------------------
  * Benjamin Fridkis - CS362 
  * Assignment 5
  *
  *       _randomtesthelper_councilroom.h
  *
  * Header file for _randomtesthelper_councilroom.c.
- * ------------------------------------------
+ * --------------------------------------------------
  */
 
-#ifndef _RANDOMTESTCARD1HELPER_H
-#define _RANDOMTESTCARD1HELPER_H
+#ifndef _RANDOMTEST_COUNCILROOM_H
+#define _RANDOMTEST_COUNCILROOM_H
 
 //This max is only for documenting failure specifics.
 //i.e. Failures in excess of this number are still counted, but not documented.
@@ -22,7 +22,7 @@
 //also determines input sizes for each run,
 //if RANDOMIZE is set to 0. 
 //(See randomtest_councilroom.c for more details.)
-#define COUNCIL_ROOM_CALLS 10000
+#define COUNCIL_ROOM_CALLS 10
 
 #include "dominion.h"
 #include "dominion_helpers.h"

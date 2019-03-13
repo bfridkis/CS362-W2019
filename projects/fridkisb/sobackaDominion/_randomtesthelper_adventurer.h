@@ -22,7 +22,7 @@
 //also determines input sizes for each run,
 //if RANDOMIZE is set to 0. 
 //(See randomtest_adventurer.c for more details.)
-#define ADVENTURER_CALLS 10000
+#define ADVENTURER_CALLS 10
 
 #define NUM_PLAYERS 4
 

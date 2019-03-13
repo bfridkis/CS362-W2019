@@ -8,9 +8,11 @@
  *
  * Include the following lines in your makefile:
  *
- * randomtest_councilroom: randomtest_councilroom.c _randomtesthelper_councilroom.o dominion.o \
- *					cardEffects.o rngs.o
- * 		gcc -o randomtest_councilroom randomtest_councilroom.c -g dominion.o cardEffects.o 
+ * randomtest_councilroom: randomtest_councilroom.c \
+ *						   _randomtesthelper_councilroom.o dominion.o \
+ *						   cardEffects.o rngs.o
+ * 		gcc -o randomtest_councilroom randomtest_councilroom.c -g dominion.o \
+ *		cardEffects.o 
  * 		_randomtesthelper_councilroom.o rngs.o $(CFLAGS)
  * ---------------------------------------------------------------------------
  */
@@ -24,7 +26,7 @@ int main (int argc, char** argv) {
 	failedTest failures[MAX_FAILS];
 	int failCt = 0;
 	
-	printf("\t\t\t\t" "Starting randomtest_councilroom - Testing 'council_room' card\n");
+	printf("\t\t\t" "Starting randomtest_councilroom - Testing 'council_room' card\n");
 	
 	if(RANDOMIZE){
 		printf("\n  Executing %d Council_Room %s using hands and decks with random assortment\n"
@@ -37,7 +39,7 @@ int main (int argc, char** argv) {
 			   "\t  before play, and only pertinent data structures are initialized to known values\n"
 			   "\t  thereafter. The seed value for the random number generator is based on the\n"
 			   "\t  system clock to ensure non-determinism.\n\n"
-			   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in randomtest_councilroom.c\n"
+			   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in _randomtesthelper_councilroom.h\n"
 			   "\t\t" "  to modify number of plays.\n", COUNCIL_ROOM_CALLS,
 			   COUNCIL_ROOM_CALLS > 1 ? "plays" : "play");
 	}
@@ -188,7 +190,7 @@ int main (int argc, char** argv) {
 		}
 		else{
 			printf("\n\n\t%d test%s failed.\n\n\tFirst %d failures documented below:\n\n"
-				   "\t\t-Set MAX_FAILS in _unittest4helper.h\n"
+				   "\t\t-Set MAX_FAILS in _randomtesthelper_councilroom.h\n"
 				   "\t\t to print more errors.\n\n",
 						failCt, failCt > 0 ? "s" : "", MAX_FAILS);
 		}

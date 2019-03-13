@@ -60,8 +60,11 @@ int _cardtesthelper_adventurer(int k[], struct gameState* G, failedTest failures
 	}
 	
 	//Re-select random stream 2 (since initializeGame will have selected
-	//stream 1 in parent function (main, see cardtest_adventurer.c)
-	SelectStream(2);
+	//stream 1 in parent function (main, see cardtest_adventurer.c), if 
+	//RANDOMIZE is enabled.
+	if(RANDOMIZE){
+		SelectStream(2);
+	}
 	
 	//   Determine Deck Size
 	if(RANDOMIZE && treasureCardCountSpecifier >= 2){
@@ -175,7 +178,9 @@ int _cardtesthelper_adventurer(int k[], struct gameState* G, failedTest failures
 		//For test #1, replace province with gold so there is
 		//a third treasure card in the deck.
 		if(testNumber == 1){
-			G->deck[0][province] = gold;
+			i = 0;
+			while(G->deck[0][i] != province){i++;}
+			G->deck[0][i] = gold;
 		}
 	}
 	G->hand[0][handPos] = adventurer;

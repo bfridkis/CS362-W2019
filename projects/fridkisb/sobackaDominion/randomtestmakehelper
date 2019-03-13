@@ -8,15 +8,15 @@ coverage() {
 	echo -e "\t\t++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> testresults.out
 	echo -e "\t\t++                                                                  ++" >> testresults.out
 	if [[ $1 = "randomtest_adventurer" ]] ; then
-		echo -e "\t\t++          \t\t      ${programName}                      ++" >> testresults.out
+		echo -e "\t\t++          \t\t      ${programName}                     ++" >> testresults.out
 	else
-		echo -e "\t\t++          \t\t         ${programName}                        ++" >> testresults.out
+		echo -e "\t\t++          \t         ${programName}                     ++" >> testresults.out
 	fi
 	echo -e "\t\t++                                                                  ++" >> testresults.out
 	echo -e "\t\t++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> testresults.out
 
-	echo -e "\t\t  Result for running ${programName} (${test}):" >> testresults.out
-	echo -e "\t\t\t\t\t\t\t\t\t${programName}:" >> testresults.out 
+	echo -e "\t  Result for running ${programName} (${test}):" >> testresults.out
+	echo -e "\t\t\t\t\t\t\t\t  ${programName}:" >> testresults.out 
 	./"${programName}" >> testresults.out
 
 	echo -e "\t  Coverage Report:\n" >> testresults.out
@@ -39,7 +39,7 @@ coverage() {
 	echo -e "\n\n --------------------------------------- END ----------------------------------------\n\n" >> testresults.out
 }
 
-gcovProg="cardEffects.c"
+gcovProg="dominion.c"
 programName=$1
 
 if [[ $1 = "randomtest_councilroom" ]] ; then 
@@ -47,11 +47,6 @@ if [[ $1 = "randomtest_councilroom" ]] ; then
 	funcName="playCouncilRoom"
 	ancillary_functs[0]="drawCard"
 	ancillary_functs[1]="discardCard"
-elif [[ $1 = "randomtestcard2" ]] ; then 
-	test="random tests for Cutpurse"
-	funcName="cutpurseEffect"
-	ancillary_functs[0]="discardCard"
-	ancillary_functs[1]="updateCoins"
 else 
 	test="random tests for Adventurer"
 	funcName="playAdventurer"

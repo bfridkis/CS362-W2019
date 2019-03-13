@@ -10,8 +10,9 @@
  *
  *            Include the following lines in your makefile:
  *
- * _randomtesthelper_councilroom.o: _randomtesthelper_councilroom.c _randomtesthelper_councilroom.h \
- *							 dominion.o
+ * _randomtesthelper_councilroom.o: _randomtesthelper_councilroom.c \
+									_randomtesthelper_councilroom.h \
+ *							 		dominion.o
  *		gcc -c _randomtesthelper_councilroom.c -g  $(CFLAGS)
  *
  * ------------------------------------------------------------------------------

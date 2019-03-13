@@ -2,9 +2,9 @@
  * Benjamin Fridkis - CS362 
  * Assignment 5
  *
- *       _cardtest_councilroomhelper.h
+ *       _cardtesthelper_councilroom.h
  *
- * Header file for _cardtest_councilroomhelper.c.
+ * Header file for _cardtesthelper_councilroom.c.
  * -------------------------------------
  */
 
@@ -42,7 +42,7 @@ struct failedTest {
 
 typedef struct failedTest failedTest;
 
-int _cardtest_councilroomhelper(int k[], struct gameState* G, failedTest failures[], 
+int _cardtesthelper_councilroom(int k[], struct gameState* G, failedTest failures[], 
 	int* failCt, int noCopper, int testNumber);
 
 

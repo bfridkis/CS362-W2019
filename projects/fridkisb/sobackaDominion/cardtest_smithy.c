@@ -42,7 +42,7 @@ int main (int argc, char** argv) {
 			   "\t\t" "-e.g. deck size for test 1 = 5, test 2 = 10, test 3 = 15...\n"
 			   "\t\t" "      deck size for test 100 with MAX_DECK @ 500 = 1, test 101 = 2...\n\n"
 			   "  Kingdom cards are adventurer through great_hall, as enumerated in dominion.h.\n\n"
-			   "\t\t" " -Set 'SMITHY_CALLS' in cardtest_smithy.c\n"
+			   "\t\t" " -Set 'SMITHY_CALLS' in _cardtesthelper_smithy.h\n"
 			   "\t\t" "   to modify number of plays.\n\n"
 			   "\t\t" " -Random test generator can be turned on\n"
 			   "\t\t" "  by setting the constant 'RANDOMIZE' to 1\n"
@@ -206,7 +206,7 @@ int main (int argc, char** argv) {
 		}
 		else{
 			printf("\n\n\t%d test%s failed.\n\n\tFirst %d failures documented below:\n\n"
-				   "\t\t-Set MAX_FAILS in _unittest4helper.h\n"
+				   "\t\t-Set MAX_FAILS in _cardtesthelper_smithy.h\n"
 				   "\t\t to print more errors.\n\n",
 						failCt, failCt > 0 ? "s" : "", MAX_FAILS);
 		}

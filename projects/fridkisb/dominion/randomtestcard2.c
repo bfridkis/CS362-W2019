@@ -36,8 +36,7 @@ int main (int argc, char** argv) {
 			   "\t  before play, and only pertinent data structures are initialized to known values\n"
 			   "\t  thereafter. The seed value for the random number generator is based on the\n"
 			   "\t  system clock to ensure non-determinism.\n\n"
-			   "\t\t" " -Set 'COUNCIL_ROOM_CALLS' in randomtestcard1.c\n"
-			   "\t\t" " -Set 'CUTPURSE_CALLS' in randomtestcard2.c\n"
+			   "\t\t" " -Set 'CUTPURSE_CALLS' in _randomtestcard2helper.h\n"
 			   "\t\t" "  to modify number of plays.\n", CUTPURSE_CALLS,
 			   CUTPURSE_CALLS > 1 ? "plays" : "play");
 	}

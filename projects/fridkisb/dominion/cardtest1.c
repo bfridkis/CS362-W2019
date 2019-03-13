@@ -205,7 +205,7 @@ int main (int argc, char** argv) {
 		}
 		else{
 			printf("\n\n\t%d test%s failed.\n\n\tFirst %d failures documented below:\n\n"
-				   "\t\t-Set MAX_FAILS in _unittest4helper.h\n"
+				   "\t\t-Set MAX_FAILS in _cardtest1helper.h\n"
 				   "\t\t to print more errors.\n\n",
 						failCt, failCt > 0 ? "s" : "", MAX_FAILS);
 		}

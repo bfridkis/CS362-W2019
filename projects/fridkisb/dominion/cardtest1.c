@@ -28,7 +28,7 @@ int main (int argc, char** argv) {
 	if(RANDOMIZE){
 		printf("\n  Executing %d Smithy %s using decks and hands with random assortment of \n"
 			   "\t  supply cards, with at least 3 cards active player's in deck...\n\n"
-			   "\t\t" " -Set 'SMITHY_CALLS' in cardtest1.c\n"
+			   "\t\t" " -Set 'SMITHY_CALLS' in _cardtest1helper.h\n"
 			   "\t\t" "  to modify number of plays.\n", SMITHY_CALLS,
 			   SMITHY_CALLS > 1 ? "plays" : "play");
 	}

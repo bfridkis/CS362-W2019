@@ -175,7 +175,9 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 		//For test #1, replace province with gold so there is
 		//a third treasure card in the deck.
 		if(testNumber == 1){
-			G->deck[0][province] = gold;
+			i = 0;
+			while(G->deck[0][i] != province){i++;}
+			G->deck[0][i] = gold;
 		}
 	}
 	G->hand[0][handPos] = adventurer;

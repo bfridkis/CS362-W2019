@@ -28,7 +28,7 @@ int main (int argc, char** argv) {
 	if(RANDOMIZE){
 		printf("\n  Executing %d Cutpurse %s using hands with random assortment of \n"
 			   "\t  hand cards for each player, with at least 1 copper in each hand...\n\n"
-			   "\t\t" " -Set 'CUTPURSE_CALLS' in cardtest3.c\n"
+			   "\t\t" " -Set 'CUTPURSE_CALLS' in _cardtest3helper.h\n"
 			   "\t\t" "  to modify number of plays.\n", CUTPURSE_CALLS,
 			   CUTPURSE_CALLS > 1 ? "plays" : "play");
 	}

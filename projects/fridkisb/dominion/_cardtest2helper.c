@@ -60,8 +60,11 @@ int _cardtest2helper(int k[], struct gameState* G, failedTest failures[],
 	}
 	
 	//Re-select random stream 2 (since initializeGame will have selected
-	//stream 1 in parent function (main, see cardtest2.c)
-	SelectStream(2);
+	//stream 1 in parent function (main, see cardtest_adventurer.c), if 
+	//RANDOMIZE is enabled.
+	if(RANDOMIZE){
+		SelectStream(2);
+	}
 	
 	//   Determine Deck Size
 	if(RANDOMIZE && treasureCardCountSpecifier >= 2){

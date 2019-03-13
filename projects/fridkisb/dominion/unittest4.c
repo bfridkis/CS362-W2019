@@ -42,7 +42,7 @@ int main (int argc, char** argv) {
 			   "  Kingdom cards are adventurer through great_hall, as enumerated in dominion.h.\n\n"
 			   "\t" "  Bonus value for each update is the current\n"
 			   "\t" "  test number * 2.\n\n"
-			   "\t\t"  "-Set 'NUM_COIN_UPDATES' in unittest4.c\n"
+			   "\t\t"  "-Set 'NUM_COIN_UPDATES' in _unittest4helper.h\n"
 			   "\t\t"  " to modify number of tests.\n\n"
 			   "\t\t"  "-Random test generator can be turned on\n"
 			   "\t\t"  " by setting the constant 'RANDOMIZE' to 1\n"

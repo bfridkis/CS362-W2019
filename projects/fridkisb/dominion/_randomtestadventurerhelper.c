@@ -271,7 +271,9 @@ int _randomtestadventurerhelper(int numPlayers, int k[], struct gameState* G,
 		//For test #1, replace province with gold so there is
 		//a third treasure card in the deck.
 		/* if(testNumber == 1){
-			G->deck[activePlayer][province] = gold;
+			i = 0;
+			while(G->deck[activePlayer[i] != province){i++;}
+			G->deck[activePlayer][i] = gold;
 		} */
 	}
 	G->hand[activePlayer][handPos] = adventurer;

@@ -72,8 +72,8 @@ testresults: cardtest_smithy cardtest_adventurer cardtest_councilroom \
 	@chmod +x testmakehelper
 	@./testmakehelper
 	@chmod +x randomtestmakehelper
-	@./randomtestmakehelper randomtest_councilroom
-	@./randomtestmakehelper randomtest_adventurer
+	@./randomtestmakehelper randomtest_councilroom 1 
+	@./randomtestmakehelper randomtest_adventurer 2
 
 interface.o: interface.h interface.c
 	gcc -c interface.c $(CFLAGS)

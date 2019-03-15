@@ -398,7 +398,7 @@ public class UrlValidatorTest extends TestCase {
 	   boolean result;
 	   
 	   //Create matrices for each URL component
-	   String[] schemes = {"http://", "https://", "ftp://", "qaz://", ""};
+	   String[] schemes = {"http://", "https://", "ftp://", "qa>z://", ""};
 	   String[] authorities = {"google.com", "wikipedia.org", "abcd.edu", "1.2.3.4", "255.0.0.255", "[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]", "[1080:0:0:0:8:800:200C:417A]", "412.365.0.27", "[23G:1:B7:70C:B9E1:7BA3:93:3B47]", ""};
 	   String[] ports = {"", ":1", ":65535", ":-1", ":92834927"};
 	   String[] paths = {"", "/index", "/?test=1", "/?test=1&test2=2", "/index?test=1"};

@@ -16,7 +16,7 @@ public class UrlValidatorTest extends TestCase {
 
    private static int RANDOM_TEST_RUNS = 1000;
    
-   //Constants corresponding to sabotageMask
+   //Constants corresponding to sabotageMask - for isValidTestRandom()
    private static int SABOTAGE_SCHEME = 1 << 0;
    private static int SABOTAGE_AUTHORITY = 1 << 1;
    private static int SABOTAGE_PORT = 1 << 2;

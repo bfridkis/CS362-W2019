@@ -26,27 +26,64 @@ public class UrlValidatorTest extends TestCase {
    public UrlValidatorTest(String testName) {
       super(testName);
    }
-
-   
-   
-   public void testManualTest()
+	
+   public static void testIsValidUnit()
    {
-	   //You can use this function to implement your manual testing	   
+	   //Establish StringBuilder object for URL generation
+	   StringBuilder testUrl = new StringBuilder();
 	   
+	   //Configure UrlValidator object
+	   long options = UrlValidator.ALLOW_ALL_SCHEMES;
+	   UrlValidator validator = new UrlValidator(null, null, options);
+	   
+	   boolean valid = true;
+	   boolean result;
+	   
+	   //Create matrices for each URL component
+	   String[] schemes = {"http://", "https://", "ftp://", "qa>z://", ""};
+	   String[] authorities = {"google.com", "wikipedia.org", "abcd.edu", "1.2.3.4", "255.0.0.255", "[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]", "[1080:0:0:0:8:800:200C:417A]", "412.365.0.27", "[23G:1:B7:70C:B9E1:7BA3:93:3B47]", ""};
+	   String[] ports = {"", ":1", ":65535", ":-1", ":92834927"};
+	   String[] paths = {"", "/index", "/?test=1", "/?test=1&test2=2", "/index?test=1"};
+	   
+	   //Loop through each matrix
+	   for(int a=0; a<schemes.length; a++) {
+		   for(int b=0; b<authorities.length; b++) {
+			   for(int c=0; c<ports.length; c++) {
+				   for(int d=0; d<paths.length; d++) {
+					   
+					   //Piece together the full URL to test
+					   testUrl.append(schemes[a]);
+					   testUrl.append(authorities[b]);
+					   testUrl.append(ports[c]);
+					   testUrl.append(paths[d]);
+					   
+					   //Determine expected result
+					   if(a<3 && b<7 && c<3) {
+						   valid = true;
+					   }
+					   else {
+						   valid = false;
+					   }
+					   
+					   //Test the URL with isValid()
+					   result = validator.isValid(testUrl.substring(0));
+					   
+					   //Print out results of each test
+					   System.out.print("Expected: ");
+					   System.out.print(valid);
+					   System.out.print(" Actual: ");
+					   System.out.print(result);
+					   System.out.print(" URL: ");
+					   System.out.print(testUrl);
+					   System.out.println();
+	
+					   //Empty out the URL string
+					   testUrl.delete(0,testUrl.length());
+				   }
+			   }
+		   }
+	   }
    }
-   
-   
-   public void testYourFirstPartition()
-   {
-	 //You can use this function to implement your First Partition testing	   
-
-   }
-   
-   public void testYourSecondPartition(){
-		 //You can use this function to implement your Second Partition testing	   
-
-   }
-   //You need to create more test cases for your Partitions if you need to 
    
    public static void testIsValidRandom()
    {
@@ -375,8 +412,7 @@ public class UrlValidatorTest extends TestCase {
 		 else if(i >= RANDOM_TEST_RUNS * 0.75) {
 			 sabotageMask = 1 + rand.nextInt(31);
 		 }
-	 }
-	 
+	 } 
    }
    
    public static void testIsValid()
@@ -389,64 +425,6 @@ public class UrlValidatorTest extends TestCase {
 	   testIsValidRandom();
    }
 	
-   public static void testIsValidUnit()
-   {
-	   //Establish StringBuilder object for URL generation
-	   StringBuilder testUrl = new StringBuilder();
-	   
-	   //Configure UrlValidator object
-	   long options = UrlValidator.ALLOW_ALL_SCHEMES;
-	   UrlValidator validator = new UrlValidator(null, null, options);
-	   
-	   boolean valid = true;
-	   boolean result;
-	   
-	   //Create matrices for each URL component
-	   String[] schemes = {"http://", "https://", "ftp://", "qa>z://", ""};
-	   String[] authorities = {"google.com", "wikipedia.org", "abcd.edu", "1.2.3.4", "255.0.0.255", "[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]", "[1080:0:0:0:8:800:200C:417A]", "412.365.0.27", "[23G:1:B7:70C:B9E1:7BA3:93:3B47]", ""};
-	   String[] ports = {"", ":1", ":65535", ":-1", ":92834927"};
-	   String[] paths = {"", "/index", "/?test=1", "/?test=1&test2=2", "/index?test=1"};
-	   
-	   //Loop through each matrix
-	   for(int a=0; a<schemes.length; a++) {
-		   for(int b=0; b<authorities.length; b++) {
-			   for(int c=0; c<ports.length; c++) {
-				   for(int d=0; d<paths.length; d++) {
-					   
-					   //Piece together the full URL to test
-					   testUrl.append(schemes[a]);
-					   testUrl.append(authorities[b]);
-					   testUrl.append(ports[c]);
-					   testUrl.append(paths[d]);
-					   
-					   //Determine expected result
-					   if(a<3 && b<7 && c<3) {
-						   valid = true;
-					   }
-					   else {
-						   valid = false;
-					   }
-					   
-					   //Test the URL with isValid()
-					   result = validator.isValid(testUrl.substring(0));
-					   
-					   //Print out results of each test
-					   System.out.print("Expected: ");
-					   System.out.print(valid);
-					   System.out.print(" Actual: ");
-					   System.out.print(result);
-					   System.out.print(" URL: ");
-					   System.out.print(testUrl);
-					   System.out.println();
-	
-					   //Empty out the URL string
-					   testUrl.delete(0,testUrl.length());
-				   }
-			   }
-		   }
-	   }
-   }
-   
    public static void main(String[] args) {
 	   
 	   UrlValidatorTest.testIsValid();

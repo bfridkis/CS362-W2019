@@ -7,6 +7,7 @@ import main.java.com.mifmif.common.regex.Generex;
 
 public class UrlValidatorTest extends TestCase {
 
+   //Number of test runs - for isValidTestRandom()
    private static int RANDOM_TEST_RUNS = 1000;
    
    //Constants corresponding to sabotageMask - for isValidTestRandom()

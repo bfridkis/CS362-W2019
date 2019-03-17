@@ -48,7 +48,7 @@ public class UrlValidatorTest extends TestCase {
    }
    //You need to create more test cases for your Partitions if you need to 
    
-   public static void randomTest()
+   public static void testIsValidRandom()
    {
 	 
 	 //Instantiate random number generator
@@ -381,11 +381,15 @@ public class UrlValidatorTest extends TestCase {
    
    public static void testIsValid()
    {
-	   //You can use this function for programming based testing
-	   randomTest();
+	   
+	   //Unit Tests
+	   testIsValidUnit();
+	   
+	   //Random Tester
+	   testIsValidRandom();
    }
 	
-   public void testIsValidUnit()
+   public static void testIsValidUnit()
    {
 	   //Establish StringBuilder object for URL generation
 	   StringBuilder testUrl = new StringBuilder();
